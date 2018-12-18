@@ -8,15 +8,26 @@
 
 import UIKit
 import CoreData
+import GooglePlaces
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    
+    let GOOGLE_API_KEY_PLACES = "AIzaSyDCILkGdFF7IAd8fEBknF6kA-WqNfAQq7I"
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        GMSPlacesClient.provideAPIKey(GOOGLE_API_KEY_PLACES)
+        
+        let initialController = InicioViewController()
+        let nav = UINavigationController(rootViewController: initialController)
+        window = UIWindow(frame: UIScreen.main.bounds)
+        window?.makeKeyAndVisible()
+        window?.rootViewController = nav
+        
         return true
     }
 

@@ -1,0 +1,6 @@
+framework module Pods_Yuumee {
+  umbrella header "Pods-Yuumee-umbrella.h"
+
+  export *
+  module * { export * }
+}

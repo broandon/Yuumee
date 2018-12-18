@@ -8,22 +8,52 @@
 
 /* Begin PBXBuildFile section */
 		5E68D64321C89FF400DA00AB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E68D64221C89FF400DA00AB /* AppDelegate.swift */; };
-		5E68D64521C89FF400DA00AB /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E68D64421C89FF400DA00AB /* ViewController.swift */; };
-		5E68D64821C89FF400DA00AB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5E68D64621C89FF400DA00AB /* Main.storyboard */; };
 		5E68D64B21C89FF400DA00AB /* Yuumee.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5E68D64921C89FF400DA00AB /* Yuumee.xcdatamodeld */; };
 		5E68D64D21C89FF500DA00AB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5E68D64C21C89FF500DA00AB /* Assets.xcassets */; };
 		5E68D65021C89FF500DA00AB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5E68D64E21C89FF500DA00AB /* LaunchScreen.storyboard */; };
+		5E68D65821C8A3D100DA00AB /* InicioViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E68D65721C8A3D100DA00AB /* InicioViewController.swift */; };
+		5E68D69D21C8AF6400DA00AB /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E68D69A21C8AF6400DA00AB /* Extensions.swift */; };
+		5E68D69E21C8AF6400DA00AB /* Extension+UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E68D69B21C8AF6400DA00AB /* Extension+UIColor.swift */; };
+		5E68D69F21C8AF6400DA00AB /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E68D69C21C8AF6400DA00AB /* Helpers.swift */; };
+		5E68D6A321C8AFAF00DA00AB /* CategoriasViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E68D6A121C8AFAE00DA00AB /* CategoriasViewController.swift */; };
+		5E68D6A421C8AFAF00DA00AB /* DetalleListadoCategoriaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E68D6A221C8AFAF00DA00AB /* DetalleListadoCategoriaViewController.swift */; };
+		5E68D6A721C8AFCE00DA00AB /* UbicacionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E68D6A621C8AFCE00DA00AB /* UbicacionViewController.swift */; };
+		5E68D6AB21C8AFEE00DA00AB /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E68D6A921C8AFED00DA00AB /* LoginViewController.swift */; };
+		5E68D6AC21C8AFEE00DA00AB /* RegistroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E68D6AA21C8AFEE00DA00AB /* RegistroViewController.swift */; };
+		5E68D6AF21C8B01600DA00AB /* TimeLineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E68D6AE21C8B01600DA00AB /* TimeLineViewController.swift */; };
+		5E68D6B321C8B02E00DA00AB /* DetalleConversacionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E68D6B121C8B02D00DA00AB /* DetalleConversacionViewController.swift */; };
+		5E68D6B421C8B02E00DA00AB /* MensajesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E68D6B221C8B02E00DA00AB /* MensajesViewController.swift */; };
+		5E68D6B721C8B04500DA00AB /* PerfilViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E68D6B621C8B04500DA00AB /* PerfilViewController.swift */; };
+		5E68D6BB21C8B05900DA00AB /* MetodoDePagoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E68D6B921C8B05900DA00AB /* MetodoDePagoViewController.swift */; };
+		5E68D6BC21C8B05900DA00AB /* PerfilUsuarioViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E68D6BA21C8B05900DA00AB /* PerfilUsuarioViewController.swift */; };
+		A98964B9D5276EF0D58FC294 /* Pods_Yuumee.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B3132EA2CE9863F6B74488C /* Pods_Yuumee.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0B3132EA2CE9863F6B74488C /* Pods_Yuumee.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Yuumee.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		3330BBBE07F28EBE7CD61116 /* Pods-Yuumee.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Yuumee.release.xcconfig"; path = "Pods/Target Support Files/Pods-Yuumee/Pods-Yuumee.release.xcconfig"; sourceTree = "<group>"; };
 		5E68D63F21C89FF400DA00AB /* Yuumee.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Yuumee.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5E68D64221C89FF400DA00AB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		5E68D64421C89FF400DA00AB /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		5E68D64721C89FF400DA00AB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		5E68D64A21C89FF400DA00AB /* Yuumee.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Yuumee.xcdatamodel; sourceTree = "<group>"; };
 		5E68D64C21C89FF500DA00AB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5E68D64F21C89FF500DA00AB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5E68D65121C89FF500DA00AB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5E68D65721C8A3D100DA00AB /* InicioViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InicioViewController.swift; sourceTree = "<group>"; };
+		5E68D69A21C8AF6400DA00AB /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		5E68D69B21C8AF6400DA00AB /* Extension+UIColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Extension+UIColor.swift"; sourceTree = "<group>"; };
+		5E68D69C21C8AF6400DA00AB /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
+		5E68D6A121C8AFAE00DA00AB /* CategoriasViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoriasViewController.swift; sourceTree = "<group>"; };
+		5E68D6A221C8AFAF00DA00AB /* DetalleListadoCategoriaViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetalleListadoCategoriaViewController.swift; sourceTree = "<group>"; };
+		5E68D6A621C8AFCE00DA00AB /* UbicacionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UbicacionViewController.swift; sourceTree = "<group>"; };
+		5E68D6A921C8AFED00DA00AB /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		5E68D6AA21C8AFEE00DA00AB /* RegistroViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegistroViewController.swift; sourceTree = "<group>"; };
+		5E68D6AE21C8B01600DA00AB /* TimeLineViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeLineViewController.swift; sourceTree = "<group>"; };
+		5E68D6B121C8B02D00DA00AB /* DetalleConversacionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetalleConversacionViewController.swift; sourceTree = "<group>"; };
+		5E68D6B221C8B02E00DA00AB /* MensajesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MensajesViewController.swift; sourceTree = "<group>"; };
+		5E68D6B621C8B04500DA00AB /* PerfilViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PerfilViewController.swift; sourceTree = "<group>"; };
+		5E68D6B921C8B05900DA00AB /* MetodoDePagoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetodoDePagoViewController.swift; sourceTree = "<group>"; };
+		5E68D6BA21C8B05900DA00AB /* PerfilUsuarioViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PerfilUsuarioViewController.swift; sourceTree = "<group>"; };
+		8F3F02C399BB0D96D08C8FC2 /* Pods-Yuumee.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Yuumee.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Yuumee/Pods-Yuumee.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,6 +61,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A98964B9D5276EF0D58FC294 /* Pods_Yuumee.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -42,6 +73,8 @@
 			children = (
 				5E68D64121C89FF400DA00AB /* Yuumee */,
 				5E68D64021C89FF400DA00AB /* Products */,
+				A01F61FB784140EA442A3658 /* Pods */,
+				B8BD4EC22967EEF7F77C169C /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -56,15 +89,109 @@
 		5E68D64121C89FF400DA00AB /* Yuumee */ = {
 			isa = PBXGroup;
 			children = (
+				5E68D6B521C8B03800DA00AB /* perfil */,
+				5E68D6B021C8B02100DA00AB /* mensajes */,
+				5E68D6AD21C8B00A00DA00AB /* timeline */,
+				5E68D6A821C8AFE000DA00AB /* login_registro */,
+				5E68D6A521C8AFBB00DA00AB /* ubicacion */,
+				5E68D6A021C8AF9800DA00AB /* categorias */,
+				5E68D69921C8AF4500DA00AB /* Generics */,
 				5E68D64221C89FF400DA00AB /* AppDelegate.swift */,
-				5E68D64421C89FF400DA00AB /* ViewController.swift */,
-				5E68D64621C89FF400DA00AB /* Main.storyboard */,
 				5E68D64C21C89FF500DA00AB /* Assets.xcassets */,
 				5E68D64E21C89FF500DA00AB /* LaunchScreen.storyboard */,
 				5E68D65121C89FF500DA00AB /* Info.plist */,
 				5E68D64921C89FF400DA00AB /* Yuumee.xcdatamodeld */,
+				5E68D65721C8A3D100DA00AB /* InicioViewController.swift */,
 			);
 			path = Yuumee;
+			sourceTree = "<group>";
+		};
+		5E68D69921C8AF4500DA00AB /* Generics */ = {
+			isa = PBXGroup;
+			children = (
+				5E68D69B21C8AF6400DA00AB /* Extension+UIColor.swift */,
+				5E68D69A21C8AF6400DA00AB /* Extensions.swift */,
+				5E68D69C21C8AF6400DA00AB /* Helpers.swift */,
+			);
+			path = Generics;
+			sourceTree = "<group>";
+		};
+		5E68D6A021C8AF9800DA00AB /* categorias */ = {
+			isa = PBXGroup;
+			children = (
+				5E68D6A121C8AFAE00DA00AB /* CategoriasViewController.swift */,
+				5E68D6A221C8AFAF00DA00AB /* DetalleListadoCategoriaViewController.swift */,
+			);
+			path = categorias;
+			sourceTree = "<group>";
+		};
+		5E68D6A521C8AFBB00DA00AB /* ubicacion */ = {
+			isa = PBXGroup;
+			children = (
+				5E68D6A621C8AFCE00DA00AB /* UbicacionViewController.swift */,
+			);
+			path = ubicacion;
+			sourceTree = "<group>";
+		};
+		5E68D6A821C8AFE000DA00AB /* login_registro */ = {
+			isa = PBXGroup;
+			children = (
+				5E68D6A921C8AFED00DA00AB /* LoginViewController.swift */,
+				5E68D6AA21C8AFEE00DA00AB /* RegistroViewController.swift */,
+			);
+			path = login_registro;
+			sourceTree = "<group>";
+		};
+		5E68D6AD21C8B00A00DA00AB /* timeline */ = {
+			isa = PBXGroup;
+			children = (
+				5E68D6AE21C8B01600DA00AB /* TimeLineViewController.swift */,
+			);
+			path = timeline;
+			sourceTree = "<group>";
+		};
+		5E68D6B021C8B02100DA00AB /* mensajes */ = {
+			isa = PBXGroup;
+			children = (
+				5E68D6B121C8B02D00DA00AB /* DetalleConversacionViewController.swift */,
+				5E68D6B221C8B02E00DA00AB /* MensajesViewController.swift */,
+			);
+			path = mensajes;
+			sourceTree = "<group>";
+		};
+		5E68D6B521C8B03800DA00AB /* perfil */ = {
+			isa = PBXGroup;
+			children = (
+				5E68D6B821C8B04800DA00AB /* usuario */,
+				5E68D6B621C8B04500DA00AB /* PerfilViewController.swift */,
+			);
+			path = perfil;
+			sourceTree = "<group>";
+		};
+		5E68D6B821C8B04800DA00AB /* usuario */ = {
+			isa = PBXGroup;
+			children = (
+				5E68D6B921C8B05900DA00AB /* MetodoDePagoViewController.swift */,
+				5E68D6BA21C8B05900DA00AB /* PerfilUsuarioViewController.swift */,
+			);
+			path = usuario;
+			sourceTree = "<group>";
+		};
+		A01F61FB784140EA442A3658 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				8F3F02C399BB0D96D08C8FC2 /* Pods-Yuumee.debug.xcconfig */,
+				3330BBBE07F28EBE7CD61116 /* Pods-Yuumee.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		B8BD4EC22967EEF7F77C169C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0B3132EA2CE9863F6B74488C /* Pods_Yuumee.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -74,9 +201,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5E68D65421C89FF500DA00AB /* Build configuration list for PBXNativeTarget "Yuumee" */;
 			buildPhases = (
+				EB2C29FB8FD0F4103615FE64 /* [CP] Check Pods Manifest.lock */,
 				5E68D63B21C89FF400DA00AB /* Sources */,
 				5E68D63C21C89FF400DA00AB /* Frameworks */,
 				5E68D63D21C89FF400DA00AB /* Resources */,
+				60C6C07D7E3DF0A3623D194E /* [CP] Embed Pods Frameworks */,
+				1CC76BE858EE07C99C06F8F9 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -127,34 +257,97 @@
 			files = (
 				5E68D65021C89FF500DA00AB /* LaunchScreen.storyboard in Resources */,
 				5E68D64D21C89FF500DA00AB /* Assets.xcassets in Resources */,
-				5E68D64821C89FF400DA00AB /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		1CC76BE858EE07C99C06F8F9 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Yuumee/Pods-Yuumee-resources.sh",
+				"${PODS_ROOT}/GoogleMaps/Maps/Frameworks/GoogleMaps.framework/Resources/GoogleMaps.bundle",
+				"${PODS_ROOT}/GooglePlacePicker/Frameworks/GooglePlacePicker.framework/Resources/GooglePlacePicker.bundle",
+				"${PODS_ROOT}/GooglePlaces/Frameworks/GooglePlaces.framework/Resources/GooglePlaces.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleMaps.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GooglePlacePicker.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GooglePlaces.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Yuumee/Pods-Yuumee-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		60C6C07D7E3DF0A3623D194E /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Yuumee/Pods-Yuumee-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		EB2C29FB8FD0F4103615FE64 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Yuumee-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		5E68D63B21C89FF400DA00AB /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5E68D6A321C8AFAF00DA00AB /* CategoriasViewController.swift in Sources */,
 				5E68D64B21C89FF400DA00AB /* Yuumee.xcdatamodeld in Sources */,
-				5E68D64521C89FF400DA00AB /* ViewController.swift in Sources */,
+				5E68D69F21C8AF6400DA00AB /* Helpers.swift in Sources */,
+				5E68D6BC21C8B05900DA00AB /* PerfilUsuarioViewController.swift in Sources */,
+				5E68D69E21C8AF6400DA00AB /* Extension+UIColor.swift in Sources */,
+				5E68D6BB21C8B05900DA00AB /* MetodoDePagoViewController.swift in Sources */,
+				5E68D65821C8A3D100DA00AB /* InicioViewController.swift in Sources */,
+				5E68D6B321C8B02E00DA00AB /* DetalleConversacionViewController.swift in Sources */,
+				5E68D6AF21C8B01600DA00AB /* TimeLineViewController.swift in Sources */,
 				5E68D64321C89FF400DA00AB /* AppDelegate.swift in Sources */,
+				5E68D69D21C8AF6400DA00AB /* Extensions.swift in Sources */,
+				5E68D6B721C8B04500DA00AB /* PerfilViewController.swift in Sources */,
+				5E68D6A421C8AFAF00DA00AB /* DetalleListadoCategoriaViewController.swift in Sources */,
+				5E68D6AB21C8AFEE00DA00AB /* LoginViewController.swift in Sources */,
+				5E68D6A721C8AFCE00DA00AB /* UbicacionViewController.swift in Sources */,
+				5E68D6B421C8B02E00DA00AB /* MensajesViewController.swift in Sources */,
+				5E68D6AC21C8AFEE00DA00AB /* RegistroViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		5E68D64621C89FF400DA00AB /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				5E68D64721C89FF400DA00AB /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		5E68D64E21C89FF500DA00AB /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -284,35 +477,43 @@
 		};
 		5E68D65521C89FF500DA00AB /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8F3F02C399BB0D96D08C8FC2 /* Pods-Yuumee.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Yuumee/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.lsegoviano.dev.Yuumee;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.2;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
 		5E68D65621C89FF500DA00AB /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3330BBBE07F28EBE7CD61116 /* Pods-Yuumee.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Yuumee/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.lsegoviano.dev.Yuumee;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.2;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
