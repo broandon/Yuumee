@@ -24,7 +24,6 @@ class PerfilViewController: BaseViewController {
         return tableView
     }()
     
-    
     override func viewDidLoad() {
         mainView.backgroundColor = .white
         self.navigationController?.isNavigationBarHidden = false
