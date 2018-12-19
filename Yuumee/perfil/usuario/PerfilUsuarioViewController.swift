@@ -918,6 +918,8 @@ class ComentariosCell: UITableViewCell, UICollectionViewDelegate, UICollectionVi
         default:
             assert(false, "Unexpected element kind")
         }
+        
+        return UICollectionReusableView()
     }
     
     
