@@ -33,29 +33,12 @@ class TimeLineViewController: BaseViewController {
     
     let restaurants = ["", "", "", "", ""]
     
-    override func viewDidLoad() {
-        mainView.backgroundColor = .white
-        self.navigationController?.isNavigationBarHidden = true
-        
-        //below code write in view did appear()
-        let swipeRight = UISwipeGestureRecognizer(target: self, action:  #selector(swiped))
-        swipeRight.direction = UISwipeGestureRecognizer.Direction.right
-        self.view.addGestureRecognizer(swipeRight)
-        
-        let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(swiped))
-        swipeLeft.direction = UISwipeGestureRecognizer.Direction.left
-        self.view.addGestureRecognizer(swipeLeft)
-        // below code create swipe gestures function
-        
-        
-        mainView.addSubview(headerContent)
-        mainView.addSubview(tableView)
-        
-        mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: tableView)
-        mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: headerContent)
-        mainView.addConstraintsWithFormat(format: "V:|-[v0(44)][v1]|", views: headerContent, tableView)
-        
-        let settingsImage = UIImageView(image: UIImage(named: "settings"))
+    
+    
+    let settings: UIButton = {
+        let newSizeForSettings = CGSize(width: 24, height: 24)
+        let imageResized = UIImage(named: "settings")?.imageResize(sizeChange: newSizeForSettings)
+        let settingsImage = UIImageView(image: imageResized)
         settingsImage.contentMode = .scaleAspectFit
         settingsImage.image = settingsImage.image?.withRenderingMode(.alwaysTemplate)
         settingsImage.tintColor = .white
@@ -64,7 +47,13 @@ class TimeLineViewController: BaseViewController {
         settings.backgroundColor = .rojo
         settings.tintColor = .white
         settings.layer.cornerRadius = 15
-        
+        let insetsPadding = UIEdgeInsets(top: -44, left: -44, bottom: -44, right: -44)
+        settings.imageEdgeInsets = insetsPadding
+        settings.addTarget(self, action: #selector(settingsEvent), for: .touchUpInside)
+        return settings
+    }()
+    
+    let filters: UIButton = {
         let randomImage = UIImageView(image: UIImage(named: "random"))
         randomImage.contentMode = .scaleAspectFit
         randomImage.image = randomImage.image?.withRenderingMode(.alwaysTemplate)
@@ -74,21 +63,58 @@ class TimeLineViewController: BaseViewController {
         random.backgroundColor = .rojo
         random.tintColor = .white
         random.layer.cornerRadius = 15
-        
+        let insetsPadding = UIEdgeInsets(top: -44, left: -44, bottom: -44, right: -44)
+        random.imageEdgeInsets = insetsPadding
+        random.addTarget(self, action: #selector(filtersEvent), for: .touchUpInside)
+        return random
+    }()
+    
+    let currentDate: UILabel = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "es_MX")
+        formatter.dateFormat = "E, d MMM yyyy" // salida -> Fri, 20 Jul 2018
+        let now = Date()
+        let dateString = formatter.string(from: now)
         let date = UILabel()
         date.textAlignment = .center
-        date.text = " 3 de agosto de 2018 "
+        date.text = dateString // " 3 de agosto de 2018 "
         date.font = UIFont.boldSystemFont(ofSize: date.font.pointSize)
+        return date
+    }()
+    
+    
+    
+    override func viewDidLoad() {
+        mainView.backgroundColor = .white
+        self.navigationController?.isNavigationBarHidden = true
+        
+        //below code write in view did appear()
+        let swipeRight = UISwipeGestureRecognizer(target: self, action:  #selector(swiped))
+        swipeRight.direction = UISwipeGestureRecognizer.Direction.right
+        self.view.addGestureRecognizer(swipeRight)
+        let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(swiped))
+        swipeLeft.direction = UISwipeGestureRecognizer.Direction.left
+        self.view.addGestureRecognizer(swipeLeft)
+        // below code create swipe gestures function
+        
+        mainView.addSubview(headerContent)
+        mainView.addSubview(tableView)
+        mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: tableView)
+        mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: headerContent)
+        mainView.addConstraintsWithFormat(format: "V:|-[v0(44)][v1]|", views: headerContent, tableView)
         
         headerContent.addSubview(settings)
-        headerContent.addSubview(date)
-        headerContent.addSubview(random)
-        headerContent.addConstraintsWithFormat(format: "H:|-[v0(30)]-[v1]-[v2(30)]-|", views: random, date, settings)
-        headerContent.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: random)
-        headerContent.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: date)
+        headerContent.addSubview(currentDate)
+        headerContent.addSubview(filters)
+        headerContent.addConstraintsWithFormat(format: "H:|-[v0(30)]-[v1]-[v2(30)]-|", views: filters, currentDate, settings)
+        headerContent.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: filters)
+        headerContent.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: currentDate)
         headerContent.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: settings)
         
     }
+    
+    
+    
     
     // MARK: - swiped
     @objc  func swiped(_ gesture: UISwipeGestureRecognizer) {
@@ -104,8 +130,40 @@ class TimeLineViewController: BaseViewController {
         }
     }
     
+    
+    
+    @objc func filtersEvent(sender: UIButton) {
+        let popVC = UINavigationController(rootViewController: ModalFiltersViewController())
+        popVC.modalPresentationStyle = .popover
+        let popOverVC = popVC.popoverPresentationController
+        popOverVC?.delegate = self
+        popOverVC?.sourceView = sender // self.button
+        popOverVC?.sourceRect = CGRect(x: self.filters.bounds.midX,
+                                       y: self.filters.bounds.minY,
+                                       width: 0, height: 0)
+        let widthModal = ScreenSize.screenWidth - 16
+        let heightModal = ScreenSize.screenWidth
+        popVC.preferredContentSize = CGSize(width: widthModal, height: heightModal)
+        self.present(popVC, animated: true)
+    }
+    
+    
+    @objc func settingsEvent(sender: Any) {
+        print(" settingsEvent ")
+    }
+    
+    
+    
     var feeds = ["", "", "", "", "", "", "", "", "", ""]
     
+}
+
+
+extension TimeLineViewController: UIPopoverPresentationControllerDelegate {
+    
+    func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+        return .none
+    }
 }
 
 
@@ -127,24 +185,26 @@ extension TimeLineViewController: UITableViewDelegate, UITableViewDataSource {
     
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let currentSection = indexPath.section
-        let currentRow = indexPath.row
+        //let currentSection = indexPath.section
+        //let currentRow = indexPath.row
         return 300.0 // UITableViewAutomaticDimension
     }
     
+    
+    /*
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        let currentSection = indexPath.section
+        let currentRow = indexPath.row
+        print(" currentRow ", currentRow)
+    }
+    */
     
     /*
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         let currentSection = indexPath.section
         let currentRow = indexPath.row
         return 550.0 // UITableViewAutomaticDimension
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        let currentSection = indexPath.section
-        let currentRow = indexPath.row
-        //print(" currentRow ", currentRow)
     }
     */
 }
@@ -227,3 +287,18 @@ class RestaurantCell: UITableViewCell {
     
     
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

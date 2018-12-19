@@ -26,6 +26,8 @@
 		5E68D6B721C8B04500DA00AB /* PerfilViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E68D6B621C8B04500DA00AB /* PerfilViewController.swift */; };
 		5E68D6BB21C8B05900DA00AB /* MetodoDePagoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E68D6B921C8B05900DA00AB /* MetodoDePagoViewController.swift */; };
 		5E68D6BC21C8B05900DA00AB /* PerfilUsuarioViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E68D6BA21C8B05900DA00AB /* PerfilUsuarioViewController.swift */; };
+		9C0CFCA021CAC230006AA810 /* ModalFiltersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0CFC9F21CAC230006AA810 /* ModalFiltersViewController.swift */; };
+		9C0CFCA221CAFF07006AA810 /* CustomSegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0CFCA121CAFF07006AA810 /* CustomSegmentedControl.swift */; };
 		A98964B9D5276EF0D58FC294 /* Pods_Yuumee.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B3132EA2CE9863F6B74488C /* Pods_Yuumee.framework */; };
 /* End PBXBuildFile section */
 
@@ -54,6 +56,8 @@
 		5E68D6B921C8B05900DA00AB /* MetodoDePagoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetodoDePagoViewController.swift; sourceTree = "<group>"; };
 		5E68D6BA21C8B05900DA00AB /* PerfilUsuarioViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PerfilUsuarioViewController.swift; sourceTree = "<group>"; };
 		8F3F02C399BB0D96D08C8FC2 /* Pods-Yuumee.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Yuumee.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Yuumee/Pods-Yuumee.debug.xcconfig"; sourceTree = "<group>"; };
+		9C0CFC9F21CAC230006AA810 /* ModalFiltersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalFiltersViewController.swift; sourceTree = "<group>"; };
+		9C0CFCA121CAFF07006AA810 /* CustomSegmentedControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSegmentedControl.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -146,6 +150,8 @@
 			isa = PBXGroup;
 			children = (
 				5E68D6AE21C8B01600DA00AB /* TimeLineViewController.swift */,
+				9C0CFC9F21CAC230006AA810 /* ModalFiltersViewController.swift */,
+				9C0CFCA121CAFF07006AA810 /* CustomSegmentedControl.swift */,
 			);
 			path = timeline;
 			sourceTree = "<group>";
@@ -291,9 +297,14 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Yuumee/Pods-Yuumee-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/AlamofireImage/AlamofireImage.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireImage.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -325,6 +336,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9C0CFCA021CAC230006AA810 /* ModalFiltersViewController.swift in Sources */,
+				9C0CFCA221CAFF07006AA810 /* CustomSegmentedControl.swift in Sources */,
 				5E68D6A321C8AFAF00DA00AB /* CategoriasViewController.swift in Sources */,
 				5E68D64B21C89FF400DA00AB /* Yuumee.xcdatamodeld in Sources */,
 				5E68D69F21C8AF6400DA00AB /* Helpers.swift in Sources */,
