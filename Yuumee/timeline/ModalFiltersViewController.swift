@@ -65,6 +65,7 @@ extension ModalFiltersViewController: CustomSegmentedControlDelegate {
         
         switch index {
         case 0:
+            
             self.view.backgroundColor = UIColor.green
             
             let btn = UIButton(type: .system)
@@ -74,13 +75,14 @@ extension ModalFiltersViewController: CustomSegmentedControlDelegate {
             mainView.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: btn)
             
         case 1:
-            self.view.backgroundColor = UIColor.blue
             
+            self.view.backgroundColor = UIColor.blue
             let btn = UIButton(type: .system)
             btn.setTitle("test 1", for: .normal)
             mainView.addSubview(btn)
             mainView.addConstraintsWithFormat(format: "H:|-[v0]", views: btn)
             mainView.addConstraintsWithFormat(format: "V:[v0(30)]-|", views: btn)
+            
             
             
         default:
@@ -89,3 +91,14 @@ extension ModalFiltersViewController: CustomSegmentedControlDelegate {
     }
     
 }
+
+
+
+
+
+
+
+
+
+
+
