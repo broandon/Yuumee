@@ -48,5 +48,11 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+    <!-- Custom Fonts -->
+    <key>UIAppFonts</key>
+    <array>
+        <string>ArchiaRegular.ttf</string>
+    </array>
+    
 </dict>
 </plist>
