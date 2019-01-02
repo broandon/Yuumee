@@ -137,8 +137,10 @@ extension PerfilViewController: UITableViewDelegate, UITableViewDataSource {
         let seccion = secciones[currentRow]
         
         if seccion == "perfil" {
-            let vc = PerfilUsuarioViewController()
+            
+            let vc = PerfilAnfitrionViewController() // PerfilUsuarioViewController()
             self.navigationController?.pushViewController(vc, animated: true)
+            
         }
         
         if seccion == "historial" {

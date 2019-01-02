@@ -964,12 +964,18 @@ class LocationCell: UITableViewCell, MKMapViewDelegate, CLLocationManagerDelegat
         addSubview(mapView)
         mapView.delegate = self
         mapView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
-        addConstraints( NSLayoutConstraint.constraints(withVisualFormat: "H:|[v0]|", options: NSLayoutConstraint.FormatOptions(), metrics: nil, views: ["v0" : mapView]) )
-        addConstraints( NSLayoutConstraint.constraints(withVisualFormat: "V:|[v0]|", options: NSLayoutConstraint.FormatOptions(), metrics: nil, views: ["v0" : mapView]) )
+        addConstraints( NSLayoutConstraint.constraints(withVisualFormat: "H:|[v0]|",
+                                                       options: NSLayoutConstraint.FormatOptions(),
+                                                       metrics: nil,
+                                                       views: ["v0" : mapView]) )
+        addConstraints( NSLayoutConstraint.constraints(withVisualFormat: "V:|[v0]|",
+                                                       options: NSLayoutConstraint.FormatOptions(),
+                                                       metrics: nil,
+                                                       views: ["v0" : mapView]) )
         
         // Obtener localizacion
         if (CLLocationManager.locationServicesEnabled()) {
-            print(" CLLocationManager.locationServicesEnabled ")
+            // print(" CLLocationManager.locationServicesEnabled ")
             locationManager = CLLocationManager()
             locationManager.delegate = self
             locationManager.desiredAccuracy = kCLLocationAccuracyBest
@@ -977,7 +983,6 @@ class LocationCell: UITableViewCell, MKMapViewDelegate, CLLocationManagerDelegat
             locationManager.startUpdatingLocation()
             mapView.showsUserLocation = true
         }
-        
     }
     
     

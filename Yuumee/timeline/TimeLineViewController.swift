@@ -148,12 +148,11 @@ class TimeLineViewController: BaseViewController {
         let heightModal = ScreenSize.screenWidth
         popVC.preferredContentSize = CGSize(width: widthModal, height: heightModal)
         self.present(popVC, animated: true)
-        
     }
     
     
-    
     var feeds = ["", "", "", "", "", "", "", "", "", ""]
+    
     
 }
 

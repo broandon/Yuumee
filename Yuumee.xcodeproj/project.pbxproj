@@ -33,6 +33,7 @@
 		5EC49D3721D1F46D00DAC1BD /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC49D3621D1F46D00DAC1BD /* BaseViewController.swift */; };
 		9C0CFCA021CAC230006AA810 /* ModalFiltersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0CFC9F21CAC230006AA810 /* ModalFiltersViewController.swift */; };
 		9C0CFCA221CAFF07006AA810 /* CustomSegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0CFCA121CAFF07006AA810 /* CustomSegmentedControl.swift */; };
+		9C90F5BA21DD280900ACDA8F /* PerfilAnfitrionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C90F5B921DD280900ACDA8F /* PerfilAnfitrionViewController.swift */; };
 		A98964B9D5276EF0D58FC294 /* Pods_Yuumee.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B3132EA2CE9863F6B74488C /* Pods_Yuumee.framework */; };
 /* End PBXBuildFile section */
 
@@ -68,6 +69,7 @@
 		8F3F02C399BB0D96D08C8FC2 /* Pods-Yuumee.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Yuumee.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Yuumee/Pods-Yuumee.debug.xcconfig"; sourceTree = "<group>"; };
 		9C0CFC9F21CAC230006AA810 /* ModalFiltersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalFiltersViewController.swift; sourceTree = "<group>"; };
 		9C0CFCA121CAFF07006AA810 /* CustomSegmentedControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSegmentedControl.swift; sourceTree = "<group>"; };
+		9C90F5B921DD280900ACDA8F /* PerfilAnfitrionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerfilAnfitrionViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -182,6 +184,7 @@
 			children = (
 				5E68D6B821C8B04800DA00AB /* usuario */,
 				5E68D6B621C8B04500DA00AB /* PerfilViewController.swift */,
+				9C90F5B921DD280900ACDA8F /* PerfilAnfitrionViewController.swift */,
 			);
 			path = perfil;
 			sourceTree = "<group>";
@@ -377,6 +380,7 @@
 				5E68D69F21C8AF6400DA00AB /* Helpers.swift in Sources */,
 				5E68D6BC21C8B05900DA00AB /* PerfilUsuarioViewController.swift in Sources */,
 				5E68D69E21C8AF6400DA00AB /* Extension+UIColor.swift in Sources */,
+				9C90F5BA21DD280900ACDA8F /* PerfilAnfitrionViewController.swift in Sources */,
 				5EC49D3321D1F42200DAC1BD /* ArchiaBoldLabel.swift in Sources */,
 				5E68D6BB21C8B05900DA00AB /* MetodoDePagoViewController.swift in Sources */,
 				5E68D65821C8A3D100DA00AB /* InicioViewController.swift in Sources */,

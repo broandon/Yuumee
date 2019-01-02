@@ -8,6 +8,7 @@
 
 import UIKit
 import GooglePlaces
+import MapKit
 
 class UbicacionViewController: BaseViewController, UITextFieldDelegate {
     
@@ -22,7 +23,7 @@ class UbicacionViewController: BaseViewController, UITextFieldDelegate {
         button.backgroundColor = .rojo
         return button
     }()
-    
+    /*
     let defaultReuseId = "cell"
     
     lazy var tableView: UITableView = {
@@ -35,6 +36,21 @@ class UbicacionViewController: BaseViewController, UITextFieldDelegate {
         tableView.backgroundColor = .white
         return tableView
     }()
+    */
+    lazy var mapView: MKMapView = {
+        let mapView = MKMapView()
+        mapView.mapType = .standard
+        mapView.delegate = self
+        mapView.showsScale = true
+        mapView.showsCompass = true
+        return mapView
+    }()
+    
+    var locationManager: CLLocationManager!
+    
+    var lastLocation: CLLocationCoordinate2D!
+    var latitude: CLLocationDegrees = 0.0
+    var longitude: CLLocationDegrees = 0.0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -62,15 +78,28 @@ class UbicacionViewController: BaseViewController, UITextFieldDelegate {
         resultsView.leftViewMode = .always
         // resultsView.addBorder(borderColor: .lightGray, widthBorder: 1)
         
+        
+        mapView.delegate = self
+        if (CLLocationManager.locationServicesEnabled()) {
+            // print(" CLLocationManager.locationServicesEnabled ")
+            locationManager = CLLocationManager()
+            locationManager.delegate = self
+            locationManager.desiredAccuracy = kCLLocationAccuracyBest
+            locationManager.requestAlwaysAuthorization()
+            locationManager.startUpdatingLocation()
+            mapView.showsUserLocation = true
+        }
+        
         mainView.addSubview(resultsView)
         mainView.addSubview(buscar)
-        mainView.addSubview(tableView)
+        mainView.addSubview(mapView)
         mainView.addConstraintsWithFormat(format: "H:|-[v0]-|", views: resultsView)
-        mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: tableView)
+        mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: mapView)
         mainView.addConstraintsWithFormat(format: "H:|-64-[v0]-64-|", views: buscar)
         mainView.addConstraintsWithFormat(format: "V:|-16-[v0(45)]-16-[v1(45)]-16-[v2]|",
-                                          views: resultsView, buscar, tableView)
+                                          views: resultsView, buscar, mapView)
         buscar.addTarget(self, action: #selector(buscarLugares) , for: .touchUpInside)
+        
     }
     
     @objc func close() {
@@ -117,7 +146,100 @@ class UbicacionViewController: BaseViewController, UITextFieldDelegate {
 }
 
 
-
+extension UbicacionViewController : MKMapViewDelegate, CLLocationManagerDelegate {
+    
+    
+    /**
+     * Obtiene la localizacion del Usuario
+     *
+     */
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        print(" manager.location?.coordinate: \(String(describing: manager.location?.coordinate)) ")
+        if status == .authorizedWhenInUse || status == .authorizedAlways {
+            if manager.location?.coordinate != nil {
+                lastLocation = manager.location?.coordinate
+                latitude = (manager.location?.coordinate.latitude)!
+                longitude = (manager.location?.coordinate.longitude)!
+            }
+        }
+        else{
+            manager.requestWhenInUseAuthorization()
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        print(" location: \(locations.last) ")
+        if let location = locations.last {
+            let latitude = location.coordinate.latitude
+            let longitude = location.coordinate.longitude
+            let center = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+            let span = MKCoordinateSpan(latitudeDelta: 0.003, longitudeDelta: 0.003)
+            let region = MKCoordinateRegion(center: center, span: span)
+            self.mapView.setRegion(region, animated: true)
+            locationManager.stopUpdatingLocation()
+        }
+    }
+    
+    /**
+     * Metodo que genera el Pin(Draggable) en el mapa
+     *
+     */
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        /*if annotation is MKUserLocation {
+         return nil
+         }*/
+        let reuseId = "pin"
+        var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKPinAnnotationView
+        if pinView == nil {
+            pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
+            pinView?.isDraggable = true
+            pinView?.animatesDrop = true
+            pinView?.canShowCallout = true
+            pinView?.image = nil
+            pinView?.image = UIImage(named: "pin")
+            pinView?.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
+        }
+        else {
+            pinView?.annotation = annotation
+        }
+        pinView?.animatesDrop = true
+        return pinView
+    }
+    
+    
+    
+    /**
+     * Evento para obtener la ultima ubicacion del Pin en el mapa
+     *
+     */
+    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, didChange newState: MKAnnotationView.DragState, fromOldState oldState: MKAnnotationView.DragState) {
+        
+        /*switch newState {
+         case .ending:
+         //lastLocation = (view.annotation?.coordinate)!
+         print(" (view.annotation?.coordinate)!: \((view.annotation?.coordinate)!) ")
+         default: break
+         }*/
+        
+        /*switch newState {
+         case .starting:
+         print("starting")
+         view.dragState = .dragging
+         case .ending:
+         print(" ending: ")
+         view.dragState = .none
+         case .canceling: break
+         default: break
+         }*/
+        
+        switch (newState) {
+        case .ending, .canceling:
+            view.dragState = .none
+        default: break
+        }
+    }
+    
+}
 
 extension UbicacionViewController: GMSAutocompleteViewControllerDelegate {
     
@@ -126,7 +248,7 @@ extension UbicacionViewController: GMSAutocompleteViewControllerDelegate {
         print("Place name: \(place.name)")
         print("Place address: \(place.formattedAddress ?? "null")")
         self.resultsView.text = place.formattedAddress
-        
+
         self.dismiss(animated: true, completion: nil)
     }
     
@@ -146,7 +268,7 @@ extension UbicacionViewController: GMSAutocompleteViewControllerDelegate {
 
 
 
-
+/*
 extension UbicacionViewController: UITableViewDelegate, UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -175,3 +297,4 @@ extension UbicacionViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
 }
+*/
