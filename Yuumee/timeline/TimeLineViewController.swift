@@ -34,7 +34,6 @@ class TimeLineViewController: BaseViewController {
     let restaurants = ["", "", "", "", ""]
     
     
-    
     let settings: UIButton = {
         let newSizeForSettings = CGSize(width: 24, height: 24)
         let imageResized = UIImage(named: "settings")?.imageResize(sizeChange: newSizeForSettings)
@@ -115,7 +114,6 @@ class TimeLineViewController: BaseViewController {
     
     
     
-    
     // MARK: - swiped
     @objc  func swiped(_ gesture: UISwipeGestureRecognizer) {
         if gesture.direction == .left {
@@ -133,6 +131,11 @@ class TimeLineViewController: BaseViewController {
     
     
     @objc func filtersEvent(sender: UIButton) {
+        self.navigationController?.dismiss(animated: true, completion: nil)
+    }
+    
+    
+    @objc func settingsEvent(sender: UIButton) {
         let popVC = UINavigationController(rootViewController: ModalFiltersViewController())
         popVC.modalPresentationStyle = .popover
         let popOverVC = popVC.popoverPresentationController
@@ -145,11 +148,7 @@ class TimeLineViewController: BaseViewController {
         let heightModal = ScreenSize.screenWidth
         popVC.preferredContentSize = CGSize(width: widthModal, height: heightModal)
         self.present(popVC, animated: true)
-    }
-    
-    
-    @objc func settingsEvent(sender: Any) {
-        print(" settingsEvent ")
+        
     }
     
     
