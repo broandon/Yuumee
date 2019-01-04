@@ -33,6 +33,12 @@
 		5EC49D3721D1F46D00DAC1BD /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC49D3621D1F46D00DAC1BD /* BaseViewController.swift */; };
 		9C0CFCA021CAC230006AA810 /* ModalFiltersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0CFC9F21CAC230006AA810 /* ModalFiltersViewController.swift */; };
 		9C0CFCA221CAFF07006AA810 /* CustomSegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0CFCA121CAFF07006AA810 /* CustomSegmentedControl.swift */; };
+		9C31C7A521E00CA400F5F585 /* BackgroundImageHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C31C7A421E00CA400F5F585 /* BackgroundImageHeader.swift */; };
+		9C31C7A721E00CC200F5F585 /* InformacionAnfitrionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C31C7A621E00CC200F5F585 /* InformacionAnfitrionCell.swift */; };
+		9C31C7A921E00CFE00F5F585 /* EventoAnfitrionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C31C7A821E00CFE00F5F585 /* EventoAnfitrionViewController.swift */; };
+		9C31C7AC21E00D8200F5F585 /* CategoriaCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C31C7AB21E00D8200F5F585 /* CategoriaCell.swift */; };
+		9C31C7AE21E00DB300F5F585 /* ComidaCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C31C7AD21E00DB300F5F585 /* ComidaCell.swift */; };
+		9C31C7B021E00DD400F5F585 /* HorarioCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C31C7AF21E00DD400F5F585 /* HorarioCell.swift */; };
 		9C90F5BA21DD280900ACDA8F /* PerfilAnfitrionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C90F5B921DD280900ACDA8F /* PerfilAnfitrionViewController.swift */; };
 		A98964B9D5276EF0D58FC294 /* Pods_Yuumee.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B3132EA2CE9863F6B74488C /* Pods_Yuumee.framework */; };
 /* End PBXBuildFile section */
@@ -69,6 +75,12 @@
 		8F3F02C399BB0D96D08C8FC2 /* Pods-Yuumee.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Yuumee.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Yuumee/Pods-Yuumee.debug.xcconfig"; sourceTree = "<group>"; };
 		9C0CFC9F21CAC230006AA810 /* ModalFiltersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalFiltersViewController.swift; sourceTree = "<group>"; };
 		9C0CFCA121CAFF07006AA810 /* CustomSegmentedControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSegmentedControl.swift; sourceTree = "<group>"; };
+		9C31C7A421E00CA400F5F585 /* BackgroundImageHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundImageHeader.swift; sourceTree = "<group>"; };
+		9C31C7A621E00CC200F5F585 /* InformacionAnfitrionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InformacionAnfitrionCell.swift; sourceTree = "<group>"; };
+		9C31C7A821E00CFE00F5F585 /* EventoAnfitrionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventoAnfitrionViewController.swift; sourceTree = "<group>"; };
+		9C31C7AB21E00D8200F5F585 /* CategoriaCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriaCell.swift; sourceTree = "<group>"; };
+		9C31C7AD21E00DB300F5F585 /* ComidaCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComidaCell.swift; sourceTree = "<group>"; };
+		9C31C7AF21E00DD400F5F585 /* HorarioCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HorarioCell.swift; sourceTree = "<group>"; };
 		9C90F5B921DD280900ACDA8F /* PerfilAnfitrionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerfilAnfitrionViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -182,6 +194,7 @@
 		5E68D6B521C8B03800DA00AB /* perfil */ = {
 			isa = PBXGroup;
 			children = (
+				9C31C7A321DFF7F700F5F585 /* anfitrion */,
 				5E68D6B821C8B04800DA00AB /* usuario */,
 				5E68D6B621C8B04500DA00AB /* PerfilViewController.swift */,
 				9C90F5B921DD280900ACDA8F /* PerfilAnfitrionViewController.swift */,
@@ -215,6 +228,27 @@
 				5EC49D3621D1F46D00DAC1BD /* BaseViewController.swift */,
 			);
 			path = custom_elements;
+			sourceTree = "<group>";
+		};
+		9C31C7A321DFF7F700F5F585 /* anfitrion */ = {
+			isa = PBXGroup;
+			children = (
+				9C31C7AA21E00D6D00F5F585 /* evento */,
+				9C31C7A421E00CA400F5F585 /* BackgroundImageHeader.swift */,
+				9C31C7A621E00CC200F5F585 /* InformacionAnfitrionCell.swift */,
+			);
+			path = anfitrion;
+			sourceTree = "<group>";
+		};
+		9C31C7AA21E00D6D00F5F585 /* evento */ = {
+			isa = PBXGroup;
+			children = (
+				9C31C7A821E00CFE00F5F585 /* EventoAnfitrionViewController.swift */,
+				9C31C7AB21E00D8200F5F585 /* CategoriaCell.swift */,
+				9C31C7AD21E00DB300F5F585 /* ComidaCell.swift */,
+				9C31C7AF21E00DD400F5F585 /* HorarioCell.swift */,
+			);
+			path = evento;
 			sourceTree = "<group>";
 		};
 		A01F61FB784140EA442A3658 /* Pods */ = {
@@ -376,12 +410,18 @@
 				9C0CFCA221CAFF07006AA810 /* CustomSegmentedControl.swift in Sources */,
 				5EC49D3721D1F46D00DAC1BD /* BaseViewController.swift in Sources */,
 				5E68D6A321C8AFAF00DA00AB /* CategoriasViewController.swift in Sources */,
+				9C31C7AC21E00D8200F5F585 /* CategoriaCell.swift in Sources */,
 				5E68D64B21C89FF400DA00AB /* Yuumee.xcdatamodeld in Sources */,
+				9C31C7A721E00CC200F5F585 /* InformacionAnfitrionCell.swift in Sources */,
+				9C31C7A521E00CA400F5F585 /* BackgroundImageHeader.swift in Sources */,
+				9C31C7A921E00CFE00F5F585 /* EventoAnfitrionViewController.swift in Sources */,
 				5E68D69F21C8AF6400DA00AB /* Helpers.swift in Sources */,
 				5E68D6BC21C8B05900DA00AB /* PerfilUsuarioViewController.swift in Sources */,
+				9C31C7AE21E00DB300F5F585 /* ComidaCell.swift in Sources */,
 				5E68D69E21C8AF6400DA00AB /* Extension+UIColor.swift in Sources */,
 				9C90F5BA21DD280900ACDA8F /* PerfilAnfitrionViewController.swift in Sources */,
 				5EC49D3321D1F42200DAC1BD /* ArchiaBoldLabel.swift in Sources */,
+				9C31C7B021E00DD400F5F585 /* HorarioCell.swift in Sources */,
 				5E68D6BB21C8B05900DA00AB /* MetodoDePagoViewController.swift in Sources */,
 				5E68D65821C8A3D100DA00AB /* InicioViewController.swift in Sources */,
 				5E68D6B321C8B02E00DA00AB /* DetalleConversacionViewController.swift in Sources */,
