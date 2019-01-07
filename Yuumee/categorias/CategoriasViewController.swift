@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import Alamofire
+import AlamofireImage
 
 class CategoriasViewController: BaseViewController {
     
@@ -29,6 +31,8 @@ class CategoriasViewController: BaseViewController {
     }()
     
     var categorias = ["", "", "", "", "", "", "", "", "", ""]
+    
+    let dataStorage = UserDefaults.standard
     
     override func viewDidLoad() {
         
@@ -74,7 +78,7 @@ class CategoriasViewController: BaseViewController {
         
         let date = UILabel()
         date.textAlignment = .center
-        date.text = " 3 de agosto de 2018 "
+        date.text = FormattedCurrentDate.getFormattedCurrentDate(date: Date(), format: "E, d MMM yyyy")
         date.font = UIFont.boldSystemFont(ofSize: date.font.pointSize)
         
         headerContent.addSubview(settings)
@@ -85,6 +89,61 @@ class CategoriasViewController: BaseViewController {
         headerContent.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: date)
         headerContent.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: settings)
         // ---------------------------------------------------------------------
+        
+        
+        // ---------------------------------------------------------------------
+        let headers: HTTPHeaders = [
+            // "Authorization": "Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==",
+            "Accept" : "application/json",
+            "Content-Type" : "application/x-www-form-urlencoded"
+        ]
+        
+        let parameters: Parameters = ["funcion" : "getCategories",
+                                      "id_user" : dataStorage.getUserId()] as [String: Any]
+        
+        print(" parameters: ")
+        print(parameters)
+        print(" \n\n ")
+        
+        Alamofire.request(BaseURL.baseUrl() , method: .post,
+                          parameters: parameters,
+                          encoding: ParameterQueryEncoding(),
+                          headers: headers).responseJSON{ (response: DataResponse) in
+                            switch(response.result) {
+                            case .success(let value):
+                                
+                                if let result = value as? Dictionary<String, Any> {
+                                    
+                                    print(" result: ")
+                                    print(result)
+                                    print(" \n\n ")
+                                    
+                                    let statusMsg = result["status_msg"] as? String
+                                    let state     = result["state"] as? String
+                                    
+                                    if statusMsg == "OK" && state == "200" {
+                                        
+                                        if let data = result["data"] as? [Dictionary<String, AnyObject>] {
+                                            
+                                            print(" data: \(data) ")
+                                            
+                                        }
+                                        
+                                    }
+                                    
+                                }
+                                
+                                //completionHandler(value as? NSDictionary, nil)
+                                break
+                            case .failure(let error):
+                                //completionHandler(nil, error as NSError?)
+                                print(error)
+                                print(error.localizedDescription)
+                                break
+                            }
+        }
+        // ---------------------------------------------------------------------
+        
         
     }
     

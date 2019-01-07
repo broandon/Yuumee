@@ -9,6 +9,8 @@
 import Foundation
 import UIKit
 
+import Alamofire
+
 class ScreenSize {
     
     static var screenWidth: CGFloat {
@@ -23,6 +25,32 @@ class ScreenSize {
 
 
 
+
+
+struct ParameterQueryEncoding: ParameterEncoding {
+    func encode(_ urlRequest: URLRequestConvertible, with parameters: Parameters?) throws -> URLRequest {
+        var request = try urlRequest.asURLRequest()
+        request.httpBody = parameters?
+            .map { "\($0)=\($1)" }
+            .joined(separator: "&")
+            .data(using: .utf8)
+        return request
+    }
+}
+
+class BaseURL {
+    private static let scheme = "http://"
+    private static var host = "easycode.mx/"
+    private static let path = "yuumee/webservice/controller_last.php"
+    
+    /**
+     * Retorna la URL base para hacer el request
+     *
+     */
+    class func baseUrl() -> String {
+        return scheme + host + path
+    }
+}
 
 
 

@@ -9,11 +9,6 @@
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
-    <customFonts key="customFonts">
-        <array key="ArchiaRegular.ttf">
-            <string>Archia-Regular</string>
-        </array>
-    </customFonts>
     <scenes>
         <!--View Controller-->
         <scene sceneID="EHf-IW-A2E">
@@ -23,23 +18,20 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Yuumee" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3SY-fk-e2z">
-                                <rect key="frame" x="124" y="313" width="127" height="41"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo_splash" translatesAutoresizingMaskIntoConstraints="NO" id="XeB-ST-YE9">
+                                <rect key="frame" x="68" y="270" width="240" height="128"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="41" id="WaS-vx-sfP"/>
-                                    <constraint firstAttribute="width" constant="127" id="vNk-eA-F6J"/>
+                                    <constraint firstAttribute="height" constant="128" id="UCd-AJ-T2m"/>
+                                    <constraint firstAttribute="width" constant="240" id="Xzq-7W-ot0"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" name="Archia-Regular" family="Archia" pointSize="32"/>
-                                <color key="textColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="0.88235294117647056" green="0.27058823529411763" blue="0.44313725490196076" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="3SY-fk-e2z" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="293" id="0cZ-Ri-nNe"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="3SY-fk-e2z" secondAttribute="bottom" constant="313" id="USG-vr-z9d"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="3SY-fk-e2z" secondAttribute="trailing" constant="124" id="gX3-Z1-KL9"/>
-                            <constraint firstItem="3SY-fk-e2z" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="124" id="sus-0W-GDb"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="XeB-ST-YE9" secondAttribute="bottom" constant="269" id="K4Z-zD-LIw"/>
+                            <constraint firstItem="XeB-ST-YE9" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="250" id="RtS-AF-hjr"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="XeB-ST-YE9" secondAttribute="trailing" constant="67" id="l8o-Wt-Dw8"/>
+                            <constraint firstItem="XeB-ST-YE9" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="68" id="yor-C3-d22"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
@@ -49,4 +41,7 @@
             <point key="canvasLocation" x="53" y="375"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="logo_splash" width="300" height="64"/>
+    </resources>
 </document>

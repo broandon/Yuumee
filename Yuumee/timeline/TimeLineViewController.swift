@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import Alamofire
+import AlamofireImage
 
 class TimeLineViewController: BaseViewController {
     
@@ -31,10 +33,8 @@ class TimeLineViewController: BaseViewController {
         return tableView
     }()
     
-    let restaurants = ["", "", "", "", ""]
     
-    
-    let settings: UIButton = {
+    /*let settings: UIButton = {
         let newSizeForSettings = CGSize(width: 24, height: 24)
         let imageResized = UIImage(named: "settings")?.imageResize(sizeChange: newSizeForSettings)
         let settingsImage = UIImageView(image: imageResized)
@@ -50,17 +50,17 @@ class TimeLineViewController: BaseViewController {
         settings.imageEdgeInsets = insetsPadding
         settings.addTarget(self, action: #selector(settingsEvent), for: .touchUpInside)
         return settings
-    }()
+    }()*/
     
     let filters: UIButton = {
-        let randomImage = UIImageView(image: UIImage(named: "random"))
+        let randomImage = UIImageView(image: UIImage(named: "back"))
         randomImage.contentMode = .scaleAspectFit
         randomImage.image = randomImage.image?.withRenderingMode(.alwaysTemplate)
-        randomImage.tintColor = .white
+        randomImage.tintColor = UIColor.rojo
         let random = UIButton(type: .custom)
         random.setImage( randomImage.image, for: .normal)
-        random.backgroundColor = .rojo
-        random.tintColor = .white
+        //random.backgroundColor = .rojo
+        random.tintColor = UIColor.rojo
         random.layer.cornerRadius = 15
         let insetsPadding = UIEdgeInsets(top: -44, left: -44, bottom: -44, right: -44)
         random.imageEdgeInsets = insetsPadding
@@ -81,7 +81,9 @@ class TimeLineViewController: BaseViewController {
         return date
     }()
     
+    let dataStorage = UserDefaults.standard
     
+    var restaurants = [Restaurant]()
     
     override func viewDidLoad() {
         mainView.backgroundColor = .white
@@ -102,13 +104,65 @@ class TimeLineViewController: BaseViewController {
         mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: headerContent)
         mainView.addConstraintsWithFormat(format: "V:|-[v0(44)][v1]|", views: headerContent, tableView)
         
-        headerContent.addSubview(settings)
+        //headerContent.addSubview(settings)
         headerContent.addSubview(currentDate)
         headerContent.addSubview(filters)
-        headerContent.addConstraintsWithFormat(format: "H:|-[v0(30)]-[v1]-[v2(30)]-|", views: filters, currentDate, settings)
+        headerContent.addConstraintsWithFormat(format: "H:|-[v0(30)]-[v1]-|", views: filters, currentDate)
         headerContent.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: filters)
         headerContent.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: currentDate)
-        headerContent.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: settings)
+        //headerContent.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: settings)
+        
+        // ---------------------------------------------------------------------
+        let headers: HTTPHeaders = [
+            // "Authorization": "Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==",
+            "Accept" : "application/json",
+            "Content-Type" : "application/x-www-form-urlencoded"
+        ]
+        
+        let parameters: Parameters = ["funcion" : "getSaucers",
+                                      "id_user" : dataStorage.getUserId(),
+                                      "latitud" : dataStorage.getLatitud(),
+                                      "longitude" : dataStorage.getLongitud()] as [String: Any]
+        
+        Alamofire.request(BaseURL.baseUrl() , method: .post,
+                           parameters: parameters,
+                           encoding: ParameterQueryEncoding(),
+                           headers: headers).responseJSON{ (response: DataResponse) in
+                            switch(response.result) {
+                            case .success(let value):
+                                
+                                if let result = value as? Dictionary<String, Any> {
+                                    
+                                    let statusMsg = result["status_msg"] as? String
+                                    let state     = result["state"] as? String
+                                    
+                                    if statusMsg == "OK" && state == "200" {
+                                        
+                                        if let data = result["data"] as? [Dictionary<String, AnyObject>] {
+                                            for r in data {
+                                                let newR = Restaurant(restaurant: r)
+                                                self.restaurants.append(newR)
+                                            }
+                                            
+                                            if self.restaurants.count > 0 {
+                                                self.tableView.reloadData()
+                                            }
+                                            
+                                        }
+                                        
+                                    }
+                                    
+                                }
+                                //completionHandler(value as? NSDictionary, nil)
+                                break
+                            case .failure(let error):
+                                //completionHandler(nil, error as NSError?)
+                                print(error)
+                                print(error.localizedDescription)
+                                break
+                            }
+        }
+        // ---------------------------------------------------------------------
         
     }
     
@@ -151,8 +205,6 @@ class TimeLineViewController: BaseViewController {
     }
     
     
-    var feeds = ["", "", "", "", "", "", "", "", "", ""]
-    
     
 }
 
@@ -172,13 +224,15 @@ extension TimeLineViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return feeds.count
+        return restaurants.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let r = restaurants[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: restaurantCell, for: indexPath) as! RestaurantCell
-        cell.setUpView()
+        cell.setUpView(restaurant: r)
         return cell
+        
     }
     
     
@@ -189,14 +243,19 @@ extension TimeLineViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     
-    /*
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let currentSection = indexPath.section
-        let currentRow = indexPath.row
-        print(" currentRow ", currentRow)
+        //let currentSection = indexPath.section
+        //let currentRow = indexPath.row
+        // let r = restaurants[currentRow]
+        
+        let vc = PerfilUsuarioViewController()
+        let nav = UINavigationController(rootViewController: vc)
+        self.present(nav, animated: true, completion: nil)
+        //self.navigationController?.pushViewController(vc, animated: true)
+        
     }
-    */
+    
     
     /*
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -221,49 +280,50 @@ class RestaurantCell: UITableViewCell {
     let restaurantImage: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "hamburger")
-        imageView.contentMode = .scaleAspectFit
+        //imageView.contentMode = .scaleAspectFit
         return imageView
     }()
     
     let nombreRestaurant: UILabel = {
         let label = UILabel()
-        label.text = "FloriArte"
         label.font = UIFont(name: label.font.fontName, size: 24)
-        //label.textAlignment = .center
         label.numberOfLines = 2
+        label.text = "FloriArte"
+        //label.textAlignment = .center
         return label
     }()
     
     let descripcion: UILabel = {
         let label = UILabel()
-        label.text = "Comida regional"
         label.textColor = .rosa
+        //label.text = "Comida regional"
         return label
     }()
     
     let distanciaAprox: UILabel = {
         let label = UILabel()
-        label.text = "Distancia proximada"
         label.textColor = .rosa
+        label.text = "Distancia proximada"
         return label
     }()
     
     let costo: UILabel = {
         let label = UILabel()
-        label.text = "$ 200"
         label.textColor = .rosa
+        label.text = "$ 200"
         return label
     }()
     
     let kms: UILabel = {
         let label = UILabel()
-        label.text = "15 Km"
         label.textColor = .rosa
+        label.text = "15 Km"
         return label
     }()
     
     
-    func setUpView() {
+    func setUpView(restaurant: Restaurant) {
+        
         addSubview(restaurantImage)
         addSubview(nombreRestaurant)
         addSubview(descripcion)
@@ -281,6 +341,20 @@ class RestaurantCell: UITableViewCell {
                                  views: restaurantImage, nombreRestaurant, descripcion, costo)
         addConstraintsWithFormat(format: "V:|[v0(200)]-[v1]-[v2]-[v3]",
                                  views: restaurantImage, nombreRestaurant, distanciaAprox, kms)
+        
+        
+        nombreRestaurant.text = restaurant.titulo
+        
+        kms.text = restaurant.distancia
+        
+        costo.text = restaurant.costo
+        
+        descripcion.text = restaurant.anfitrion
+        
+        if !restaurant.imagen.isEmpty {
+            let urlImage = URL(string: restaurant.imagen)
+            restaurantImage.af_setImage(withURL: urlImage!)
+        }
     }
     
     
@@ -292,11 +366,51 @@ class RestaurantCell: UITableViewCell {
 
 
 
-
-
-
-
-
+struct Restaurant {
+    
+    var id: String = ""
+    var imagen: String = ""
+    var distancia: String = ""
+    var titulo: String = ""
+    var anfitrion: String = ""
+    var costo: String = ""
+    
+    var dictionaryRestaurant: [String:Any]?
+    
+    init(restaurant: Dictionary<String, Any>) {
+        dictionaryRestaurant = restaurant
+        
+        if let id = restaurant["Id"] as? String {
+            self.id = id
+        }
+        
+        if let imagen = restaurant["imagen"] as? String {
+            self.imagen = imagen
+        }
+        
+        if let distancia = restaurant["distancia"] as? String {
+            self.distancia = distancia
+        }
+        
+        if let titulo = restaurant["titulo"] as? String {
+            self.titulo = titulo
+        }
+        
+        if let anfitrion = restaurant["anfitrion"] as? String {
+            self.anfitrion = anfitrion
+        }
+        
+        if let costo = restaurant["costo"] as? String {
+            self.costo = costo
+        }
+        
+    }
+    
+    func toDictionary() -> [String:Any]? {
+        return self.dictionaryRestaurant
+    }
+    
+}
 
 
 

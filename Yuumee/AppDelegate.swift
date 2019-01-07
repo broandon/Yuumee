@@ -16,17 +16,44 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
     let GOOGLE_API_KEY_PLACES = "AIzaSyDCILkGdFF7IAd8fEBknF6kA-WqNfAQq7I"
+    
+    let dataStorage = UserDefaults.standard
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
         GMSPlacesClient.provideAPIKey(GOOGLE_API_KEY_PLACES)
         
-        let initialController = InicioViewController()
-        let nav = UINavigationController(rootViewController: initialController)
-        window = UIWindow(frame: UIScreen.main.bounds)
-        window?.makeKeyAndVisible()
-        window?.rootViewController = nav
+        // Cerrar Sesion:
+        /*
+        self.dataStorage.setUserId(userId: "")
+        self.dataStorage.setLoggedIn(value: false)
+        self.dataStorage.setFirstName(firstName: "")
+        self.dataStorage.setLastName(lastName: "")
+        self.dataStorage.setEmail(email: "")
+        self.dataStorage.setTipo(tipo: "")
+        */
+        
+        if self.dataStorage.isLoggedIn() {
+            UINavigationBar.appearance().barTintColor = .rosa
+            UINavigationBar.appearance().tintColor = .white
+            UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+            UINavigationBar.appearance().isTranslucent = false
+            let vc = UbicacionViewController()
+            let nav = UINavigationController(rootViewController: vc)
+            window = UIWindow(frame: UIScreen.main.bounds)
+            window?.makeKeyAndVisible()
+            window?.rootViewController = nav
+            
+        }
+        else {
+            let initialController = InicioViewController()
+            let nav = UINavigationController(rootViewController: initialController)
+            window = UIWindow(frame: UIScreen.main.bounds)
+            window?.makeKeyAndVisible()
+            window?.rootViewController = nav
+        }
+        
         
         return true
     }

@@ -42,6 +42,7 @@
 		9C31C7AE21E00DB300F5F585 /* ComidaCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C31C7AD21E00DB300F5F585 /* ComidaCell.swift */; };
 		9C31C7B021E00DD400F5F585 /* HorarioCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C31C7AF21E00DD400F5F585 /* HorarioCell.swift */; };
 		9C90F5BA21DD280900ACDA8F /* PerfilAnfitrionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C90F5B921DD280900ACDA8F /* PerfilAnfitrionViewController.swift */; };
+		9C99B32121E3CC5B00ADD584 /* UserDefaultsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C99B32021E3CC5B00ADD584 /* UserDefaultsStorage.swift */; };
 		A98964B9D5276EF0D58FC294 /* Pods_Yuumee.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B3132EA2CE9863F6B74488C /* Pods_Yuumee.framework */; };
 /* End PBXBuildFile section */
 
@@ -86,6 +87,7 @@
 		9C31C7AD21E00DB300F5F585 /* ComidaCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComidaCell.swift; sourceTree = "<group>"; };
 		9C31C7AF21E00DD400F5F585 /* HorarioCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HorarioCell.swift; sourceTree = "<group>"; };
 		9C90F5B921DD280900ACDA8F /* PerfilAnfitrionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerfilAnfitrionViewController.swift; sourceTree = "<group>"; };
+		9C99B32021E3CC5B00ADD584 /* UserDefaultsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsStorage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -147,6 +149,7 @@
 				5E68D69A21C8AF6400DA00AB /* Extensions.swift */,
 				5E68D69C21C8AF6400DA00AB /* Helpers.swift */,
 				5EBEEEFA21E2F3C300F718A4 /* FormattedCurrentDate.swift */,
+				9C99B32021E3CC5B00ADD584 /* UserDefaultsStorage.swift */,
 			);
 			path = Generics;
 			sourceTree = "<group>";
@@ -423,6 +426,7 @@
 				9C31C7A721E00CC200F5F585 /* InformacionAnfitrionCell.swift in Sources */,
 				9C31C7A521E00CA400F5F585 /* BackgroundImageHeader.swift in Sources */,
 				9C31C7A921E00CFE00F5F585 /* EventoAnfitrionViewController.swift in Sources */,
+				9C99B32121E3CC5B00ADD584 /* UserDefaultsStorage.swift in Sources */,
 				5EBEEEF921E2D80C00F718A4 /* DetallesEventoCell.swift in Sources */,
 				5E68D69F21C8AF6400DA00AB /* Helpers.swift in Sources */,
 				5E68D6BC21C8B05900DA00AB /* PerfilUsuarioViewController.swift in Sources */,

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Alamofire
 
 class DetalleListadoCategoriaViewController: BaseViewController {
     
@@ -28,6 +29,8 @@ class DetalleListadoCategoriaViewController: BaseViewController {
     
     let restaurants = ["", "", "", "", ""]
     
+    let dataStorage = UserDefaults.standard
+    
     override func viewDidLoad() {
         mainView.backgroundColor = .white
         // -------------------------------- Nav --------------------------------
@@ -45,9 +48,12 @@ class DetalleListadoCategoriaViewController: BaseViewController {
         // ------------------------------- Datos -------------------------------
         
         mainView.addSubview(tableView)
-        
         mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: tableView)
         mainView.addConstraintsWithFormat(format: "V:|-[v0]|", views: tableView)
+        
+        
+        
+        
         
     }
     
@@ -76,7 +82,8 @@ extension DetalleListadoCategoriaViewController: UITableViewDelegate, UITableVie
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: restaurantCell, for: indexPath) as! RestaurantCell
         cell.selectionStyle = .none
-        cell.setUpView()
+        let r = Restaurant(restaurant: [:])
+        cell.setUpView(restaurant: r)
         cell.descripcion.textColor = UIColor.darkGray
         cell.distanciaAprox.textColor = UIColor.darkGray
         cell.kms.textColor = UIColor.darkGray

@@ -62,6 +62,8 @@ class PerfilUsuarioViewController: BaseViewController {
         
         tableView.tableFooterView = customFooter
         
+        let back = UIBarButtonItem(image: UIImage(named: "back"), style: .plain, target: self, action: #selector(regresar))
+        self.navigationItem.leftBarButtonItem = back
         
     }
     
@@ -69,6 +71,12 @@ class PerfilUsuarioViewController: BaseViewController {
     @objc func reservarEvent() {
         print(" reservarEvent ")
     }
+    
+    
+    @objc func regresar() {
+        self.dismiss(animated: true, completion: nil)
+    }
+    
     
 }
 
@@ -991,7 +999,7 @@ class LocationCell: UITableViewCell, MKMapViewDelegate, CLLocationManagerDelegat
      *
      */
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        print(" manager.location?.coordinate: \(String(describing: manager.location?.coordinate)) ")
+        // print(" manager.location?.coordinate: \(String(describing: manager.location?.coordinate)) ")
         if status == .authorizedWhenInUse || status == .authorizedAlways {
             if manager.location?.coordinate != nil {
                 lastLocation = manager.location?.coordinate
@@ -1005,7 +1013,7 @@ class LocationCell: UITableViewCell, MKMapViewDelegate, CLLocationManagerDelegat
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        print(" location: \(locations.last) ")
+        // print(" location: \(locations.last) ")
         if let location = locations.last {
             let latitude = location.coordinate.latitude
             let longitude = location.coordinate.longitude

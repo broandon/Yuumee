@@ -56,14 +56,17 @@ class UbicacionViewController: BaseViewController, UITextFieldDelegate {
         super.viewDidLoad()
         mainView.backgroundColor = .white
         self.navigationController?.isNavigationBarHidden = false
-        let _ = UIBarButtonItem(image: UIImage(named: "close"),
-                                        style: .plain, target: self,
-                                        action: #selector(close))
-        //self.navigationItem.leftBarButtonItem = closeIcon
+        
         UINavigationBar.appearance().barTintColor = .rosa
         UINavigationBar.appearance().tintColor = .white
         UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
         UINavigationBar.appearance().isTranslucent = false
+        
+        /*
+        let _ = UIBarButtonItem(image: UIImage(named: "close"),
+                                        style: .plain, target: self,
+                                        action: #selector(close))*/
+        //self.navigationItem.leftBarButtonItem = closeIcon
         
         resultsView = TextField()
         resultsView.textAlignment = .center
@@ -101,6 +104,8 @@ class UbicacionViewController: BaseViewController, UITextFieldDelegate {
         buscar.addTarget(self, action: #selector(buscarLugares) , for: .touchUpInside)
         
     }
+    
+    
     
     @objc func close() {
         self.dismiss(animated: true, completion: nil)
@@ -143,6 +148,8 @@ class UbicacionViewController: BaseViewController, UITextFieldDelegate {
         
     }
     
+    let dataStorage = UserDefaults.standard
+    
 }
 
 
@@ -154,12 +161,15 @@ extension UbicacionViewController : MKMapViewDelegate, CLLocationManagerDelegate
      *
      */
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        print(" manager.location?.coordinate: \(String(describing: manager.location?.coordinate)) ")
+        // print(" manager.location?.coordinate: \(String(describing: manager.location?.coordinate)) ")
         if status == .authorizedWhenInUse || status == .authorizedAlways {
             if manager.location?.coordinate != nil {
                 lastLocation = manager.location?.coordinate
                 latitude = (manager.location?.coordinate.latitude)!
                 longitude = (manager.location?.coordinate.longitude)!
+                
+                dataStorage.setLatitud(tipo: "\(latitude)")
+                dataStorage.setLongitud(tipo: "\(longitude)")
             }
         }
         else{
@@ -168,7 +178,7 @@ extension UbicacionViewController : MKMapViewDelegate, CLLocationManagerDelegate
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        print(" location: \(locations.last) ")
+        //print(" location: \(locations.last) ")
         if let location = locations.last {
             let latitude = location.coordinate.latitude
             let longitude = location.coordinate.longitude
