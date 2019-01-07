@@ -26,6 +26,8 @@
 		5E68D6B721C8B04500DA00AB /* PerfilViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E68D6B621C8B04500DA00AB /* PerfilViewController.swift */; };
 		5E68D6BB21C8B05900DA00AB /* MetodoDePagoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E68D6B921C8B05900DA00AB /* MetodoDePagoViewController.swift */; };
 		5E68D6BC21C8B05900DA00AB /* PerfilUsuarioViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E68D6BA21C8B05900DA00AB /* PerfilUsuarioViewController.swift */; };
+		5EBEEEF921E2D80C00F718A4 /* DetallesEventoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBEEEF821E2D80C00F718A4 /* DetallesEventoCell.swift */; };
+		5EBEEEFB21E2F3C300F718A4 /* FormattedCurrentDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBEEEFA21E2F3C300F718A4 /* FormattedCurrentDate.swift */; };
 		5EC49D2E21D1F2F300DAC1BD /* ArchiaRegular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5EC49D2D21D1F2F300DAC1BD /* ArchiaRegular.ttf */; };
 		5EC49D3121D1F3FC00DAC1BD /* ArchiaRegularLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC49D3021D1F3FC00DAC1BD /* ArchiaRegularLabel.swift */; };
 		5EC49D3321D1F42200DAC1BD /* ArchiaBoldLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC49D3221D1F42200DAC1BD /* ArchiaBoldLabel.swift */; };
@@ -67,6 +69,8 @@
 		5E68D6B621C8B04500DA00AB /* PerfilViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PerfilViewController.swift; sourceTree = "<group>"; };
 		5E68D6B921C8B05900DA00AB /* MetodoDePagoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetodoDePagoViewController.swift; sourceTree = "<group>"; };
 		5E68D6BA21C8B05900DA00AB /* PerfilUsuarioViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PerfilUsuarioViewController.swift; sourceTree = "<group>"; };
+		5EBEEEF821E2D80C00F718A4 /* DetallesEventoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetallesEventoCell.swift; sourceTree = "<group>"; };
+		5EBEEEFA21E2F3C300F718A4 /* FormattedCurrentDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormattedCurrentDate.swift; sourceTree = "<group>"; };
 		5EC49D2D21D1F2F300DAC1BD /* ArchiaRegular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = ArchiaRegular.ttf; sourceTree = "<group>"; };
 		5EC49D3021D1F3FC00DAC1BD /* ArchiaRegularLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiaRegularLabel.swift; sourceTree = "<group>"; };
 		5EC49D3221D1F42200DAC1BD /* ArchiaBoldLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiaBoldLabel.swift; sourceTree = "<group>"; };
@@ -142,6 +146,7 @@
 				5E68D69B21C8AF6400DA00AB /* Extension+UIColor.swift */,
 				5E68D69A21C8AF6400DA00AB /* Extensions.swift */,
 				5E68D69C21C8AF6400DA00AB /* Helpers.swift */,
+				5EBEEEFA21E2F3C300F718A4 /* FormattedCurrentDate.swift */,
 			);
 			path = Generics;
 			sourceTree = "<group>";
@@ -247,6 +252,7 @@
 				9C31C7AB21E00D8200F5F585 /* CategoriaCell.swift */,
 				9C31C7AD21E00DB300F5F585 /* ComidaCell.swift */,
 				9C31C7AF21E00DD400F5F585 /* HorarioCell.swift */,
+				5EBEEEF821E2D80C00F718A4 /* DetallesEventoCell.swift */,
 			);
 			path = evento;
 			sourceTree = "<group>";
@@ -369,11 +375,13 @@
 				"${SRCROOT}/Pods/Target Support Files/Pods-Yuumee/Pods-Yuumee-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/AlamofireImage/AlamofireImage.framework",
+				"${BUILT_PRODUCTS_DIR}/JTAppleCalendar/JTAppleCalendar.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireImage.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/JTAppleCalendar.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -415,6 +423,7 @@
 				9C31C7A721E00CC200F5F585 /* InformacionAnfitrionCell.swift in Sources */,
 				9C31C7A521E00CA400F5F585 /* BackgroundImageHeader.swift in Sources */,
 				9C31C7A921E00CFE00F5F585 /* EventoAnfitrionViewController.swift in Sources */,
+				5EBEEEF921E2D80C00F718A4 /* DetallesEventoCell.swift in Sources */,
 				5E68D69F21C8AF6400DA00AB /* Helpers.swift in Sources */,
 				5E68D6BC21C8B05900DA00AB /* PerfilUsuarioViewController.swift in Sources */,
 				9C31C7AE21E00DB300F5F585 /* ComidaCell.swift in Sources */,
@@ -432,6 +441,7 @@
 				5E68D6A421C8AFAF00DA00AB /* DetalleListadoCategoriaViewController.swift in Sources */,
 				5E68D6AB21C8AFEE00DA00AB /* LoginViewController.swift in Sources */,
 				5E68D6A721C8AFCE00DA00AB /* UbicacionViewController.swift in Sources */,
+				5EBEEEFB21E2F3C300F718A4 /* FormattedCurrentDate.swift in Sources */,
 				5EC49D3121D1F3FC00DAC1BD /* ArchiaRegularLabel.swift in Sources */,
 				5E68D6B421C8B02E00DA00AB /* MensajesViewController.swift in Sources */,
 				5E68D6AC21C8AFEE00DA00AB /* RegistroViewController.swift in Sources */,

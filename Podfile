@@ -13,5 +13,6 @@ target 'Yuumee' do
   pod 'Alamofire'
   pod 'AlamofireImage'
   
+  pod 'JTAppleCalendar'
 
 end
