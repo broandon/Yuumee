@@ -30,9 +30,11 @@ class CategoriasViewController: BaseViewController {
         return tableView
     }()
     
-    var categorias = ["", "", "", "", "", "", "", "", "", ""]
+    var categorias = [Categoria]()
     
     let dataStorage = UserDefaults.standard
+    
+    // let settings = UIButton(type: .custom)
     
     override func viewDidLoad() {
         
@@ -56,16 +58,18 @@ class CategoriasViewController: BaseViewController {
         mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: headerContent)
         mainView.addConstraintsWithFormat(format: "V:|-[v0(44)][v1]|", views: headerContent, tableView)
         
+        /* Muestra modal de comidas extranjeras
         let settingsImage = UIImageView(image: UIImage(named: "settings"))
         settingsImage.contentMode = .scaleAspectFit
         settingsImage.image = settingsImage.image?.withRenderingMode(.alwaysTemplate)
         settingsImage.tintColor = .white
-        let settings = UIButton(type: .custom)
         settings.setImage( settingsImage.image , for: .normal)
         settings.backgroundColor = .rojo
         settings.tintColor = .white
         settings.layer.cornerRadius = 15
+        settings.addTarget(self, action: #selector(showFiltersCategories) , for: .touchUpInside)*/
         
+        /*
         let randomImage = UIImageView(image: UIImage(named: "random"))
         randomImage.contentMode = .scaleAspectFit
         randomImage.image = randomImage.image?.withRenderingMode(.alwaysTemplate)
@@ -75,20 +79,22 @@ class CategoriasViewController: BaseViewController {
         random.backgroundColor = .rojo
         random.tintColor = .white
         random.layer.cornerRadius = 15
+        */
         
         let date = UILabel()
         date.textAlignment = .center
         date.text = FormattedCurrentDate.getFormattedCurrentDate(date: Date(), format: "E, d MMM yyyy")
         date.font = UIFont.boldSystemFont(ofSize: date.font.pointSize)
         
-        headerContent.addSubview(settings)
+        //headerContent.addSubview(settings)
         headerContent.addSubview(date)
-        headerContent.addSubview(random)
-        headerContent.addConstraintsWithFormat(format: "H:|-[v0(30)]-[v1]-[v2(30)]-|", views: random, date, settings)
-        headerContent.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: random)
+        //headerContent.addSubview(random)
+        headerContent.addConstraintsWithFormat(format: "H:|-[v0]-|", views: date)
+        //headerContent.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: random)
         headerContent.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: date)
-        headerContent.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: settings)
+        //headerContent.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: settings)
         // ---------------------------------------------------------------------
+        
         
         
         // ---------------------------------------------------------------------
@@ -101,34 +107,25 @@ class CategoriasViewController: BaseViewController {
         let parameters: Parameters = ["funcion" : "getCategories",
                                       "id_user" : dataStorage.getUserId()] as [String: Any]
         
-        print(" parameters: ")
-        print(parameters)
-        print(" \n\n ")
-        
-        Alamofire.request(BaseURL.baseUrl() , method: .post,
-                          parameters: parameters,
+        Alamofire.request(BaseURL.baseUrl() , method: .post, parameters: parameters,
                           encoding: ParameterQueryEncoding(),
                           headers: headers).responseJSON{ (response: DataResponse) in
                             switch(response.result) {
                             case .success(let value):
                                 
                                 if let result = value as? Dictionary<String, Any> {
-                                    
-                                    print(" result: ")
-                                    print(result)
-                                    print(" \n\n ")
-                                    
                                     let statusMsg = result["status_msg"] as? String
                                     let state     = result["state"] as? String
-                                    
                                     if statusMsg == "OK" && state == "200" {
-                                        
                                         if let data = result["data"] as? [Dictionary<String, AnyObject>] {
-                                            
-                                            print(" data: \(data) ")
-                                            
+                                            for c in data {
+                                                let newC = Categoria(categoria: c)
+                                                self.categorias.append(newC)
+                                            }
+                                            if self.categorias.count > 0 {
+                                                self.tableView.reloadData()
+                                            }
                                         }
-                                        
                                     }
                                     
                                 }
@@ -147,6 +144,21 @@ class CategoriasViewController: BaseViewController {
         
     }
     
+    /*
+    @objc func showFiltersCategories(sender: UIButton) {
+        let popVC = UINavigationController(rootViewController: ModalFiltersViewController())
+        popVC.modalPresentationStyle = .popover
+        let popOverVC = popVC.popoverPresentationController
+        popOverVC?.delegate = self
+        popOverVC?.sourceView = sender // self.button
+        popOverVC?.sourceRect = CGRect(x: self.settings.bounds.midX,
+                                       y: self.settings.bounds.minY,
+                                       width: 0, height: 0)
+        let widthModal = ScreenSize.screenWidth - 16
+        let heightModal = ScreenSize.screenWidth
+        popVC.preferredContentSize = CGSize(width: widthModal, height: heightModal)
+        self.present(popVC, animated: true)
+    }*/
     
     // MARK: - swiped
     @objc  func swiped(_ gesture: UISwipeGestureRecognizer) {
@@ -166,6 +178,13 @@ class CategoriasViewController: BaseViewController {
 
 
 
+extension CategoriasViewController: UIPopoverPresentationControllerDelegate {
+    
+    func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+        return .none
+    }
+}
+
 
 extension CategoriasViewController: UITableViewDelegate, UITableViewDataSource {
     
@@ -179,37 +198,42 @@ extension CategoriasViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: defaultReuseId, for: indexPath)
+        // cell.releaseView()
         cell.selectionStyle = .none
         
-        let backgroundImage = UIImageView(image: UIImage(named: "hamburger"))
+        let categoria = categorias[indexPath.section]
+        
+        let backgroundImage = UIImageView(image: UIImage())
         backgroundImage.contentMode = .scaleAspectFill
         
         let tintView = UIView()
         tintView.backgroundColor = UIColor(white: 0, alpha: 0.7) //change to your liking
         tintView.frame = CGRect(x: 0, y: 0, width: cell.frame.width, height: cell.frame.height)
-        
         backgroundImage.addSubview(tintView)
-        
         cell.backgroundView = backgroundImage
-        
         
         let categoriaNameLabel = UILabel()
         categoriaNameLabel.translatesAutoresizingMaskIntoConstraints = false
         categoriaNameLabel.font = UIFont.boldSystemFont(ofSize: 30)
-        categoriaNameLabel.text = "Regional"
+        categoriaNameLabel.text = categoria.titulo
         categoriaNameLabel.textColor = .white
         categoriaNameLabel.textAlignment = .center
         
         cell.addSubview(categoriaNameLabel)
         cell.centerView(superView: cell, container: categoriaNameLabel)
         
+        if !categoria.imagen.isEmpty {
+            let url = URL(string: categoria.imagen)
+            backgroundImage.af_setImage(withURL: url!)
+        }
+        
         return cell
     }
     
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let currentSection = indexPath.section
-        let currentRow = indexPath.row
+        // let currentSection = indexPath.section
+        // let currentRow = indexPath.row
         return 200.0 // UITableViewAutomaticDimension
     }
     
@@ -238,7 +262,9 @@ extension CategoriasViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         let vc = DetalleListadoCategoriaViewController()
-        self.navigationController?.pushViewController(vc, animated: true)
+        let nav = UINavigationController(rootViewController: vc)
+        self.present(nav, animated: true, completion: nil)
+        //self.navigationController?.pushViewController(vc, animated: true)
         
     }
     
@@ -246,6 +272,38 @@ extension CategoriasViewController: UITableViewDelegate, UITableViewDataSource {
 }
 
 
+
+
+struct Categoria {
+    
+    var id: String = ""
+    var imagen: String = ""
+    var titulo: String = ""
+    
+    var dictionaryCategoria: [String:Any]?
+    
+    init(categoria: Dictionary<String, Any>) {
+        dictionaryCategoria = categoria
+        
+        if let id = categoria["Id"] as? String {
+            self.id = id
+        }
+        
+        if let imagen = categoria["imagen"] as? String {
+            self.imagen = imagen
+        }
+        
+        if let titulo = categoria["titulo"] as? String {
+            self.titulo = titulo
+        }
+        
+    }
+    
+    func toDictionary() -> [String:Any]? {
+        return self.dictionaryCategoria
+    }
+    
+}
 
 
 

@@ -7,37 +7,8 @@
 //
 
 import UIKit
-
-struct Conversation {
-    
-    var comentario: String = ""
-    var fecha: String = ""
-    var id: String = ""
-    var tipo: String = ""
-    
-    init(conversation: Dictionary<String, Any>) {
-        
-        if let tipo = conversation["tipo"] as! String? {
-            self.tipo = tipo
-        }
-        
-        if let id = conversation["id"] as! String? {
-            self.id = id
-        }
-        
-        if let comentario = conversation["comentario"] as! String? {
-            self.comentario = comentario
-        }
-        
-        if let fecha = conversation["fecha"] as! String? {
-            self.fecha = fecha
-        }
-        
-    }
-    
-}
-
-
+import Alamofire
+import AlamofireImage
 
 class DetalleConversacionViewController: BaseViewController, UITextViewDelegate {
     
@@ -45,7 +16,7 @@ class DetalleConversacionViewController: BaseViewController, UITextViewDelegate 
         let imageBtn = UIImage(named: "close")?.imageResize(sizeChange: CGSize(width: 20.0, height: 20.0))
         let back = UIButton(type: .custom)
         back.setImage(imageBtn?.withRenderingMode(.alwaysTemplate), for: .normal)
-        back.setTitle("Evento", for: .normal)
+        //back.setTitle("Evento", for: .normal)
         back.titleLabel?.textColor = .white
         back.tintColor = .white
         back.contentEdgeInsets = UIEdgeInsets(top: 5, left: 15, bottom: 5, right: 15)
@@ -69,7 +40,7 @@ class DetalleConversacionViewController: BaseViewController, UITextViewDelegate 
         tableView.separatorStyle = .none
         tableView.backgroundColor = .clear
         //tableView.keyboardDismissMode = .onDrag
-        tableView.keyboardDismissMode = UIScrollView.KeyboardDismissMode.interactive
+        //tableView.keyboardDismissMode = UIScrollView.KeyboardDismissMode.interactive
         return tableView
     }()
     
@@ -95,8 +66,10 @@ class DetalleConversacionViewController: BaseViewController, UITextViewDelegate 
     */
     
     let postMessage: UIButton = {
+        let size = CGSize(width: 24, height: 24)
+        let image = UIImage(named: "post")?.imageResize(sizeChange: size)
         let button = UIButton(type: .custom)
-        button.setImage( UIImage(named: "post") , for: .normal)
+        button.setImage(image , for: .normal)
         button.addTarget(self, action: #selector(postMessageToLayer), for: .touchUpInside)
         return button
     }()
@@ -108,12 +81,14 @@ class DetalleConversacionViewController: BaseViewController, UITextViewDelegate 
         return view
     }()
     
-    //var mensaje: Mensaje!
-    
-    //var conversations: [Conversation] = []
-    var conversations: [String] = ["", "", ""]
+    var conversations: [Conversation] = []
+    //var conversations: [String] = ["", "", ""]
     
     let dataStorage = UserDefaults.standard
+    
+    var idChat: String = ""
+    
+    var titulo: String = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -121,6 +96,8 @@ class DetalleConversacionViewController: BaseViewController, UITextViewDelegate 
         
         self.hideKeyboardWhenTappedAround()
         backButton.addTarget(self, action: #selector(close), for: .touchUpInside)
+        backButton.setTitle(titulo, for: .normal)
+        
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
         self.navigationController?.navigationBar.barTintColor = UIColor.rosa
         self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.rosa]
@@ -135,7 +112,7 @@ class DetalleConversacionViewController: BaseViewController, UITextViewDelegate 
         mainView.addSubview(tableView)
         mainView.addSubview(containerMessage)
         
-        mainView.addConstraintsWithFormat(format: "H:|-[v0]-|", views: tableView)
+        mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: tableView)
         mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: containerMessage)
         mainView.addConstraintsWithFormat(format: "V:|-[v0]-[v1(60)]|",
                                           views: tableView, containerMessage)
@@ -146,6 +123,61 @@ class DetalleConversacionViewController: BaseViewController, UITextViewDelegate 
         containerMessage.addConstraintsWithFormat(format: "V:|-[v0(40)]", views: message)
         containerMessage.addConstraintsWithFormat(format: "V:|-16-[v0(35)]", views: postMessage)
         message.delegate = self
+        
+        
+        if !idChat.isEmpty {
+            // ---------------------------------------------------------------------
+            let headers: HTTPHeaders = [
+                // "Authorization": "Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==",
+                "Accept" : "application/json",
+                "Content-Type" : "application/x-www-form-urlencoded"
+            ]
+            let parameters: Parameters = ["funcion" : "getChatDetail",
+                                          "id_user" : dataStorage.getUserId(),
+                                          "id_chat" : idChat] as [String: Any]
+            Alamofire.request(BaseURL.baseUrl() , method: .post, parameters: parameters,
+                              encoding: ParameterQueryEncoding(),
+                              headers: headers).responseJSON{ (response: DataResponse) in
+                                switch(response.result) {
+                                case .success(let value):
+                                    
+                                    if let result = value as? Dictionary<String, Any> {
+                                        
+                                        let statusMsg = result["status_msg"] as? String
+                                        let state     = result["state"] as? String
+                                        
+                                        if statusMsg == "OK" && state == "200" {
+                                            if let data = result["data"] as? [Dictionary<String, AnyObject>] {
+                                                
+                                                for c in data {
+                                                    let newC = Conversation(conversation: c)
+                                                    self.conversations.append(newC)
+                                                }
+                                                
+                                                if self.conversations.count > 0 {
+                                                    self.tableView.reloadData()
+                                                }
+                                                
+                                            }
+                                        }
+                                        
+                                    }
+                                    
+                                    //completionHandler(value as? NSDictionary, nil)
+                                    break
+                                case .failure(let error):
+                                    //completionHandler(nil, error as NSError?)
+                                    print(error)
+                                    print(error.localizedDescription)
+                                    break
+                                }
+            }
+            // ---------------------------------------------------------------------
+            
+        }
+        
+        
+        
         
     }
     
@@ -166,6 +198,10 @@ class DetalleConversacionViewController: BaseViewController, UITextViewDelegate 
         let info = notification.userInfo!
         let keyboardHeight:CGFloat = (info[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue).cgRectValue.size.height
         let duration:Double = info[UIResponder.keyboardAnimationDurationUserInfoKey] as! Double
+        
+        print(" notification.name ")
+        print(notification.name)
+        
         if notification.name == UIResponder.keyboardWillShowNotification {
             UIView.animate(withDuration: duration, animations: { () -> Void in
                 var frame = self.view.frame
@@ -184,10 +220,11 @@ class DetalleConversacionViewController: BaseViewController, UITextViewDelegate 
     @objc func postMessageToLayer(sender: Any) {
         print(" postMessageToLayer ")
         
-        conversations.append(self.message.text)
+        /*conversations.append(self.message.text)
         self.tableView.reloadData()
         mainView.endEditing(true)
-        self.message.text = ""
+        self.message.text = ""*/
+        
         
         /*if (self.message.text?.isEmpty)! {
             return
@@ -230,29 +267,28 @@ extension DetalleConversacionViewController: UITableViewDataSource, UITableViewD
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let currentSection = indexPath.section
-        let currentRow = indexPath.row
+        //let currentRow = indexPath.row
+        let conversation = conversations[currentSection]
         let cell = tableView.dequeueReusableCell(withIdentifier: cellConversation, for: indexPath) as! CellConversation
         cell.releaseView()
-        cell.setUpView()
+        cell.selectionStyle = .none
+        cell.setUpView(mensaje: conversation)
         cell.layoutIfNeeded()
         return cell
     }
     
-    
+    /*
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         let currentSection = indexPath.section
         let currentRow = indexPath.row
-        
         return UITableView.automaticDimension
     }
-    
+     */
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let currentSection = indexPath.section
         let currentRow = indexPath.row
-        
         return UITableView.automaticDimension // UITableViewAutomaticDimension
     }
-    
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
@@ -265,7 +301,7 @@ extension DetalleConversacionViewController: UITableViewDataSource, UITableViewD
         return view
     }
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return 40
+        return 10
     }
     
     
@@ -289,72 +325,64 @@ class CellConversation: UITableViewCell {
         fatalError()
     }
     
-    /*
-    let avatar: UIImageView = {
-        let image = UIImageView()
-        image.image = UIImage(named: "perfil")
-        image.isUserInteractionEnabled = true
-        image.clipsToBounds = true
-        image.contentMode = UIView.ContentMode.scaleAspectFit
-        return image
-    }()*/
+    let dataStorage = UserDefaults.standard
     
     let message: UILabel = {
         let label = UILabel()
         label.backgroundColor = UIColor.clear
         label.textColor = UIColor.white
-        //label.text = ""
-        //label.font = UIFontMetrics.default.scaledFont(for: UIFont(name: FontName.MyriadProRegular.rawValue, size: 18)!)
         label.numberOfLines = 0
         label.sizeToFit()
-        //label.lineBreakMode = NSLineBreakMode.byWordWrapping
         return label
     }()
     
-    /*
-    let date: UILabel = {
-        let label = UILabel()
-        label.textColor = UIColor.gris
-        label.text = ""
-        label.numberOfLines = 0
-        label.sizeToFit()
-        return label
-    }()*/
+    let container: UIView = {
+        let view = UIView()
+        view.layer.cornerRadius = 15
+        return view
+    }()
     
-    func setUpView() {
-        layer.cornerRadius = 15
-        let tipo = "1" // mensaje.tipo
+    func setUpView(mensaje: Conversation) {
+        backgroundColor = .white
         
-        // addSubview(avatar)
-        // addSubview(date)
-        addSubview(message)
+        
+        addSubview(container)
+        
+        if mensaje.idUsuario == dataStorage.getUserId() { // Verde
+            addConstraintsWithFormat(format: "H:|-32-[v0]|", views: container)
+            addConstraintsWithFormat(format: "V:|[v0]|", views: container)
+        }
+        else{ // Azul
+            addConstraintsWithFormat(format: "H:|[v0]-32-|", views: container)
+            addConstraintsWithFormat(format: "V:|[v0]|", views: container)
+        }
+        
+        
+        container.addSubview(message)
         
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 5
-        paragraphStyle.minimumLineHeight = 5
-        let attributedString = NSMutableAttributedString(string: "test test test test...", attributes: [NSAttributedString.Key.paragraphStyle:paragraphStyle]
-        )
+        paragraphStyle.lineSpacing = 2
+        paragraphStyle.minimumLineHeight = 2
         
+        let attributedString = NSMutableAttributedString(string: "\(mensaje.persona) \n \(mensaje.comentarios)",
+                                                         attributes: [NSAttributedString.Key.paragraphStyle: paragraphStyle])
         
         message.attributedText = attributedString
         message.layer.cornerRadius = 15
         
-        //date.text = "17-01-2019"
-        //let avatarSize = 60
-        
-        if tipo == "1" {
-            backgroundColor = UIColor.verde
-            addConstraintsWithFormat(format: "H:|-[v0]-|", views: message)
+        if mensaje.idUsuario == dataStorage.getUserId() {
+            container.backgroundColor = UIColor.verde
+            container.addConstraintsWithFormat(format: "H:|-[v0]-|", views: message)
             //addConstraintsWithFormat(format: "H:|-[v0(70)]", views: date)
             //addConstraintsWithFormat(format: "V:|-[v0(\(avatarSize))]-[v1]", views: avatar, date)
-            addConstraintsWithFormat(format: "V:|-16-[v0]-|", views: message)
+            container.addConstraintsWithFormat(format: "V:|-[v0]-|", views: message)
         }
-        else if tipo == "2" {
-            backgroundColor = UIColor.azul
-            addConstraintsWithFormat(format: "H:|-[v0]-|", views: message)
+        else {
+            container.backgroundColor = UIColor.azul
+            container.addConstraintsWithFormat(format: "H:|-[v0]-|", views: message)
             //addConstraintsWithFormat(format: "H:[v0(70)]|", views: date)
             //addConstraintsWithFormat(format: "V:|-[v0(\(avatarSize))]-[v1]", views: avatar, date)
-            addConstraintsWithFormat(format: "V:|-16-[v0]-|", views: message)
+            container.addConstraintsWithFormat(format: "V:|-[v0]-|", views: message)
         }
         
         
@@ -362,6 +390,41 @@ class CellConversation: UITableViewCell {
     }
     
 }
+
+
+
+
+
+
+struct Conversation {
+    
+    var id: String = ""
+    var idUsuario: String = ""
+    var persona: String = ""
+    var comentarios: String = ""
+    
+    init(conversation: Dictionary<String, Any>) {
+        
+        if let id = conversation["Id"] as? String {
+            self.id = id
+        }
+        
+        if let id_usuario = conversation["id_usuario"] as? String {
+            self.idUsuario = id_usuario
+        }
+        
+        if let comentarios = conversation["comentarios"] as? String {
+            self.comentarios = comentarios
+        }
+        
+        if let persona = conversation["persona"] as? String {
+            self.persona = persona
+        }
+        
+    }
+    
+}
+
 
 
 

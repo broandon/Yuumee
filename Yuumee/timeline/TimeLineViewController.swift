@@ -53,10 +53,12 @@ class TimeLineViewController: BaseViewController {
     }()*/
     
     let filters: UIButton = {
-        let randomImage = UIImageView(image: UIImage(named: "back"))
+        let size = CGSize(width: 24, height: 24)
+        let image = UIImage(named: "ubicacion")?.imageResize(sizeChange: size)
+        let randomImage = UIImageView(image: image)
         randomImage.contentMode = .scaleAspectFit
-        randomImage.image = randomImage.image?.withRenderingMode(.alwaysTemplate)
-        randomImage.tintColor = UIColor.rojo
+        //randomImage.image = randomImage.image?.withRenderingMode(.alwaysTemplate)
+        //randomImage.tintColor = UIColor.rojo
         let random = UIButton(type: .custom)
         random.setImage( randomImage.image, for: .normal)
         //random.backgroundColor = .rojo

@@ -42,9 +42,9 @@ class DetalleListadoCategoriaViewController: BaseViewController {
         let settings = UIBarButtonItem(image: UIImage(named: "settings"), style: .plain,
                                        target: self, action: #selector(settingsTap) )
         
-        self.navigationItem.backBarButtonItem = backButton
+        //self.navigationItem.backBarButtonItem = backButton
         self.navigationItem.rightBarButtonItem = settings
-        
+        self.navigationItem.leftBarButtonItem = backButton
         // ------------------------------- Datos -------------------------------
         
         mainView.addSubview(tableView)
@@ -57,8 +57,9 @@ class DetalleListadoCategoriaViewController: BaseViewController {
         
     }
     
-    @objc func back(){
-        self.navigationController?.popViewController(animated: true)
+    @objc func back() {
+        //self.navigationController?.popViewController(animated: true)
+        self.dismiss(animated: true, completion: nil)
     }
     
     @objc func settingsTap() {

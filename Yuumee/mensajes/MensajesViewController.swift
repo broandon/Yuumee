@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import Alamofire
+import AlamofireImage
 
 class MensajesViewController: BaseViewController {
     
@@ -28,7 +30,9 @@ class MensajesViewController: BaseViewController {
         return tableView
     }()
     
-    var mensajes: [String] = ["", "", "", "", "", "", "", "", "", "", "", ""]
+    var mensajes = [Mensaje]()
+    
+    let dataStorage = UserDefaults.standard
     
     override func viewDidLoad() {
         mainView.backgroundColor = .white
@@ -51,7 +55,7 @@ class MensajesViewController: BaseViewController {
         mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: tableView)
         mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: headerContent)
         mainView.addConstraintsWithFormat(format: "V:|-[v0(44)][v1]|", views: headerContent, tableView)
-        
+        /*
         let settingsImage = UIImageView(image: UIImage(named: "settings"))
         settingsImage.contentMode = .scaleAspectFit
         settingsImage.image = settingsImage.image?.withRenderingMode(.alwaysTemplate)
@@ -61,7 +65,6 @@ class MensajesViewController: BaseViewController {
         settings.backgroundColor = .rojo
         settings.tintColor = .white
         settings.layer.cornerRadius = 15
-        
         let randomImage = UIImageView(image: UIImage(named: "random"))
         randomImage.contentMode = .scaleAspectFit
         randomImage.image = randomImage.image?.withRenderingMode(.alwaysTemplate)
@@ -71,19 +74,68 @@ class MensajesViewController: BaseViewController {
         random.backgroundColor = .rojo
         random.tintColor = .white
         random.layer.cornerRadius = 15
-        
+        */
         let date = UILabel()
         date.textAlignment = .center
-        date.text = " 3 de agosto de 2018 "
+        date.text = FormattedCurrentDate.getFormattedCurrentDate(date: Date(), format: "E, d MMM yyyy")
         date.font = UIFont.boldSystemFont(ofSize: date.font.pointSize)
         
-        headerContent.addSubview(settings)
+        /*headerContent.addSubview(settings)
+        headerContent.addSubview(random)*/
         headerContent.addSubview(date)
-        headerContent.addSubview(random)
-        headerContent.addConstraintsWithFormat(format: "H:|-[v0(30)]-[v1]-[v2(30)]-|", views: random, date, settings)
-        headerContent.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: random)
+        headerContent.addConstraintsWithFormat(format: "H:|-[v0]-|", views: date)
+        //headerContent.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: random)
         headerContent.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: date)
-        headerContent.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: settings)
+        //headerContent.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: settings)
+        
+        
+        
+        // ---------------------------------------------------------------------
+        let headers: HTTPHeaders = [
+            // "Authorization": "Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==",
+            "Accept" : "application/json",
+            "Content-Type" : "application/x-www-form-urlencoded"
+        ]
+        let parameters: Parameters = ["funcion" : "getChat",
+                                      "id_user" : dataStorage.getUserId()] as [String: Any]
+        
+        Alamofire.request(BaseURL.baseUrl() , method: .post, parameters: parameters,
+                          encoding: ParameterQueryEncoding(),
+                          headers: headers).responseJSON{ (response: DataResponse) in
+                            switch(response.result) {
+                            case .success(let value):
+                                
+                                if let result = value as? Dictionary<String, Any> {
+                                    
+                                    let statusMsg = result["status_msg"] as? String
+                                    let state     = result["state"] as? String
+                                    
+                                    if statusMsg == "OK" && state == "200" {
+                                        if let data = result["data"] as? [Dictionary<String, AnyObject>] {
+                                            for m in data {
+                                                let newM = Mensaje(mensaje: m)
+                                                self.mensajes.append(newM)
+                                            }
+                                            if self.mensajes.count > 0 {
+                                                self.tableView.reloadData()
+                                            }
+                                        }
+                                    }
+                                    
+                                }
+                                
+                                //completionHandler(value as? NSDictionary, nil)
+                                break
+                            case .failure(let error):
+                                //completionHandler(nil, error as NSError?)
+                                print(error)
+                                print(error.localizedDescription)
+                                break
+                            }
+        }
+        // ---------------------------------------------------------------------
+        
+        
         
     }
     
@@ -121,13 +173,12 @@ extension MensajesViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
         return 1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let currentSection = indexPath.section
-        let currentRow = indexPath.row
+        //let currentRow = indexPath.row
         
         /*if currentSection == 0 {
          let cell = tableView.dequeueReusableCell(withIdentifier: defaultReuseId, for: indexPath)
@@ -143,22 +194,22 @@ extension MensajesViewController: UITableViewDataSource, UITableViewDelegate {
         //UITableViewCell(style: UITableViewCell.CellStyle.subtitle, reuseIdentifier: defaultReuseId)
         
         let nombreRestaurant = UILabel()
-        nombreRestaurant.text = "Comida Internacional"
+        nombreRestaurant.text = mensaje.titulo
         //nombreRestaurant.font = UIFont(name: "MyriadPro-Bold", size: 16)
         nombreRestaurant.textColor = UIColor.verde
         nombreRestaurant.numberOfLines = 0
         
         let dueñoRest = UILabel()
-        dueñoRest.text = "John Doe"
+        dueñoRest.text = mensaje.persona
         dueñoRest.textColor = UIColor.azul
         //dueñoRest.font = UIFont(name: "MyriadPro-Regular", size: 14)
         dueñoRest.numberOfLines = 0
         
         let mensajeLbl = UILabel()
-        mensajeLbl.text = "¡Benvenido!"
+        mensajeLbl.text = mensaje.mensaje
         mensajeLbl.textColor = UIColor.verde
         //dueñoRest.font = UIFont(name: "MyriadPro-Regular", size: 14)
-        mensajeLbl.numberOfLines = 0
+        mensajeLbl.numberOfLines = 2
         
         cell.addSubview(nombreRestaurant)
         cell.addSubview(dueñoRest)
@@ -175,14 +226,16 @@ extension MensajesViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     
+    
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        let currentSection = indexPath.section
-        let currentRow = indexPath.row
+        /*let currentSection = indexPath.section
+        let currentRow = indexPath.row*/
         return UITableView.automaticDimension
     }
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let currentSection = indexPath.section
-        let currentRow = indexPath.row
+        /*let currentSection = indexPath.section
+        let currentRow = indexPath.row*/
         return UITableView.automaticDimension // UITableViewAutomaticDimension
     }
     
@@ -190,21 +243,20 @@ extension MensajesViewController: UITableViewDataSource, UITableViewDelegate {
     
     /**
      * Detalle
+     *
      */
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
         let currentSection = indexPath.section
         let mensaje = mensajes[currentSection]
-        print(" mensaje: \(mensaje) ")
-        
         
         let viewController = DetalleConversacionViewController()
+        viewController.idChat = mensaje.id
+        viewController.titulo = mensaje.titulo
         let nav = UINavigationController(rootViewController: viewController)
-        //viewController.mensaje = mensaje
         self.present(nav, animated: true, completion: nil)
     }
-    
     
     
     
@@ -240,6 +292,47 @@ extension MensajesViewController: UITableViewDataSource, UITableViewDelegate {
 }
 
 
+
+
+
+
+
+
+
+struct Mensaje {
+    
+    var id: String = ""
+    var ultimaFecha: String = ""
+    var titulo: String = ""
+    var mensaje: String = ""
+    var persona: String = ""
+    
+    init(mensaje: Dictionary<String, Any>) {
+        
+        if let id = mensaje["Id"] as? String {
+            self.id = id
+        }
+        
+        if let ultimaFecha = mensaje["ultima_fecha"] as? String {
+            self.ultimaFecha = ultimaFecha
+        }
+        
+        if let titulo = mensaje["titulo"] as? String {
+            self.titulo = titulo
+        }
+        
+        if let mensaje = mensaje["mensaje"] as? String {
+            self.mensaje = mensaje
+        }
+        
+        if let persona = mensaje["persona"] as? String {
+            self.persona = persona
+        }
+        
+    }
+    
+    
+}
 
 
 
