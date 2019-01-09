@@ -88,6 +88,8 @@ class DetalleConversacionViewController: BaseViewController, UITextViewDelegate 
     
     var idChat: String = ""
     
+    var idSaucer: String = ""
+    
     var titulo: String = ""
     
     override func viewDidLoad() {
@@ -116,14 +118,12 @@ class DetalleConversacionViewController: BaseViewController, UITextViewDelegate 
         mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: containerMessage)
         mainView.addConstraintsWithFormat(format: "V:|-[v0]-[v1(60)]|",
                                           views: tableView, containerMessage)
-        
         containerMessage.addSubview(message)
         containerMessage.addSubview(postMessage)
         containerMessage.addConstraintsWithFormat(format: "H:|-[v0]-[v1(35)]-|", views: message, postMessage)
         containerMessage.addConstraintsWithFormat(format: "V:|-[v0(40)]", views: message)
         containerMessage.addConstraintsWithFormat(format: "V:|-16-[v0(35)]", views: postMessage)
         message.delegate = self
-        
         
         if !idChat.isEmpty {
             // ---------------------------------------------------------------------
@@ -140,29 +140,21 @@ class DetalleConversacionViewController: BaseViewController, UITextViewDelegate 
                               headers: headers).responseJSON{ (response: DataResponse) in
                                 switch(response.result) {
                                 case .success(let value):
-                                    
                                     if let result = value as? Dictionary<String, Any> {
-                                        
                                         let statusMsg = result["status_msg"] as? String
                                         let state     = result["state"] as? String
-                                        
                                         if statusMsg == "OK" && state == "200" {
                                             if let data = result["data"] as? [Dictionary<String, AnyObject>] {
-                                                
                                                 for c in data {
                                                     let newC = Conversation(conversation: c)
                                                     self.conversations.append(newC)
                                                 }
-                                                
                                                 if self.conversations.count > 0 {
                                                     self.tableView.reloadData()
                                                 }
-                                                
                                             }
                                         }
-                                        
                                     }
-                                    
                                     //completionHandler(value as? NSDictionary, nil)
                                     break
                                 case .failure(let error):
@@ -173,17 +165,14 @@ class DetalleConversacionViewController: BaseViewController, UITextViewDelegate 
                                 }
             }
             // ---------------------------------------------------------------------
-            
         }
         
-        
-        
-        
-    }
+    } // viewDidLoad
     
     @objc func close() {
         self.dismiss(animated: true, completion: nil)
     }
+    
     
     
     @objc func keyboardWillAppear(notification: Notification){
@@ -198,10 +187,6 @@ class DetalleConversacionViewController: BaseViewController, UITextViewDelegate 
         let info = notification.userInfo!
         let keyboardHeight:CGFloat = (info[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue).cgRectValue.size.height
         let duration:Double = info[UIResponder.keyboardAnimationDurationUserInfoKey] as! Double
-        
-        print(" notification.name ")
-        print(notification.name)
-        
         if notification.name == UIResponder.keyboardWillShowNotification {
             UIView.animate(withDuration: duration, animations: { () -> Void in
                 var frame = self.view.frame
@@ -218,18 +203,72 @@ class DetalleConversacionViewController: BaseViewController, UITextViewDelegate 
     }
     
     @objc func postMessageToLayer(sender: Any) {
-        print(" postMessageToLayer ")
         
-        /*conversations.append(self.message.text)
+        if (self.message.text?.isEmpty)! {
+            return
+        }
+        
+        // ---------------------------------------------------------------------
+        let headers: HTTPHeaders = [
+            // "Authorization": "Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==",
+            "Accept" : "application/json",
+            "Content-Type" : "application/x-www-form-urlencoded"
+        ]
+        
+        let parameters: Parameters = ["funcion" : "sendMessageChat",
+                                      "id_user" : dataStorage.getUserId(),
+                                      "id_saucer" : idChat,
+                                      "tipo" : dataStorage.getTipo(),
+                                      "message" : message.text!] as [String: Any]
+        
+        Alamofire.request(BaseURL.baseUrl() , method: .post, parameters: parameters,
+                          encoding: ParameterQueryEncoding(),
+                          headers: headers).responseJSON{ (response: DataResponse) in
+                            switch(response.result) {
+                            case .success(let value):
+                                if let result = value as? Dictionary<String, Any> {
+                                    let statusMsg = result["status_msg"] as? String
+                                    let state     = result["state"] as? String
+                                    if statusMsg == "OK" && state == "200" {
+                                        
+                                        if let data = result["data"] as? [Dictionary<String, AnyObject>] {
+                                            
+                                            let newMessage = ["Id": "0",
+                                                              "comentarios": self.message.text!,
+                                                              "persona": "\(self.dataStorage.getFirstName()) \(self.dataStorage.getLastName())",
+                                                              "id_usuario": self.dataStorage.getUserId()] as [String : Any]
+                                            self.message.text = ""
+                                            let newC = Conversation(conversation: newMessage)
+                                            self.conversations.append(newC)
+                                            self.tableView.reloadData()
+                                            self.message.resignFirstResponder()
+                                            
+                                            let indexPath = IndexPath(item: self.conversations.count, section: 0)
+                                            self.tableView.scrollToRow(at: indexPath, at: UITableView.ScrollPosition.bottom, animated: true)
+                                            
+                                        }
+                                        
+                                    }
+                                }
+                                //completionHandler(value as? NSDictionary, nil)
+                                break
+                            case .failure(let error):
+                                //completionHandler(nil, error as NSError?)
+                                print(error)
+                                print(error.localizedDescription)
+                                break
+                            }
+        }
+        // ---------------------------------------------------------------------
+        
+        /*
+        conversations.append(self.message.text)
         self.tableView.reloadData()
         mainView.endEditing(true)
         self.message.text = ""*/
-        
-        
-        /*if (self.message.text?.isEmpty)! {
-            return
-        }*/
+        /**/
     }
+    
     
     
     /*
@@ -285,8 +324,8 @@ extension DetalleConversacionViewController: UITableViewDataSource, UITableViewD
     }
      */
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let currentSection = indexPath.section
-        let currentRow = indexPath.row
+        //let currentSection = indexPath.section
+        //let currentRow = indexPath.row
         return UITableView.automaticDimension // UITableViewAutomaticDimension
     }
     
@@ -344,10 +383,7 @@ class CellConversation: UITableViewCell {
     
     func setUpView(mensaje: Conversation) {
         backgroundColor = .white
-        
-        
         addSubview(container)
-        
         if mensaje.idUsuario == dataStorage.getUserId() { // Verde
             addConstraintsWithFormat(format: "H:|-32-[v0]|", views: container)
             addConstraintsWithFormat(format: "V:|[v0]|", views: container)
@@ -356,37 +392,24 @@ class CellConversation: UITableViewCell {
             addConstraintsWithFormat(format: "H:|[v0]-32-|", views: container)
             addConstraintsWithFormat(format: "V:|[v0]|", views: container)
         }
-        
-        
         container.addSubview(message)
-        
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = 2
         paragraphStyle.minimumLineHeight = 2
-        
         let attributedString = NSMutableAttributedString(string: "\(mensaje.persona) \n \(mensaje.comentarios)",
                                                          attributes: [NSAttributedString.Key.paragraphStyle: paragraphStyle])
-        
         message.attributedText = attributedString
         message.layer.cornerRadius = 15
-        
         if mensaje.idUsuario == dataStorage.getUserId() {
             container.backgroundColor = UIColor.verde
             container.addConstraintsWithFormat(format: "H:|-[v0]-|", views: message)
-            //addConstraintsWithFormat(format: "H:|-[v0(70)]", views: date)
-            //addConstraintsWithFormat(format: "V:|-[v0(\(avatarSize))]-[v1]", views: avatar, date)
             container.addConstraintsWithFormat(format: "V:|-[v0]-|", views: message)
         }
         else {
             container.backgroundColor = UIColor.azul
             container.addConstraintsWithFormat(format: "H:|-[v0]-|", views: message)
-            //addConstraintsWithFormat(format: "H:[v0(70)]|", views: date)
-            //addConstraintsWithFormat(format: "V:|-[v0(\(avatarSize))]-[v1]", views: avatar, date)
             container.addConstraintsWithFormat(format: "V:|-[v0]-|", views: message)
         }
-        
-        
-        
     }
     
 }
