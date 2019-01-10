@@ -26,6 +26,10 @@
 		5E68D6B721C8B04500DA00AB /* PerfilViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E68D6B621C8B04500DA00AB /* PerfilViewController.swift */; };
 		5E68D6BB21C8B05900DA00AB /* MetodoDePagoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E68D6B921C8B05900DA00AB /* MetodoDePagoViewController.swift */; };
 		5E68D6BC21C8B05900DA00AB /* PerfilUsuarioViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E68D6BA21C8B05900DA00AB /* PerfilUsuarioViewController.swift */; };
+		5E800ED921E738C5008F4F66 /* Card.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E800ECE21E738C4008F4F66 /* Card.m */; };
+		5E800EDA21E738C5008F4F66 /* Conekta.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E800ED121E738C4008F4F66 /* Conekta.m */; };
+		5E800EDB21E738C5008F4F66 /* Token.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E800ED221E738C4008F4F66 /* Token.m */; };
+		5E800EDC21E738C5008F4F66 /* Connection.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E800ED821E738C4008F4F66 /* Connection.m */; };
 		5EBEEEF921E2D80C00F718A4 /* DetallesEventoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBEEEF821E2D80C00F718A4 /* DetallesEventoCell.swift */; };
 		5EBEEEFB21E2F3C300F718A4 /* FormattedCurrentDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBEEEFA21E2F3C300F718A4 /* FormattedCurrentDate.swift */; };
 		5EC49D2E21D1F2F300DAC1BD /* ArchiaRegular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5EC49D2D21D1F2F300DAC1BD /* ArchiaRegular.ttf */; };
@@ -70,6 +74,16 @@
 		5E68D6B621C8B04500DA00AB /* PerfilViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PerfilViewController.swift; sourceTree = "<group>"; };
 		5E68D6B921C8B05900DA00AB /* MetodoDePagoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetodoDePagoViewController.swift; sourceTree = "<group>"; };
 		5E68D6BA21C8B05900DA00AB /* PerfilUsuarioViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PerfilUsuarioViewController.swift; sourceTree = "<group>"; };
+		5E800ECC21E73656008F4F66 /* Yuumee-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Yuumee-Bridging-Header.h"; sourceTree = "<group>"; };
+		5E800ECE21E738C4008F4F66 /* Card.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Card.m; path = Conekta/Card.m; sourceTree = SOURCE_ROOT; };
+		5E800ECF21E738C4008F4F66 /* Token.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Token.h; path = Conekta/Token.h; sourceTree = SOURCE_ROOT; };
+		5E800ED021E738C4008F4F66 /* Connection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Connection.h; path = Conekta/Connection.h; sourceTree = SOURCE_ROOT; };
+		5E800ED121E738C4008F4F66 /* Conekta.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Conekta.m; path = Conekta/Conekta.m; sourceTree = SOURCE_ROOT; };
+		5E800ED221E738C4008F4F66 /* Token.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Token.m; path = Conekta/Token.m; sourceTree = SOURCE_ROOT; };
+		5E800ED321E738C4008F4F66 /* Conekta.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Conekta.xcodeproj; path = Conekta/Conekta.xcodeproj; sourceTree = SOURCE_ROOT; };
+		5E800ED621E738C4008F4F66 /* Conekta.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Conekta.h; path = Conekta/Conekta.h; sourceTree = SOURCE_ROOT; };
+		5E800ED721E738C4008F4F66 /* Card.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Card.h; path = Conekta/Card.h; sourceTree = SOURCE_ROOT; };
+		5E800ED821E738C4008F4F66 /* Connection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Connection.m; path = Conekta/Connection.m; sourceTree = SOURCE_ROOT; };
 		5EBEEEF821E2D80C00F718A4 /* DetallesEventoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetallesEventoCell.swift; sourceTree = "<group>"; };
 		5EBEEEFA21E2F3C300F718A4 /* FormattedCurrentDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormattedCurrentDate.swift; sourceTree = "<group>"; };
 		5EC49D2D21D1F2F300DAC1BD /* ArchiaRegular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = ArchiaRegular.ttf; sourceTree = "<group>"; };
@@ -123,6 +137,7 @@
 		5E68D64121C89FF400DA00AB /* Yuumee */ = {
 			isa = PBXGroup;
 			children = (
+				5E800ECD21E73890008F4F66 /* Conekta */,
 				5E68D6B521C8B03800DA00AB /* perfil */,
 				5E68D6B021C8B02100DA00AB /* mensajes */,
 				5E68D6AD21C8B00A00DA00AB /* timeline */,
@@ -219,6 +234,30 @@
 			path = usuario;
 			sourceTree = "<group>";
 		};
+		5E800ECD21E73890008F4F66 /* Conekta */ = {
+			isa = PBXGroup;
+			children = (
+				5E800ED721E738C4008F4F66 /* Card.h */,
+				5E800ECE21E738C4008F4F66 /* Card.m */,
+				5E800ED621E738C4008F4F66 /* Conekta.h */,
+				5E800ED121E738C4008F4F66 /* Conekta.m */,
+				5E800ED321E738C4008F4F66 /* Conekta.xcodeproj */,
+				5E800ED021E738C4008F4F66 /* Connection.h */,
+				5E800ED821E738C4008F4F66 /* Connection.m */,
+				5E800ECF21E738C4008F4F66 /* Token.h */,
+				5E800ED221E738C4008F4F66 /* Token.m */,
+				5E800ECC21E73656008F4F66 /* Yuumee-Bridging-Header.h */,
+			);
+			path = Conekta;
+			sourceTree = "<group>";
+		};
+		5E800ED421E738C4008F4F66 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		5EC49D2C21D1F2DB00DAC1BD /* fonts */ = {
 			isa = PBXGroup;
 			children = (
@@ -312,6 +351,7 @@
 				TargetAttributes = {
 					5E68D63E21C89FF400DA00AB = {
 						CreatedOnToolsVersion = 10.1;
+						LastSwiftMigration = 1010;
 					};
 				};
 			};
@@ -326,6 +366,12 @@
 			mainGroup = 5E68D63621C89FF400DA00AB;
 			productRefGroup = 5E68D64021C89FF400DA00AB /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 5E800ED421E738C4008F4F66 /* Products */;
+					ProjectRef = 5E800ED321E738C4008F4F66 /* Conekta.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				5E68D63E21C89FF400DA00AB /* Yuumee */,
@@ -428,15 +474,18 @@
 				9C31C7A921E00CFE00F5F585 /* EventoAnfitrionViewController.swift in Sources */,
 				9C99B32121E3CC5B00ADD584 /* UserDefaultsStorage.swift in Sources */,
 				5EBEEEF921E2D80C00F718A4 /* DetallesEventoCell.swift in Sources */,
+				5E800EDC21E738C5008F4F66 /* Connection.m in Sources */,
 				5E68D69F21C8AF6400DA00AB /* Helpers.swift in Sources */,
 				5E68D6BC21C8B05900DA00AB /* PerfilUsuarioViewController.swift in Sources */,
 				9C31C7AE21E00DB300F5F585 /* ComidaCell.swift in Sources */,
+				5E800EDB21E738C5008F4F66 /* Token.m in Sources */,
 				5E68D69E21C8AF6400DA00AB /* Extension+UIColor.swift in Sources */,
 				9C90F5BA21DD280900ACDA8F /* PerfilAnfitrionViewController.swift in Sources */,
 				5EC49D3321D1F42200DAC1BD /* ArchiaBoldLabel.swift in Sources */,
 				9C31C7B021E00DD400F5F585 /* HorarioCell.swift in Sources */,
 				5E68D6BB21C8B05900DA00AB /* MetodoDePagoViewController.swift in Sources */,
 				5E68D65821C8A3D100DA00AB /* InicioViewController.swift in Sources */,
+				5E800ED921E738C5008F4F66 /* Card.m in Sources */,
 				5E68D6B321C8B02E00DA00AB /* DetalleConversacionViewController.swift in Sources */,
 				5E68D6AF21C8B01600DA00AB /* TimeLineViewController.swift in Sources */,
 				5E68D64321C89FF400DA00AB /* AppDelegate.swift in Sources */,
@@ -447,6 +496,7 @@
 				5E68D6A721C8AFCE00DA00AB /* UbicacionViewController.swift in Sources */,
 				5EBEEEFB21E2F3C300F718A4 /* FormattedCurrentDate.swift in Sources */,
 				5EC49D3121D1F3FC00DAC1BD /* ArchiaRegularLabel.swift in Sources */,
+				5E800EDA21E738C5008F4F66 /* Conekta.m in Sources */,
 				5E68D6B421C8B02E00DA00AB /* MensajesViewController.swift in Sources */,
 				5E68D6AC21C8AFEE00DA00AB /* RegistroViewController.swift in Sources */,
 			);
@@ -587,6 +637,7 @@
 			baseConfigurationReference = 8F3F02C399BB0D96D08C8FC2 /* Pods-Yuumee.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = W4MERUEP35;
@@ -596,9 +647,15 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Conekta",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.lsegoviano.dev.Yuumee;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Yuumee/Conekta/Yuumee-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -609,6 +666,7 @@
 			baseConfigurationReference = 3330BBBE07F28EBE7CD61116 /* Pods-Yuumee.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = W4MERUEP35;
@@ -618,9 +676,14 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Conekta",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.lsegoviano.dev.Yuumee;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Yuumee/Conekta/Yuumee-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 1;
 			};

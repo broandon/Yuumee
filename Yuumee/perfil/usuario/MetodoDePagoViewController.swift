@@ -59,7 +59,6 @@ class MetodoDePagoViewController: BaseViewController {
         let label = UILabel()
         label.text = "No. de tarjeta"
         label.textColor = UIColor.darkGray
-        //label.tintColor = ParseColor.hexStringToUIColor(hex: StringColors.gray)
         label.font = label.font.withSize(18)
         label.textAlignment = .center
         label.numberOfLines = 0
@@ -68,9 +67,6 @@ class MetodoDePagoViewController: BaseViewController {
     
     let numeroTarjetaInput: UITextField = {
         let textFieldNombre = UITextField()
-        //textFieldNombre.font = UIFont.init(name: "proxima-nova-bold-webfont", size: (textFieldNombre.font?.pointSize)!)
-        //textFieldNombre.textColor = ParseColor.hexStringToUIColor(hex: StringColors.cyan)
-        //textFieldNombre.tintColor = ParseColor.hexStringToUIColor(hex: StringColors.cyan)
         textFieldNombre.keyboardType = UIKeyboardType.numberPad
         textFieldNombre.textAlignment = .center
         textFieldNombre.backgroundColor = UIColor.gris
@@ -85,8 +81,6 @@ class MetodoDePagoViewController: BaseViewController {
         let label = UILabel()
         label.text = "Fecha de vencimiento"
         label.textColor = UIColor.darkGray
-        //label.tintColor = ParseColor.hexStringToUIColor(hex: StringColors.gray)
-        //label.font = label.font.withSize(16)
         label.numberOfLines = 1
         label.textAlignment = .left
         return label
@@ -98,9 +92,6 @@ class MetodoDePagoViewController: BaseViewController {
     
     let fechaVencimientoM: UITextField = {
         let textFieldNombre = UITextField()
-        //textFieldNombre.font = UIFont.init(name: "proxima-nova-bold-webfont", size: (textFieldNombre.font?.pointSize)!)
-        //textFieldNombre.textColor = ParseColor.hexStringToUIColor(hex: StringColors.cyan)
-        //textFieldNombre.tintColor = ParseColor.hexStringToUIColor(hex: StringColors.cyan)
         textFieldNombre.placeholder = " MM "
         textFieldNombre.keyboardType = UIKeyboardType.numberPad
         textFieldNombre.textAlignment = .center
@@ -108,9 +99,6 @@ class MetodoDePagoViewController: BaseViewController {
     }()
     let fechaVencimientoY: UITextField = {
         let textFieldNombre = UITextField()
-        //textFieldNombre.font = UIFont.init(name: "proxima-nova-bold-webfont", size: (textFieldNombre.font?.pointSize)!)
-        //textFieldNombre.textColor = ParseColor.hexStringToUIColor(hex: StringColors.cyan)
-        //textFieldNombre.tintColor = ParseColor.hexStringToUIColor(hex: StringColors.cyan)
         textFieldNombre.placeholder = " YYYY "
         textFieldNombre.keyboardType = UIKeyboardType.numberPad
         textFieldNombre.textAlignment = .center
@@ -120,8 +108,6 @@ class MetodoDePagoViewController: BaseViewController {
         let label = UILabel()
         label.text = "/"
         label.textColor = UIColor.gris
-        //label.tintColor = ParseColor.hexStringToUIColor(hex: StringColors.gray)
-        //label.font = label.font.withSize(16)
         label.sizeToFit()
         label.textAlignment = .center
         return label
@@ -131,8 +117,6 @@ class MetodoDePagoViewController: BaseViewController {
         let label = UILabel()
         label.text = "Código de seguridad"
         label.textColor = UIColor.darkGray
-        //label.tintColor = ParseColor.hexStringToUIColor(hex: StringColors.gray)
-        //label.font = label.font.withSize(14)
         label.numberOfLines = 1
         label.textAlignment = .right
         return label
@@ -140,9 +124,6 @@ class MetodoDePagoViewController: BaseViewController {
     
     let codigoSeguridadInput: UITextField = {
         let textFieldNombre = UITextField()
-        //textFieldNombre.font = UIFont.init(name: "proxima-nova-bold-webfont", size: (textFieldNombre.font?.pointSize)!)
-        //textFieldNombre.textColor = ParseColor.hexStringToUIColor(hex: StringColors.cyan)
-        //textFieldNombre.tintColor = ParseColor.hexStringToUIColor(hex: StringColors.cyan)
         textFieldNombre.keyboardType = UIKeyboardType.numberPad
         textFieldNombre.textAlignment = .center
         textFieldNombre.setBottomBorder()
@@ -152,13 +133,11 @@ class MetodoDePagoViewController: BaseViewController {
     
     let aceptar: UIButton = {
         let button = UIButton(type: .system)
-        //button.backgroundColor = ParseColor.hexStringToUIColor(hex: StringColors.cyan)
         button.setTitle("Guardar", for: .normal)
         button.setTitleColor(UIColor.rosa, for: .normal)
         button.layer.cornerRadius = 10
         button.contentEdgeInsets = UIEdgeInsets(top: 5, left: 15, bottom: 5, right: 15)
         button.imageView?.contentMode = .scaleAspectFit
-        //button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
         button.addBorder(borderColor: UIColor.azul , widthBorder: 2)
         return button
     }()
@@ -178,7 +157,6 @@ class MetodoDePagoViewController: BaseViewController {
         
         let back = UIBarButtonItem(image: UIImage(named: "close"), style: .plain,
                                    target: self, action: #selector(close))
-        //back.tintColor = ParseColor.hexStringToUIColor(hex: StringColors.cyan)
         self.navigationItem.leftBarButtonItem = back
         mainView.addSubview(tableView)
         
@@ -193,6 +171,26 @@ class MetodoDePagoViewController: BaseViewController {
         footerView.addConstraintsWithFormat(format: "V:|-[v0(40)]", views: aceptar)
         tableView.tableFooterView = footerView
         aceptar.addTarget(self, action: #selector(addTarjeta), for: .touchUpInside)
+        
+        // ---------------------------------------------------------------------
+        
+        let conekta = Conekta()
+        conekta.delegate = self
+        conekta.publicKey = "key_HxQ8WZqx2Xcjug7xnizMndA"
+        conekta.collectDevice()
+        let card = conekta.card()
+        card!.setNumber("4242424242424242",
+                       name: "Julian Ceballos",
+                       cvc: "123", expMonth: "10", expYear: "2019")
+        let token = conekta.token()
+        token!.card = card
+        token!.create(success: { (data) -> Void in
+            print(data)
+        }, andError: { (error) -> Void in
+            print(error)
+        })
+        
+        // ---------------------------------------------------------------------
         
     }
     
@@ -223,6 +221,7 @@ class MetodoDePagoViewController: BaseViewController {
             })
         }
     }
+    
     
     
     @objc func close() {
@@ -370,16 +369,11 @@ class MetodoDePagoViewController: BaseViewController {
         nombre.text = "Nombre"
         nombre.numberOfLines = 0
         nombre.textColor = UIColor.darkGray
-        //nombre.textColor = ParseColor.hexStringToUIColor(hex: StringColors.darkGray)
-        //nombre.tintColor = ParseColor.hexStringToUIColor(hex: StringColors.darkGray)
         return nombre
     }()
     let nombreInput: UITextField = {
         let textFieldNombre = UITextField()
         textFieldNombre.backgroundColor = UIColor.gris
-        //textFieldNombre.font = UIFont.init(name: "proxima-nova-bold-webfont", size: (textFieldNombre.font?.pointSize)!)
-        // textFieldNombre.textColor = ParseColor.hexStringToUIColor(hex: StringColors.cyan)
-        // textFieldNombre.tintColor = ParseColor.hexStringToUIColor(hex: StringColors.cyan)
         return textFieldNombre
     }()
     
@@ -390,15 +384,11 @@ class MetodoDePagoViewController: BaseViewController {
         nombre.text = "Apellido"
         nombre.numberOfLines = 0
         nombre.textColor = UIColor.darkGray
-        //nombre.tintColor = ParseColor.hexStringToUIColor(hex: StringColors.darkGray)
         return nombre
     }()
     let apellidoInput: UITextField = {
         let textFieldNombre = UITextField()
         textFieldNombre.backgroundColor = UIColor.gris
-        //textFieldNombre.font = UIFont.init(name: "proxima-nova-bold-webfont", size: (textFieldNombre.font?.pointSize)!)
-        // textFieldNombre.textColor = ParseColor.hexStringToUIColor(hex: StringColors.cyan)
-        // textFieldNombre.tintColor = ParseColor.hexStringToUIColor(hex: StringColors.cyan)
         return textFieldNombre
     }()
     
@@ -408,15 +398,11 @@ class MetodoDePagoViewController: BaseViewController {
         direccion.text = "Dirección"
         direccion.numberOfLines = 0
         direccion.textColor = UIColor.darkGray
-        //direccion.tintColor = ParseColor.hexStringToUIColor(hex: StringColors.darkGray)
         return direccion
     }()
     let calleNumeroInput: UITextField = {
         let textFieldDireccion = UITextField()
         textFieldDireccion.backgroundColor = UIColor.gris
-        //textFieldDireccion.font = UIFont.init(name: "proxima-nova-bold-webfont", size: (textFieldDireccion.font?.pointSize)!)
-        //textFieldDireccion.textColor = ParseColor.hexStringToUIColor(hex: StringColors.cyan)
-        //textFieldDireccion.tintColor = ParseColor.hexStringToUIColor(hex: StringColors.cyan)
         return textFieldDireccion
     }()
     
@@ -431,9 +417,7 @@ class MetodoDePagoViewController: BaseViewController {
     let coloniaInput: UITextField = {
         let textFieldReferencia = UITextField()
         textFieldReferencia.backgroundColor = UIColor.gris
-        // textFieldReferencia.font = UIFont.init(name: "proxima-nova-bold-webfont", size: (textFieldReferencia.font?.pointSize)!)
         textFieldReferencia.textColor = UIColor.darkGray
-        // textFieldReferencia.tintColor = ParseColor.hexStringToUIColor(hex: StringColors.cyan)
         return textFieldReferencia
     }()
     
@@ -443,15 +427,11 @@ class MetodoDePagoViewController: BaseViewController {
         horario.text = "Código Postal"
         horario.numberOfLines = 0
         horario.textColor = UIColor.darkGray
-        // horario.tintColor = ParseColor.hexStringToUIColor(hex: StringColors.darkGray)
         return horario
     }()
     let codigoPostalInput: UITextField = {
         let textFieldHorario = UITextField()
         textFieldHorario.backgroundColor = UIColor.gris
-        //textFieldHorario.font = UIFont.init(name: "proxima-nova-bold-webfont", size: (textFieldHorario.font?.pointSize)!)
-        //textFieldHorario.textColor = ParseColor.hexStringToUIColor(hex: StringColors.cyan)
-        //textFieldHorario.tintColor = ParseColor.hexStringToUIColor(hex: StringColors.cyan)
         return textFieldHorario
     }()
     
@@ -460,15 +440,11 @@ class MetodoDePagoViewController: BaseViewController {
         let horario = UILabel()
         horario.text = "Télefono"
         horario.textColor = UIColor.darkGray
-        //horario.tintColor = ParseColor.hexStringToUIColor(hex: StringColors.darkGray)
         return horario
     }()
     let telefonoContactoInput: UITextField = {
         let textFieldHorario = UITextField()
         textFieldHorario.backgroundColor = UIColor.gris
-        //textFieldHorario.font = UIFont.init(name: "proxima-nova-bold-webfont", size: (textFieldHorario.font?.pointSize)!)
-        //textFieldHorario.textColor = ParseColor.hexStringToUIColor(hex: StringColors.cyan)
-        //textFieldHorario.tintColor = ParseColor.hexStringToUIColor(hex: StringColors.cyan)
         return textFieldHorario
     }()
     
@@ -572,10 +548,8 @@ extension MetodoDePagoViewController: UITableViewDelegate, UITableViewDataSource
                 return cell
             }
             if seccion == "numero_tarjeta" {
-                //cell.addSubview( numeroTarjeta )
                 cell.addSubview( numeroTarjetaInput )
                 numeroTarjetaInput.delegate = self
-                //cell.addConstraintsWithFormat(format: "H:|-[v0]-|", views: numeroTarjeta)
                 cell.addConstraintsWithFormat(format: "H:|-[v0]-|", views: numeroTarjetaInput)
                 cell.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: numeroTarjetaInput)
                 return cell
@@ -703,21 +677,8 @@ extension MetodoDePagoViewController: UITableViewDelegate, UITableViewDataSource
         }
         
         if currentSection == 1 { // Seccion Datos Personales
-            let seccion = seccionDatosPersonales[currentRow]
+            // let seccion = seccionDatosPersonales[currentRow]
             return 70
-            
-            /*if seccion == "nombre" {
-                return 0
-            }
-            if seccion == "calle_numero" {
-                return 0
-            }
-            if seccion == "colonia" {
-                return 0
-            }
-            if seccion == "cp_telefono" {
-                return 0
-            }*/
         }
         
         return 0
@@ -741,10 +702,6 @@ extension MetodoDePagoViewController: UITableViewDelegate, UITableViewDataSource
             headerDatosPersonales.addSubview(datosPersonales)
             headerDatosPersonales.addConstraintsWithFormat(format: "H:|-16-[v0]-16-|", views: datosPersonales)
             headerDatosPersonales.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: datosPersonales)
-            /*
-            headerDatosPersonales.centerView(superView: headerDatosPersonales,
-                                             container: datosPersonales)
-            */
             headerDatosPersonales.backgroundColor = .white
             return headerDatosPersonales
         }
