@@ -8,6 +8,8 @@
 
 import UIKit
 
+import Alamofire
+
 class MetodoDePagoViewController: BaseViewController {
     
     lazy var tableView: UITableView = {
@@ -172,15 +174,14 @@ class MetodoDePagoViewController: BaseViewController {
         tableView.tableFooterView = footerView
         aceptar.addTarget(self, action: #selector(addTarjeta), for: .touchUpInside)
         
-        // ---------------------------------------------------------------------
         
-        let conekta = Conekta()
+        // ---------------------------------------------------------------------
+        /*let conekta = Conekta()
         conekta.delegate = self
         conekta.publicKey = "key_HxQ8WZqx2Xcjug7xnizMndA"
         conekta.collectDevice()
         let card = conekta.card()
-        card!.setNumber("4242424242424242",
-                       name: "Julian Ceballos",
+        card!.setNumber("4242424242424242", name: "Julian Ceballos",
                        cvc: "123", expMonth: "10", expYear: "2019")
         let token = conekta.token()
         token!.card = card
@@ -188,56 +189,41 @@ class MetodoDePagoViewController: BaseViewController {
             print(data)
         }, andError: { (error) -> Void in
             print(error)
-        })
-        
+        })*/
         // ---------------------------------------------------------------------
-        
     }
     
     
     
-    @objc func keyboardWillShow(notification: Notification){
-        makeSpaceForKeyboard(notification: notification)
-    }
-    @objc func keyboardWillHide(notification: Notification){
-        // makeSpaceForKeyboard(notification: notification)
-        makeSpaceForKeyboard(notification: notification)
-    }
-    func makeSpaceForKeyboard(notification: Notification){
-        let info = notification.userInfo!
-        let keyboardHeight:CGFloat = (info[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue).cgRectValue.size.height
-        let duration:Double = info[UIResponder.keyboardAnimationDurationUserInfoKey] as! Double
-        if notification.name == UIResponder.keyboardWillShowNotification {
-            UIView.animate(withDuration: duration, animations: { () -> Void in
-                var frame = self.view.frame
-                frame.size.height = frame.size.height - keyboardHeight
-                self.view.frame = frame
-            })
-        } else {
-            UIView.animate(withDuration: duration, animations: { () -> Void in
-                var frame = self.view.frame
-                frame.size.height = frame.size.height + keyboardHeight
-                self.view.frame = frame
-            })
+    @objc func keyboardWillShow(notification: Notification) {
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
+            tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardSize.height, right: 0)
         }
     }
-    
-    
+    @objc func keyboardWillHide(notification: Notification) {
+        if ((notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue) != nil {
+            tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        }
+    }
     
     @objc func close() {
         navigationController?.popViewController(animated: true)
     }
     
+    var delegate: GetCard?
+    
+    let dataStorage = UserDefaults.standard
+    
     @objc func addTarjeta() {
         
-        if (tipoTarjetaSeleccionada.isEmpty) {
+        /*if (tipoTarjetaSeleccionada.isEmpty) {
             let alert = UIAlertController(title: "Campo Requerido",
                                           message: "Por favor seleccione el tipo de su tarjeta (VISA, MasterCard, etc...).",
                                           preferredStyle: UIAlertController.Style.alert)
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
             self.present(alert, animated: true, completion: nil)
             return;
-        }
+        }*/
         
         // Datos de tarejetas
         let numeroTarjeta = numeroTarjetaInput.text
@@ -359,8 +345,139 @@ class MetodoDePagoViewController: BaseViewController {
             return;
         }
         
-        print(" Valida ")
+        generateTokenCard(numeroTarjeta: numeroTarjetaInput.text!,
+                          nombre: nombreInput.text!,
+                          cvc: codigoSeguridadInput.text!,
+                          expMonth: fechaVencimientoM.text!,
+                          expYear: fechaVencimientoY.text!)
+        
     }
+    
+    func generateTokenCard(numeroTarjeta: String!, nombre: String!, cvc: String!, expMonth: String!, expYear: String!) {
+        // ---------------------------------------------------------------------
+        let conekta = Conekta()
+        conekta.delegate = self
+        conekta.publicKey = StringConstants.keyPublicConekta
+        conekta.collectDevice()
+        let card = conekta.card()
+        card!.setNumber("4242424242424242", name: "Julian Ceballos", cvc: "123", expMonth: "10", expYear: "2019")
+        /*
+         card!.setNumber(numeroTarjeta!,
+         name: nombre,
+         cvc: cvc,
+         expMonth: expMonth,
+         expYear: expYear)
+         */
+        let token = conekta.token()
+        token!.card = card
+        token!.create(success: { (data) -> Void in
+            
+            if let result = data as? Dictionary<String, AnyObject> {
+                if let object = result["object"] as? String {
+                    if object == "token" {
+                        let tokenId = result["id"] as! String
+                        let lastFourDigits = numeroTarjeta.substring(12..<numeroTarjeta.count)
+                        // SE registra en la Base
+                        self.saveCard(token: tokenId, cardDigits: lastFourDigits)
+                    } else if object == "error" {
+                        let message = result["message"] as! String
+                        let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+                        let aceptar = UIAlertAction(title: "Aceptar", style: .cancel, handler: nil)
+                        alert.addAction(aceptar)
+                        self.present(alert, animated: true, completion: nil)
+                        /*
+                         "validation_error": <null>,
+                         "param": card[expired_card],
+                         "object": error,
+                         "message_to_purchaser": The card has expired.,
+                         "code": expired_card,
+                         "message": The card has expired.,
+                         "type": parameter_validation_error
+                         */
+                    }
+                }
+            }
+            
+        }, andError: { (error) -> Void in
+            print("error")
+            print(error)
+        })
+        // ---------------------------------------------------------------------
+    }
+    
+    func saveCard(token: String, cardDigits: String) {
+        
+        var tipoTarjeta = ""
+        
+        let firtsCharacter = String( (numeroTarjetaInput.text?.character(0))! )
+        
+        if firtsCharacter == "3" {
+            tipoTarjeta = TipoTarjeta.american_express.rawValue
+        }
+        if firtsCharacter == "4" {
+            tipoTarjeta = TipoTarjeta.visa.rawValue
+        }
+        if firtsCharacter == "5" {
+            tipoTarjeta = TipoTarjeta.master_card.rawValue
+        }
+        
+        let headers: HTTPHeaders = ["Accept": "application/json", "Content-Type" : "application/x-www-form-urlencoded"]
+        let userId = dataStorage.getUserId()
+        
+        let parameters: Parameters = ["funcion"  : "addTokensUser",
+                                      "name"     : nombreInput.text!,
+                                      "address"  : calleNumeroInput.text!,
+                                      "colony"   : coloniaInput.text!,
+                                      "zip"      : codigoPostalInput.text!,
+                                      "number"   : telefonoContactoInput.text!,
+                                      "digits"   : cardDigits,
+                                      "type"     : tipoTarjeta,
+                                      "token"    : token,
+                                      "id_user"  : userId] as [String: Any]
+        
+        Alamofire.request(BaseURL.baseUrl(), method: .post, parameters: parameters, encoding: ParameterQueryEncoding(), headers: headers).responseJSON
+            { (response: DataResponse) in
+                switch(response.result) {
+                case .success(let value):
+                    if let result = value as? Dictionary<String, Any> {
+                        
+                        let statusMsg = result["status_msg"] as? String
+                        let state = result["state"] as? String
+                        if statusMsg == "OK" && state == "200" {
+                            if let _ = result["data"] as? [Dictionary<String, AnyObject>] {
+                                let alert = UIAlertController(title: "Tarjeta Registrada",
+                                                              message: "Tarjeta guardada con éxito.",
+                                                              preferredStyle: UIAlertController.Style.alert)
+                                let actionOk = UIAlertAction(title: "OK", style: UIAlertAction.Style.default,
+                                                             handler: {(alert: UIAlertAction!) in
+                                                                // Protocolo que devuelve la tarjeta que se acaba de guardar
+                                                                self.delegate?.getCardAfterSave(cardNumber: cardDigits)
+                                                                self.navigationController?.popViewController(animated: true)
+                                })
+                                alert.addAction(actionOk)
+                                self.present(alert, animated: true, completion: nil)
+                            }
+                        }
+                        else{
+                            let alert = UIAlertController(title: "Ocurrió un error al realizar la petición.",
+                                                          message: "\(statusMsg!)",
+                                preferredStyle: UIAlertController.Style.alert)
+                            alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+                            self.present(alert, animated: true, completion: nil)
+                            return;
+                        }
+                    }
+                    //completionHandler(value as? NSDictionary, nil)
+                    break
+                case .failure(let error):
+                    //completionHandler(nil, error as NSError?)
+                    //print(" error:  ")
+                    //print(error)
+                    break
+                }
+        }
+    } // saveCard
+    
     
     
     
@@ -762,4 +879,12 @@ extension MetodoDePagoViewController: UITextFieldDelegate {
     
     
 }
+
+
+
+protocol GetCard {
+    func getCardAfterSave(cardNumber: String)
+}
+
+
 

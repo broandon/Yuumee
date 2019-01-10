@@ -2,6 +2,16 @@ PODS:
   - Alamofire (4.7.3)
   - AlamofireImage (3.4.1):
     - Alamofire (~> 4.7)
+  - Bolts (1.9.0):
+    - Bolts/AppLinks (= 1.9.0)
+    - Bolts/Tasks (= 1.9.0)
+  - Bolts/AppLinks (1.9.0):
+    - Bolts/Tasks
+  - Bolts/Tasks (1.9.0)
+  - FBSDKCoreKit (4.37.0):
+    - Bolts (~> 1.7)
+  - FBSDKLoginKit (4.37.0):
+    - FBSDKCoreKit
   - GoogleMaps (2.7.0):
     - GoogleMaps/Maps (= 2.7.0)
   - GoogleMaps/Base (2.7.0)
@@ -17,19 +27,35 @@ PODS:
 DEPENDENCIES:
   - Alamofire
   - AlamofireImage
+  - FBSDKLoginKit
   - GoogleMaps
   - GooglePlacePicker
   - GooglePlaces
   - JTAppleCalendar
 
+SPEC REPOS:
+  https://github.com/CocoaPods/Specs.git:
+    - Alamofire
+    - AlamofireImage
+    - Bolts
+    - FBSDKCoreKit
+    - FBSDKLoginKit
+    - GoogleMaps
+    - GooglePlacePicker
+    - GooglePlaces
+    - JTAppleCalendar
+
 SPEC CHECKSUMS:
   Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
   AlamofireImage: 78d67ccbb763d87ba44b21583d2153500a195630
+  Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
+  FBSDKCoreKit: fe5f3474499a81963e11e3f3a5c753d0a95ca2b4
+  FBSDKLoginKit: 2f7249686d1e30ce8a5ef5400eedf50b3e3df332
   GoogleMaps: f79af95cb24d869457b1f961c93d3ce8b2f3b848
   GooglePlacePicker: 59ea44db173c58486ad6123993e81feefcbce9c3
   GooglePlaces: 3d06e6c99654545b4738ce49648745779c25f2ef
   JTAppleCalendar: abb30678f42a4ef8a340a932b1dcb8c85a33dac2
 
-PODFILE CHECKSUM: 06c7a583e74e9b3fa72c0a0db0cfea3551fbd155
+PODFILE CHECKSUM: abe7fcb854d75e4b3f3bd690028e90c3acf02100
 
-COCOAPODS: 1.4.0
+COCOAPODS: 1.5.0

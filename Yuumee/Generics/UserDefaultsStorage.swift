@@ -22,6 +22,7 @@ enum UserDefaultKeys: String {
     case lastLongitude
     case notificationsActive
     case avatarFacebook
+    case isLoggedInFacebook
     
 }
 
@@ -96,6 +97,26 @@ extension UserDefaults {
     func getLongitud() -> String {
         return string(forKey: UserDefaultKeys.lastLongitude.rawValue)!
     }
+    
+    
+    
+    // -------------------------------------------------------------------------
+    //                  F A C E B O O K
+    // -------------------------------------------------------------------------
+    func setLoggedInFacebook(value: Bool) {
+        set(value, forKey: UserDefaultKeys.isLoggedInFacebook.rawValue)
+    }
+    func isLoggedInFacebook() -> Bool {
+        return bool(forKey: UserDefaultKeys.isLoggedInFacebook.rawValue)
+    }
+    func setAvatarFacebook(userId: String) {
+        set(userId, forKey: UserDefaultKeys.avatarFacebook.rawValue)
+    }
+    func getAvatarFacebook() -> String {
+        return string(forKey: UserDefaultKeys.avatarFacebook.rawValue)!
+    }
+    // -------------------------------------------------------------------------
+    
     
     
     

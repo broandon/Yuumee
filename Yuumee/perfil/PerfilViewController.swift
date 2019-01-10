@@ -60,7 +60,7 @@ class PerfilViewController: BaseViewController {
         }
     }
     
-    let secciones = ["perfil", "historial", "metodos_pago"]
+    let secciones = ["perfil", "historial", "metodos_pago", "tarjetas"]
     
 }
 
@@ -113,6 +113,15 @@ extension PerfilViewController: UITableViewDelegate, UITableViewDataSource {
             cell.addConstraintsWithFormat(format: "V:|-16-[v0(40)]", views: avatar)
         }
         
+        if seccion == "tarjetas" {
+            cell.textLabel?.text = "Tarjetas"
+            let avatarImg = UIImage(named: "avatar")
+            let avatar = UIImageView(image: avatarImg)
+            cell.addSubview(avatar)
+            cell.addConstraintsWithFormat(format: "H:[v0(40)]-|", views: avatar)
+            cell.addConstraintsWithFormat(format: "V:|-16-[v0(40)]", views: avatar)
+        }
+        
         let sep = UIView()
         sep.backgroundColor = UIColor.rosa
         sep.layer.cornerRadius = 2
@@ -137,10 +146,8 @@ extension PerfilViewController: UITableViewDelegate, UITableViewDataSource {
         let seccion = secciones[currentRow]
         
         if seccion == "perfil" {
-            
             let vc = PerfilAnfitrionViewController() // PerfilUsuarioViewController()
             self.navigationController?.pushViewController(vc, animated: true)
-            
         }
         
         if seccion == "historial" {
@@ -151,6 +158,14 @@ extension PerfilViewController: UITableViewDelegate, UITableViewDataSource {
             let vc = MetodoDePagoViewController()
             self.navigationController?.pushViewController(vc, animated: true)
         }
+        
+        
+        if seccion == "tarjetas" {
+            let vc = TarjetasViewController()
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
+        
+        
         
     }
     

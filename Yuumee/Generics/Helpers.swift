@@ -25,6 +25,11 @@ class ScreenSize {
 
 
 
+enum TipoTarjeta: String {
+    case american_express = "AMEX" // 3
+    case visa             = "VISA" // 4
+    case master_card      = "MASTER CARD" // 5
+}
 
 
 enum TipoUsuario: Int {
@@ -34,6 +39,20 @@ enum TipoUsuario: Int {
 
 
 
+class Utils {
+    
+    typealias callbackAlert = ((UIAlertAction) -> Void)?
+    
+    static func showSimpleAlert(message: String!, context: UIViewController, success: callbackAlert ) {
+        let alertController = UIAlertController(title: "Yuumee",
+                                                message: message,
+                                                preferredStyle: UIAlertController.Style.alert)
+        let dismissAction = UIAlertAction(title: "Ok", style: UIAlertAction.Style.default, handler: success)
+        alertController.addAction(dismissAction)
+        context.present(alertController, animated: true, completion: nil)
+    }
+    
+}
 
 
 

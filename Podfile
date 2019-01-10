@@ -14,5 +14,7 @@ target 'Yuumee' do
   pod 'AlamofireImage'
   
   pod 'JTAppleCalendar'
-
+  
+  pod 'FBSDKLoginKit'
+    
 end

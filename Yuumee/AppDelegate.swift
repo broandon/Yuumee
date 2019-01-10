@@ -10,6 +10,8 @@ import UIKit
 import CoreData
 import GooglePlaces
 
+import FBSDKLoginKit // Cerrrar sesion
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -25,14 +27,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         GMSPlacesClient.provideAPIKey(GOOGLE_API_KEY_PLACES)
         
         // Cerrar Sesion:
-        /*
-        self.dataStorage.setUserId(userId: "")
+        
+        // Cierra sesion de Facebook
+        /*self.dataStorage.setUserId(userId: "")
         self.dataStorage.setLoggedIn(value: false)
         self.dataStorage.setFirstName(firstName: "")
         self.dataStorage.setLastName(lastName: "")
         self.dataStorage.setEmail(email: "")
         self.dataStorage.setTipo(tipo: "")
-        */
+        self.dataStorage.setLoggedInFacebook(value: false)
+        self.dataStorage.setAvatarFacebook(userId: "") */
         
         if self.dataStorage.isLoggedIn() {
             UINavigationBar.appearance().barTintColor = .rosa
