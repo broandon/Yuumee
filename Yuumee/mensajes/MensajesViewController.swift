@@ -96,9 +96,12 @@ class MensajesViewController: BaseViewController {
             "Accept" : "application/json",
             "Content-Type" : "application/x-www-form-urlencoded"
         ]
-        let parameters: Parameters = ["funcion" : "getChat",
+        var funcion = "getChat"
+        if dataStorage.getTipo() == String(TipoUsuario.anfitrion.rawValue) {
+            funcion = "getChatAmphitryon"
+        }
+        let parameters: Parameters = ["funcion" : funcion,
                                       "id_user" : dataStorage.getUserId()] as [String: Any]
-        
         Alamofire.request(BaseURL.baseUrl() , method: .post, parameters: parameters,
                           encoding: ParameterQueryEncoding(),
                           headers: headers).responseJSON{ (response: DataResponse) in

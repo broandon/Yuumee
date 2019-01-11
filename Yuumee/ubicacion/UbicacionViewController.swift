@@ -81,7 +81,6 @@ class UbicacionViewController: BaseViewController, UITextFieldDelegate {
         resultsView.leftViewMode = .always
         // resultsView.addBorder(borderColor: .lightGray, widthBorder: 1)
         
-        
         mapView.delegate = self
         if (CLLocationManager.locationServicesEnabled()) {
             // print(" CLLocationManager.locationServicesEnabled ")
@@ -140,12 +139,17 @@ class UbicacionViewController: BaseViewController, UITextFieldDelegate {
         let mensajes = tabBar.tabBar.items![2]
         mensajes.image = UIImage(named: "mensajes")?.withRenderingMode(.alwaysTemplate)
         let perfil = tabBar.tabBar.items![3]
-        perfil.image = UIImage(named: "perfil")?.withRenderingMode(.alwaysTemplate)
+        if dataStorage.getTipo() == String(TipoUsuario.anfitrion.rawValue) {
+            let image = UIImage(named: "chef_rosa")?.withRenderingMode(.alwaysTemplate)
+            perfil.image = image?.imageResize(sizeChange: CGSize(width: 24, height: 24) )
+        }
+        if dataStorage.getTipo() == String(TipoUsuario.cliente.rawValue) {
+            perfil.image = UIImage(named: "perfil")?.withRenderingMode(.alwaysTemplate)
+        }
         UITabBar.appearance().tintColor = UIColor.rosa
         UITabBar.appearance().unselectedItemTintColor = UIColor.azul
         self.present(tabBar, animated: true, completion: nil)
         return
-        
     }
     
     let dataStorage = UserDefaults.standard

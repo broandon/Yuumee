@@ -10,8 +10,6 @@ import UIKit
 import CoreData
 import GooglePlaces
 
-import FBSDKLoginKit // Cerrrar sesion
-
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -26,9 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         GMSPlacesClient.provideAPIKey(GOOGLE_API_KEY_PLACES)
         
-        // Cerrar Sesion:
-        
-        // Cierra sesion de Facebook
+        // Cierra sesion de Facebook - Cerrar Sesion
         /*self.dataStorage.setUserId(userId: "")
         self.dataStorage.setLoggedIn(value: false)
         self.dataStorage.setFirstName(firstName: "")
@@ -48,7 +44,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             window = UIWindow(frame: UIScreen.main.bounds)
             window?.makeKeyAndVisible()
             window?.rootViewController = nav
-            
         }
         else {
             let initialController = InicioViewController()
@@ -58,8 +53,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             window?.rootViewController = nav
         }
         
-        
         return true
+        
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
