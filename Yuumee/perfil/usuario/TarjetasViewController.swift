@@ -41,14 +41,11 @@ class TarjetasViewController: BaseViewController {
         mainView.addConstraintsWithFormat(format: "H:|-[v0]-|", views: tableView)
         mainView.addConstraintsWithFormat(format: "V:|-[v0]|", views: tableView)
         
-        
         let headers: HTTPHeaders = ["Accept": "application/json",
                                     "Content-Type" : "application/x-www-form-urlencoded"]
-        
         let userId = dataStorage.getUserId()
         let parameters: Parameters = ["funcion"  : "getTokensUser",
                                       "id_user"  : userId] as [String: Any]
-        
         Alamofire.request(BaseURL.baseUrl(), method: .post, parameters: parameters, encoding: ParameterQueryEncoding(), headers: headers).responseJSON
             { (response: DataResponse) in
                 switch(response.result) {
@@ -157,7 +154,8 @@ extension TarjetasViewController: UITableViewDelegate, UITableViewDataSource {
         cell.addSubview(tipoImgTarjeta)
         cell.addSubview(numTarjeta)
         
-        cell.addConstraintsWithFormat(format: "H:|-[v0]-[v1(25)]-16-[v2(15)]-|", views: numTarjeta, tipoImgTarjeta, eliminar)
+        cell.addConstraintsWithFormat(format: "H:|-[v0]-[v1(25)]-16-[v2(15)]-|",
+                                      views: numTarjeta, tipoImgTarjeta, eliminar)
         cell.addConstraintsWithFormat(format: "V:|-[v0]-|", views: numTarjeta)
         cell.addConstraintsWithFormat(format: "V:|-[v0(20)]", views: tipoImgTarjeta)
         cell.addConstraintsWithFormat(format: "V:|-[v0(15)]", views: eliminar)
@@ -208,7 +206,9 @@ extension TarjetasViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     @objc func openFormAddCard() {
-        print(" openFormAddCard ")
+        let vc = MetodoDePagoViewController()
+        vc.delegate = self
+        self.navigationController?.pushViewController(vc, animated: true)
         /*
         let vc = AgregarTarjetaViewController()
         vc.delegate = self
@@ -245,11 +245,27 @@ struct Tarjeta {
 }
 
 
+extension TarjetasViewController: GetCard {
+    
+    func getCardAfterSave(cardNumber: String, tipoTarjeta: String) {
+        let dict = ["id" : "0" as AnyObject,
+                    "digits": cardNumber as AnyObject,
+                    "type": tipoTarjeta as AnyObject,
+                    "client": "" as AnyObject]
+        let newTarjet = Tarjeta(tarjetasArray: dict)
+        tarjetas.append(newTarjet)
+        self.tableView.reloadData()
+    }
+    
+}
+
+
+
+
 
 extension TarjetasViewController: DeletCard {
     func eliminarTarjetaProtocol(indexPath: IndexPath) {
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-            
             //let indexPath = IndexPath(item: indexPath.row, section: 0)
             self.tarjetas.remove(at: indexPath.row)
             self.tableView.reloadData()

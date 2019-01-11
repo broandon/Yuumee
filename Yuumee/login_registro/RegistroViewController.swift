@@ -369,9 +369,9 @@ extension RegistroViewController: FBSDKLoginButtonDelegate {
                 self.dataStorage.setAvatarFacebook(userId: imageURL)
             }
             
-            let email = params["email"] as? String
-            let firstName = params["first_name"] as? String
-            let lastName = params["last_name"] as? String
+            let email = params["email"] as! String
+            let firstName = params["first_name"] as! String
+            let lastName = params["last_name"] as! String
             let paramsFacebook: Dictionary<String, Any> = [
                 "first_name" : firstName as Any,
                 "last_name"  : lastName as Any,
@@ -391,7 +391,7 @@ extension RegistroViewController: FBSDKLoginButtonDelegate {
                                     let statusCode = responseRecived!["state"] as! String
                                     if statusCode == "200" {
                                         let datosUsuario = responseRecived!["data"] as! Dictionary<String, Any>
-                                        var nameFiltered: String = ""
+                                        /*var nameFiltered: String = ""
                                         if let firstName: String = params["first_name"] as! String? {
                                             if firstName.lowercased().range(of: "optional") != nil {
                                                 let start = firstName.index(firstName.startIndex, offsetBy: 10)
@@ -428,16 +428,16 @@ extension RegistroViewController: FBSDKLoginButtonDelegate {
                                             else{
                                                 emailFiltered = email
                                             }
-                                        }
+                                        }*/
                                         
                                         let idUser = datosUsuario["id_user"] as! String
                                         // -------------------------------------
                                         self.dataStorage.setUserId(userId: idUser)
                                         self.dataStorage.setLoggedIn(value: true)
                                         self.dataStorage.setLoggedInFacebook(value: true)
-                                        self.dataStorage.setLastName(lastName: lastNameFiltered)
-                                        self.dataStorage.setEmail(email: emailFiltered)
-                                        self.dataStorage.setFirstName(firstName: nameFiltered)
+                                        self.dataStorage.setFirstName(firstName: firstName)
+                                        self.dataStorage.setLastName(lastName: lastName)
+                                        self.dataStorage.setEmail(email: email)
                                         // -------------------------------------
                                         
                                         let vc = UbicacionViewController()

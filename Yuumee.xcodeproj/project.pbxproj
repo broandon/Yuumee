@@ -49,6 +49,7 @@
 		9C99B32121E3CC5B00ADD584 /* UserDefaultsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C99B32021E3CC5B00ADD584 /* UserDefaultsStorage.swift */; };
 		9CA8E88221E7C26F00266E99 /* StringConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CA8E88121E7C26F00266E99 /* StringConstants.swift */; };
 		9CA8E88421E7D24700266E99 /* TarjetasViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CA8E88321E7D24700266E99 /* TarjetasViewController.swift */; };
+		9CA8E88921E8073600266E99 /* HistorialEventosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CA8E88821E8073600266E99 /* HistorialEventosViewController.swift */; };
 		A98964B9D5276EF0D58FC294 /* Pods_Yuumee.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B3132EA2CE9863F6B74488C /* Pods_Yuumee.framework */; };
 /* End PBXBuildFile section */
 
@@ -106,6 +107,7 @@
 		9C99B32021E3CC5B00ADD584 /* UserDefaultsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsStorage.swift; sourceTree = "<group>"; };
 		9CA8E88121E7C26F00266E99 /* StringConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringConstants.swift; sourceTree = "<group>"; };
 		9CA8E88321E7D24700266E99 /* TarjetasViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TarjetasViewController.swift; sourceTree = "<group>"; };
+		9CA8E88821E8073600266E99 /* HistorialEventosViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistorialEventosViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -226,6 +228,7 @@
 				5E68D6B821C8B04800DA00AB /* usuario */,
 				5E68D6B621C8B04500DA00AB /* PerfilViewController.swift */,
 				9C90F5B921DD280900ACDA8F /* PerfilAnfitrionViewController.swift */,
+				9CA8E88821E8073600266E99 /* HistorialEventosViewController.swift */,
 			);
 			path = perfil;
 			sourceTree = "<group>";
@@ -475,6 +478,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9C0CFCA021CAC230006AA810 /* ModalFiltersViewController.swift in Sources */,
+				9CA8E88921E8073600266E99 /* HistorialEventosViewController.swift in Sources */,
 				5EC49D3521D1F44F00DAC1BD /* TextField.swift in Sources */,
 				9C0CFCA221CAFF07006AA810 /* CustomSegmentedControl.swift in Sources */,
 				5EC49D3721D1F46D00DAC1BD /* BaseViewController.swift in Sources */,

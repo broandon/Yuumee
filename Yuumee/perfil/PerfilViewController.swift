@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import FBSDKLoginKit
 
 class PerfilViewController: BaseViewController {
     
@@ -60,7 +61,9 @@ class PerfilViewController: BaseViewController {
         }
     }
     
-    let secciones = ["perfil", "historial", "metodos_pago", "tarjetas"]
+    let secciones = ["perfil", "historial", "metodos_pago", "cerrar_sesion"]
+    
+    let dataStorage = UserDefaults.standard
     
 }
 
@@ -113,8 +116,8 @@ extension PerfilViewController: UITableViewDelegate, UITableViewDataSource {
             cell.addConstraintsWithFormat(format: "V:|-16-[v0(40)]", views: avatar)
         }
         
-        if seccion == "tarjetas" {
-            cell.textLabel?.text = "Tarjetas"
+        if seccion == "cerrar_sesion" {
+            cell.textLabel?.text = "Cerrar sesión"
             let avatarImg = UIImage(named: "avatar")
             let avatar = UIImageView(image: avatarImg)
             cell.addSubview(avatar)
@@ -151,21 +154,53 @@ extension PerfilViewController: UITableViewDelegate, UITableViewDataSource {
         }
         
         if seccion == "historial" {
-            //
+            
+            let vc = HistorialEventosViewController()
+            self.navigationController?.pushViewController(vc, animated: true)
+            
         }
         
         if seccion == "metodos_pago" {
-            let vc = MetodoDePagoViewController()
-            self.navigationController?.pushViewController(vc, animated: true)
-        }
-        
-        
-        if seccion == "tarjetas" {
             let vc = TarjetasViewController()
             self.navigationController?.pushViewController(vc, animated: true)
         }
         
-        
+        if seccion == "cerrar_sesion" {
+            
+            let refreshAlert = UIAlertController(title: "Cerrar Sesión",
+                                                 message: "¿Realmete desea cerrarsu sesión?",
+                                                 preferredStyle: UIAlertController.Style.alert)
+            refreshAlert.addAction(UIAlertAction(title: "Aceptar", style: .default,
+                                                 handler: { (action: UIAlertAction!) in
+                                                    
+                                                    let dictionary = self.dataStorage.dictionaryRepresentation()
+                                                    dictionary.keys.forEach { key in
+                                                        self.dataStorage.removeObject(forKey: key)
+                                                    }
+                                                    
+                                                    self.dataStorage.setUserId(userId: "")
+                                                    self.dataStorage.setLoggedIn(value: false)
+                                                    self.dataStorage.setFirstName(firstName: "")
+                                                    self.dataStorage.setLastName(lastName: "")
+                                                    self.dataStorage.setEmail(email: "")
+                                                    self.dataStorage.setTipo(tipo: "")
+                                                    self.dataStorage.setLoggedInFacebook(value: false)
+                                                    self.dataStorage.setAvatarFacebook(userId: "")
+                                                    
+                                                    // Cierra sesion de Facebook
+                                                    let loginManager = FBSDKLoginManager()
+                                                    loginManager.logOut()
+                                                    
+                                                    let vc = InicioViewController()
+                                                    //let nav = UINavigationController(rootViewController: vc)
+                                                    self.present(vc, animated: true, completion: nil)
+                                                    
+                                                    
+            }))
+            refreshAlert.addAction(UIAlertAction(title: "Cancelar", style: .cancel, handler: nil))
+            self.present(refreshAlert, animated: true, completion: nil)
+            
+        }
         
     }
     

@@ -38,7 +38,7 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
         return tableView
     }()
     
-    let secciones = ["categoria", "comida", "horario", "detalles_evento", "fechas_evento", "total"]
+    let secciones = ["categoria", "comida", "horario", "detalles_evento"] // "fechas_evento", "total"
     
     override func viewDidLoad() {
         super.viewDidLoad()

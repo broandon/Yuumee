@@ -407,10 +407,8 @@ class MetodoDePagoViewController: BaseViewController {
     
     func saveCard(token: String, cardDigits: String) {
         
-        var tipoTarjeta = ""
-        
+        var tipoTarjeta = TipoTarjeta.visa.rawValue
         let firtsCharacter = String( (numeroTarjetaInput.text?.character(0))! )
-        
         if firtsCharacter == "3" {
             tipoTarjeta = TipoTarjeta.american_express.rawValue
         }
@@ -423,7 +421,6 @@ class MetodoDePagoViewController: BaseViewController {
         
         let headers: HTTPHeaders = ["Accept": "application/json", "Content-Type" : "application/x-www-form-urlencoded"]
         let userId = dataStorage.getUserId()
-        
         let parameters: Parameters = ["funcion"  : "addTokensUser",
                                       "name"     : nombreInput.text!,
                                       "address"  : calleNumeroInput.text!,
@@ -451,7 +448,7 @@ class MetodoDePagoViewController: BaseViewController {
                                 let actionOk = UIAlertAction(title: "OK", style: UIAlertAction.Style.default,
                                                              handler: {(alert: UIAlertAction!) in
                                                                 // Protocolo que devuelve la tarjeta que se acaba de guardar
-                                                                self.delegate?.getCardAfterSave(cardNumber: cardDigits)
+                                                                self.delegate?.getCardAfterSave(cardNumber: cardDigits, tipoTarjeta: tipoTarjeta)
                                                                 self.navigationController?.popViewController(animated: true)
                                 })
                                 alert.addAction(actionOk)
@@ -883,7 +880,7 @@ extension MetodoDePagoViewController: UITextFieldDelegate {
 
 
 protocol GetCard {
-    func getCardAfterSave(cardNumber: String)
+    func getCardAfterSave(cardNumber: String, tipoTarjeta: String)
 }
 
 

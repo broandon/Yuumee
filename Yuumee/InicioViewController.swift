@@ -186,7 +186,7 @@ extension InicioViewController: FBSDKLoginButtonDelegate {
         }
         
         // "id, name, email, picture.type(large)"
-        FBSDKGraphRequest(graphPath: "/me", parameters: ["fields" : "email, picture.type(large)"]).start {
+        FBSDKGraphRequest(graphPath: "/me", parameters: ["fields" : "email, first_name, last_name, picture.type(large)"]).start {
             (connection, result, error) in
             if error != nil {
                 print("Peticion Fallida")
@@ -204,11 +204,15 @@ extension InicioViewController: FBSDKLoginButtonDelegate {
                 //avatar = imageURL
                 self.dataStorage.setAvatarFacebook(userId: imageURL)
             }
-            let email = params["email"] as? String
-            let paramsFacebook: Dictionary<String, Any> = ["email" : email as Any,
-                                                           "password" : email as Any,
+            let email = params["email"] as! String
+            let firstName = params["first_name"] as! String
+            let lastName = params["last_name"] as! String
+            let paramsFacebook: Dictionary<String, Any> = ["first_name" : firstName as Any,
+                                                           "last_name"  : lastName as Any,
+                                                           "email"      : email as Any,
+                                                           "password"   : email as Any,
                                                            "facebook_login" : 1,
-                                                           "funcion" : "login"]
+                                                           "funcion"    : "newUser"]
             let urlNewUser = URL(string: BaseURL.baseUrl())!
             Alamofire.request(urlNewUser, method: .post, parameters: paramsFacebook,
                               encoding: URLEncoding.default).responseJSON { (response) in
