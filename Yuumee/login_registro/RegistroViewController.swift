@@ -12,10 +12,21 @@ import FBSDKLoginKit
 
 extension RegistroViewController: UITextFieldDelegate {
     
+    
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        
+        if textField == telefonoInput {
+            guard let text = textField.text else { return true }
+            let newLength = text.count + string.count - range.length
+            return newLength <= 10
+        }
+        
+        return true
+    }
+    
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        
-        //if textField == passInput{}
-        
         textField.resignFirstResponder()
         return true
     }
@@ -38,11 +49,11 @@ class RegistroViewController: BaseViewController {
         return tableView
     }()
     
-    let facebook: FBSDKLoginButton = {
+    /*let facebook: FBSDKLoginButton = {
         let button = FBSDKLoginButton()
         button.readPermissions = ["email", "public_profile"]
         return button
-    }()
+    }()*/
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -62,9 +73,9 @@ class RegistroViewController: BaseViewController {
         topContainer.backgroundColor = .rosa
         topContainer.addSubview(regresar)
         topContainer.addSubview(imageLeftArrow)
-        topContainer.addConstraintsWithFormat(format: "H:|[v0(10)][v1]", views: imageLeftArrow, regresar)
-        topContainer.addConstraintsWithFormat(format: "V:|[v0]", views: regresar)
-        topContainer.addConstraintsWithFormat(format: "V:|-[v0(15)]", views: imageLeftArrow)
+        topContainer.addConstraintsWithFormat(format: "H:|-[v0(10)][v1]", views: imageLeftArrow, regresar)
+        topContainer.addConstraintsWithFormat(format: "V:|[v0]|", views: regresar)
+        topContainer.addConstraintsWithFormat(format: "V:|-16-[v0(15)]", views: imageLeftArrow)
         
         let registrate = UIButton(type: .system)
         registrate.setTitle("Resgistrate", for: .normal)
@@ -80,21 +91,21 @@ class RegistroViewController: BaseViewController {
         containerBottom.backgroundColor = .rosa
         containerBottom.addSubview(registrate)
         containerBottom.addSubview(imageArrow)
-        containerBottom.addConstraintsWithFormat(format: "H:[v0][v1(10)]|", views: registrate, imageArrow)
-        containerBottom.addConstraintsWithFormat(format: "V:|[v0]", views: registrate)
-        containerBottom.addConstraintsWithFormat(format: "V:|-[v0(15)]", views: imageArrow)
+        containerBottom.addConstraintsWithFormat(format: "H:[v0][v1(10)]-16-|", views: registrate, imageArrow)
+        containerBottom.addConstraintsWithFormat(format: "V:|[v0]|", views: registrate)
+        containerBottom.addConstraintsWithFormat(format: "V:|-17-[v0(15)]", views: imageArrow)
         
         mainView.addSubview(tableView)
         mainView.addSubview(topContainer)
         mainView.addSubview(containerBottom)
-        mainView.addSubview(facebook)
-        facebook.delegate = self
+        //mainView.addSubview(facebook)
+        //facebook.delegate = self
         mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: tableView)
         mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: topContainer)
         mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: containerBottom)
-        mainView.addConstraintsWithFormat(format: "H:|-16-[v0]-16-|", views: facebook)
-        mainView.addConstraintsWithFormat(format: "V:|-[v0(50)]-[v1]-[v2(40)]-[v3(50)]|",
-                                          views: topContainer, tableView, facebook, containerBottom)
+        //mainView.addConstraintsWithFormat(format: "H:|-16-[v0]-16-|", views: facebook)
+        mainView.addConstraintsWithFormat(format: "V:|-[v0(50)]-[v1]-[v2(50)]-|",
+                                          views: topContainer, tableView, containerBottom)
     }
     
     @objc func backVC() {

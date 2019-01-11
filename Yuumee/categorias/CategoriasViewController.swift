@@ -198,16 +198,16 @@ extension CategoriasViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: defaultReuseId, for: indexPath)
-        // cell.releaseView()
+        cell.releaseView()
         cell.selectionStyle = .none
         
         let categoria = categorias[indexPath.section]
         
         let backgroundImage = UIImageView(image: UIImage())
-        backgroundImage.contentMode = .scaleAspectFill
+        //backgroundImage.contentMode = .scaleAspectFill
         
         let tintView = UIView()
-        tintView.backgroundColor = UIColor(white: 0, alpha: 0.7) //change to your liking
+        tintView.backgroundColor = UIColor(white: 0, alpha: 0.5) //change to your liking
         tintView.frame = CGRect(x: 0, y: 0, width: cell.frame.width, height: cell.frame.height)
         backgroundImage.addSubview(tintView)
         cell.backgroundView = backgroundImage

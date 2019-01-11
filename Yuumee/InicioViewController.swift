@@ -100,9 +100,9 @@ class InicioViewController: BaseViewController {
         
         containerBottom.addSubview(omitir)
         containerBottom.addSubview(imageArrow)
-        containerBottom.addConstraintsWithFormat(format: "H:[v0][v1(10)]-|", views: omitir, imageArrow)
-        containerBottom.addConstraintsWithFormat(format: "V:|[v0]", views: omitir)
-        containerBottom.addConstraintsWithFormat(format: "V:|-[v0(15)]", views: imageArrow)
+        containerBottom.addConstraintsWithFormat(format: "H:[v0][v1(10)]-16-|", views: omitir, imageArrow)
+        containerBottom.addConstraintsWithFormat(format: "V:|[v0]|", views: omitir)
+        containerBottom.addConstraintsWithFormat(format: "V:|-16-[v0(15)]", views: imageArrow)
         
         registrate.addTarget(self, action: #selector(registro) , for: .touchUpInside)
         

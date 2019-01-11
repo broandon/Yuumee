@@ -44,8 +44,8 @@ class LoginViewController: BaseViewController {
         topContainer.addSubview(regresar)
         topContainer.addSubview(imageLeftArrow)
         topContainer.addConstraintsWithFormat(format: "H:|[v0(10)][v1]", views: imageLeftArrow, regresar)
-        topContainer.addConstraintsWithFormat(format: "V:|[v0]", views: regresar)
-        topContainer.addConstraintsWithFormat(format: "V:|-[v0(15)]", views: imageLeftArrow)
+        topContainer.addConstraintsWithFormat(format: "V:|[v0]|", views: regresar)
+        topContainer.addConstraintsWithFormat(format: "V:|-16-[v0(15)]", views: imageLeftArrow)
         
         
         let iniciarSesion = UIButton(type: .system)
@@ -62,9 +62,9 @@ class LoginViewController: BaseViewController {
         containerBottom.backgroundColor = .rosa
         containerBottom.addSubview(iniciarSesion)
         containerBottom.addSubview(imageArrow)
-        containerBottom.addConstraintsWithFormat(format: "H:[v0][v1(10)]|", views: iniciarSesion, imageArrow)
-        containerBottom.addConstraintsWithFormat(format: "V:|[v0]", views: iniciarSesion)
-        containerBottom.addConstraintsWithFormat(format: "V:|-[v0(15)]", views: imageArrow)
+        containerBottom.addConstraintsWithFormat(format: "H:[v0][v1(10)]-16-|", views: iniciarSesion, imageArrow)
+        containerBottom.addConstraintsWithFormat(format: "V:|[v0]|", views: iniciarSesion)
+        containerBottom.addConstraintsWithFormat(format: "V:|-16-[v0(15)]", views: imageArrow)
         
         mainView.addSubview(tableView)
         mainView.addSubview(topContainer)
@@ -73,7 +73,7 @@ class LoginViewController: BaseViewController {
         mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: tableView)
         mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: topContainer)
         mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: containerBottom)
-        mainView.addConstraintsWithFormat(format: "V:|-[v0(50)]-[v1]-[v2(50)]|",
+        mainView.addConstraintsWithFormat(format: "V:|-[v0(50)]-[v1]-[v2(45)]|",
                                           views: topContainer, tableView, containerBottom)
     }
     

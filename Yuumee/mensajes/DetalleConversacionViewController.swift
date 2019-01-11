@@ -114,9 +114,9 @@ class DetalleConversacionViewController: BaseViewController, UITextViewDelegate 
         mainView.addSubview(tableView)
         mainView.addSubview(containerMessage)
         
-        mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: tableView)
+        mainView.addConstraintsWithFormat(format: "H:|-[v0]-|", views: tableView)
         mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: containerMessage)
-        mainView.addConstraintsWithFormat(format: "V:|-[v0]-[v1(60)]|",
+        mainView.addConstraintsWithFormat(format: "V:|-16-[v0]-[v1(60)]|",
                                           views: tableView, containerMessage)
         containerMessage.addSubview(message)
         containerMessage.addSubview(postMessage)
@@ -239,12 +239,13 @@ class DetalleConversacionViewController: BaseViewController, UITextViewDelegate 
                                                               "id_usuario": self.dataStorage.getUserId()] as [String : Any]
                                             self.message.text = ""
                                             let newC = Conversation(conversation: newMessage)
+                                            
                                             self.conversations.append(newC)
                                             self.tableView.reloadData()
                                             self.message.resignFirstResponder()
                                             
-                                            let indexPath = IndexPath(item: self.conversations.count, section: 0)
-                                            self.tableView.scrollToRow(at: indexPath, at: UITableView.ScrollPosition.bottom, animated: true)
+                                            //let indexPath = IndexPath(item: self.conversations.count, section: 0)
+                                            //self.tableView.scrollToRow(at: indexPath, at: UITableView.ScrollPosition.bottom, animated: true)
                                             
                                         }
                                         

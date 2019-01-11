@@ -87,7 +87,7 @@ extension PerfilViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: defaultReuseId, for: indexPath)
         cell.selectionStyle = .none
         cell.textLabel?.textColor = UIColor.darkGray
-        cell.textLabel?.font = UIFont.init(name: (cell.textLabel?.font.familyName)!, size: 24)
+        cell.textLabel?.font = UIFont.init(name: (cell.textLabel?.font.familyName)!, size: 18)
         
         if seccion == "perfil" {
             cell.textLabel?.text = "Perfil"
@@ -100,7 +100,7 @@ extension PerfilViewController: UITableViewDelegate, UITableViewDataSource {
         
         if seccion == "historial" {
             cell.textLabel?.text = "Historal de eventos"
-            let avatarImg = UIImage(named: "avatar")
+            let avatarImg = UIImage(named: "historial")
             let avatar = UIImageView(image: avatarImg)
             cell.addSubview(avatar)
             cell.addConstraintsWithFormat(format: "H:[v0(40)]-|", views: avatar)
@@ -109,7 +109,7 @@ extension PerfilViewController: UITableViewDelegate, UITableViewDataSource {
         
         if seccion == "metodos_pago" {
             cell.textLabel?.text = "Método de pago"
-            let avatarImg = UIImage(named: "avatar")
+            let avatarImg = UIImage(named: "tarjeta")
             let avatar = UIImageView(image: avatarImg)
             cell.addSubview(avatar)
             cell.addConstraintsWithFormat(format: "H:[v0(40)]-|", views: avatar)
@@ -118,8 +118,12 @@ extension PerfilViewController: UITableViewDelegate, UITableViewDataSource {
         
         if seccion == "cerrar_sesion" {
             cell.textLabel?.text = "Cerrar sesión"
-            let avatarImg = UIImage(named: "avatar")
+            let avatarImg = UIImage(named: "power")
             let avatar = UIImageView(image: avatarImg)
+            
+            avatar.image = avatar.image!.withRenderingMode(.alwaysTemplate)
+            avatar.tintColor = UIColor.rosa
+            
             cell.addSubview(avatar)
             cell.addConstraintsWithFormat(format: "H:[v0(40)]-|", views: avatar)
             cell.addConstraintsWithFormat(format: "V:|-16-[v0(40)]", views: avatar)
