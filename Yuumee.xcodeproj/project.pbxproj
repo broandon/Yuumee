@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5E2CDB3D21E95ABC0029BF93 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5E2CDB3C21E95ABC0029BF93 /* GoogleService-Info.plist */; };
 		5E68D64321C89FF400DA00AB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E68D64221C89FF400DA00AB /* AppDelegate.swift */; };
 		5E68D64B21C89FF400DA00AB /* Yuumee.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5E68D64921C89FF400DA00AB /* Yuumee.xcdatamodeld */; };
 		5E68D64D21C89FF500DA00AB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5E68D64C21C89FF500DA00AB /* Assets.xcassets */; };
@@ -56,6 +57,7 @@
 /* Begin PBXFileReference section */
 		0B3132EA2CE9863F6B74488C /* Pods_Yuumee.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Yuumee.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3330BBBE07F28EBE7CD61116 /* Pods-Yuumee.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Yuumee.release.xcconfig"; path = "Pods/Target Support Files/Pods-Yuumee/Pods-Yuumee.release.xcconfig"; sourceTree = "<group>"; };
+		5E2CDB3C21E95ABC0029BF93 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5E68D63F21C89FF400DA00AB /* Yuumee.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Yuumee.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5E68D64221C89FF400DA00AB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5E68D64A21C89FF400DA00AB /* Yuumee.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Yuumee.xcdatamodel; sourceTree = "<group>"; };
@@ -145,6 +147,7 @@
 			isa = PBXGroup;
 			children = (
 				9C8B90DE21E9550200229B38 /* Yuumee.entitlements */,
+				5E2CDB3C21E95ABC0029BF93 /* GoogleService-Info.plist */,
 				5E800ECD21E73890008F4F66 /* Conekta */,
 				5E68D6B521C8B03800DA00AB /* perfil */,
 				5E68D6B021C8B02100DA00AB /* mensajes */,
@@ -404,6 +407,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5EC49D2E21D1F2F300DAC1BD /* ArchiaRegular.ttf in Resources */,
+				5E2CDB3D21E95ABC0029BF93 /* GoogleService-Info.plist in Resources */,
 				5E68D65021C89FF500DA00AB /* LaunchScreen.storyboard in Resources */,
 				5E68D64D21C89FF500DA00AB /* Assets.xcassets in Resources */,
 			);
@@ -446,7 +450,10 @@
 				"${BUILT_PRODUCTS_DIR}/Bolts/Bolts.framework",
 				"${BUILT_PRODUCTS_DIR}/FBSDKCoreKit/FBSDKCoreKit.framework",
 				"${BUILT_PRODUCTS_DIR}/FBSDKLoginKit/FBSDKLoginKit.framework",
+				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
 				"${BUILT_PRODUCTS_DIR}/JTAppleCalendar/JTAppleCalendar.framework",
+				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
+				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -455,7 +462,10 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Bolts.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKCoreKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKLoginKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/JTAppleCalendar.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Protobuf.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -674,10 +684,7 @@
 				DEVELOPMENT_TEAM = W4MERUEP35;
 				INFOPLIST_FILE = Yuumee/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Conekta",
@@ -704,10 +711,7 @@
 				DEVELOPMENT_TEAM = W4MERUEP35;
 				INFOPLIST_FILE = Yuumee/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Conekta",

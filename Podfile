@@ -16,5 +16,8 @@ target 'Yuumee' do
   pod 'JTAppleCalendar'
   
   pod 'FBSDKLoginKit'
-    
+  
+  pod 'Firebase/Core'
+  pod 'Firebase/Messaging'
+
 end

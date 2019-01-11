@@ -9,6 +9,8 @@
 import UIKit
 import CoreData
 import GooglePlaces
+import UserNotifications
+import Firebase
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -18,9 +20,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let GOOGLE_API_KEY_PLACES = "AIzaSyDCILkGdFF7IAd8fEBknF6kA-WqNfAQq7I"
     
     let dataStorage = UserDefaults.standard
-
+    
+    let gcmMessageIDKey = "gcm.message_id"
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        FirebaseApp.configure()
+        //Messaging.messaging().delegate = self
+        if #available(iOS 10.0, *) {
+            UNUserNotificationCenter.current().delegate = self
+            let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
+            UNUserNotificationCenter.current().requestAuthorization(
+                options: authOptions,
+                completionHandler: {_, _ in })
+        } else {
+            let settings: UIUserNotificationSettings = UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil)
+            application.registerUserNotificationSettings(settings)
+        }
+        application.registerForRemoteNotifications()
+        
         
         GMSPlacesClient.provideAPIKey(GOOGLE_API_KEY_PLACES)
         
@@ -127,4 +145,55 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
 }
+
+
+
+@available(iOS 10, *)
+extension AppDelegate : UNUserNotificationCenterDelegate {
+    
+    // Receive displayed notifications for iOS 10 devices.
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                willPresent notification: UNNotification,
+                                withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        let userInfo = notification.request.content.userInfo
+        if let messageID = userInfo[gcmMessageIDKey] {
+            // print("Message ID 1 : \(messageID)")
+        }
+        //print(userInfo)
+        completionHandler([])
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                didReceive response: UNNotificationResponse,
+                                withCompletionHandler completionHandler: @escaping () -> Void) {
+        let userInfo = response.notification.request.content.userInfo
+        if let messageID = userInfo[gcmMessageIDKey] {
+            // print("Message ID 2: \(messageID)")
+        }
+        //print(userInfo)
+        completionHandler()
+    }
+    
+}
+
+
+//extension AppDelegate : MessagingDelegate {
+    
+    /*func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
+        
+        print("Firebase registration token: \(fcmToken)")
+        
+        if !fcmToken.isEmpty {
+            let isTokenRegistered = dataStorage.getToken()
+            if isTokenRegistered!.isEmpty {
+                dataStorage.setToken(token: fcmToken)
+            }
+        }
+    }*/
+    
+    //func messaging(_ messaging: Messaging, didReceive remoteMessage: MessagingRemoteMessage) {
+        // print("Received data message: \(remoteMessage.appData)")
+    //}
+//}
+
 
