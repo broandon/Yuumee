@@ -26,7 +26,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         FirebaseApp.configure()
-        //Messaging.messaging().delegate = self
+        Messaging.messaging().delegate = self
         if #available(iOS 10.0, *) {
             UNUserNotificationCenter.current().delegate = self
             let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
@@ -177,9 +177,9 @@ extension AppDelegate : UNUserNotificationCenterDelegate {
 }
 
 
-//extension AppDelegate : MessagingDelegate {
+extension AppDelegate : MessagingDelegate {
     
-    /*func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
+    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
         
         print("Firebase registration token: \(fcmToken)")
         
@@ -189,11 +189,11 @@ extension AppDelegate : UNUserNotificationCenterDelegate {
                 dataStorage.setToken(token: fcmToken)
             }
         }
-    }*/
+    }
     
-    //func messaging(_ messaging: Messaging, didReceive remoteMessage: MessagingRemoteMessage) {
+    func messaging(_ messaging: Messaging, didReceive remoteMessage: MessagingRemoteMessage) {
         // print("Received data message: \(remoteMessage.appData)")
-    //}
-//}
+    }
+}
 
 
