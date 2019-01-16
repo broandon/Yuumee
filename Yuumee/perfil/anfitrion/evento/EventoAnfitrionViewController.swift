@@ -38,7 +38,7 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
         return tableView
     }()
     
-    let secciones = ["categoria", "comida", "horario", "detalles_evento"] // "fechas_evento", "total"
+    let secciones = ["categoria", "comida", "horario", "detalles_evento", "fechas_evento", "total"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,11 +46,9 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
         self.navigationController?.navigationBar.topItem?.title = "Evento"
         self.hideKeyboardWhenTappedAround()
         mainView.backgroundColor = .white
-        
         mainView.addSubview(tableView)
         mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: tableView)
         mainView.addConstraintsWithFormat(format: "V:|-[v0]|", views: tableView)
-        
     }
     
     // MARK: Data Table
@@ -100,14 +98,14 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
             }
         }
         
-        if seccion == "detalles_evento" {
+        /*if seccion == "detalles_evento" {
             let cell = tableView.dequeueReusableCell(withIdentifier: detallesEventoCell, for: indexPath)
             if let cell = cell as? DetallesEventoCell {
                 cell.selectionStyle = .none
                 cell.setUpView()
                 return cell
             }
-        }
+        }*/
         
         if seccion == "fechas_evento" {
             let cell = tableView.dequeueReusableCell(withIdentifier: fechasCell, for: indexPath)
@@ -152,8 +150,19 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
 }
 
 
-import JTAppleCalendar
 
+
+
+
+
+
+
+
+
+
+
+
+import JTAppleCalendar
 
 class FechasCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -162,7 +171,6 @@ class FechasCell: UITableViewCell {
     required init?(coder aDecoder: NSCoder) {
         fatalError(" Error to init ")
     }
-    
     
     let containerDate: UIView = {
         let view = UIView()
@@ -251,10 +259,9 @@ class FechasCell: UITableViewCell {
     func getDayOfWeek(day: String) -> ArchiaBoldLabel {
         let label = ArchiaBoldLabel()
         label.text = day
-        label.font = UIFont.systemFont(ofSize: 12)
+        label.font = UIFont.systemFont(ofSize: 10)
         label.textAlignment = .center
-        label.tintColor = .white
-        label.textColor = .white
+        label.textColor = UIColor.lightGray
         return label
     }
     
@@ -264,9 +271,7 @@ class FechasCell: UITableViewCell {
     
     var currentMonthAndDate: ArchiaBoldLabel = {
         let label = ArchiaBoldLabel()
-        //label.text = ""
-        label.textColor = .white
-        label.tintColor = .white
+        //label.textColor = .white
         label.textAlignment = .center
         return label
     }()
@@ -303,7 +308,8 @@ class FechasCell: UITableViewCell {
         containerRepetir.addConstraintsWithFormat(format: "H:|-[v0(70)]-[v1(80)]", views: repetir, repetirTextView)
         containerRepetir.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: repetir)
         containerRepetir.addConstraintsWithFormat(format: "V:|-[v0(35)]", views: repetirTextView)
-        
+        containerDate.isHidden = true
+        containerRepetir.isHidden = true
         
         addBorder()
         //----------------------------------------------------------------------
@@ -325,7 +331,6 @@ class FechasCell: UITableViewCell {
         let sab = getDayOfWeek(day: "SAB")
         
         addSubview(stackView)
-        
         //Stack View
         stackView.axis         = NSLayoutConstraint.Axis.horizontal
         stackView.distribution = UIStackView.Distribution.equalSpacing
@@ -339,16 +344,15 @@ class FechasCell: UITableViewCell {
         stackView.addArrangedSubview(sab)
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.backgroundColor = .lightGray
-        stackView.addBorder()
-        
         addSubview(stackView)
-        addSubview(calendarView); calendarView.addBorder(borderColor: .yellow, widthBorder: 2)
-        addSubview(contHeaderMap); contHeaderMap.addBorder(borderColor: .green, widthBorder: 2)
+        addSubview(calendarView)
+        addSubview(contHeaderMap)
         
         contHeaderMap.addSubview(nextMonth)
         contHeaderMap.addSubview(prevMont)
         contHeaderMap.addSubview(currentMonthAndDate)
-        contHeaderMap.addConstraintsWithFormat(format: "H:|[v0(25)]-[v1]-[v2(25)]|", views: prevMont, currentMonthAndDate, nextMonth)
+        contHeaderMap.addConstraintsWithFormat(format: "H:|[v0(25)]-[v1]-[v2(25)]|",
+                                               views: prevMont, currentMonthAndDate, nextMonth)
         contHeaderMap.addConstraintsWithFormat(format: "V:|-[v0(25)]", views: nextMonth)
         contHeaderMap.addConstraintsWithFormat(format: "V:|-[v0(25)]", views: prevMont)
         contHeaderMap.addConstraintsWithFormat(format: "V:|-[v0]", views: currentMonthAndDate)
@@ -361,7 +365,7 @@ class FechasCell: UITableViewCell {
         addSubview(containerRepetir)
         addConstraintsWithFormat(format: "H:|[v0]|", views: containerDate)
         addConstraintsWithFormat(format: "H:|[v0]|", views: containerRepetir)
-        addConstraintsWithFormat(format: "V:|[v0(50)]-[v1(50)]-16-[v2(40)]-[v3(30)]-[v4(300)]",
+        addConstraintsWithFormat(format: "V:|[v0(0)]-[v1(0)][v2(40)][v3(30)][v4(300)]",
                                  views: containerDate, containerRepetir, contHeaderMap, stackView, calendarView)
         
         dateSelected = Date()
@@ -372,16 +376,14 @@ class FechasCell: UITableViewCell {
         guard let startDate = visibleDates.monthDates.first?.date else {
             return
         }
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "es_MX")
-        formatter.dateFormat = "MMMM, yyyy"
-        let todaysDate = formatter.string(from: startDate)
+        let todaysDate = FormattedCurrentDate.getFormattedCurrentDate(date: startDate,
+                                                                      format: "MMMM, yyyy")
         self.currentMonthAndDate.text = todaysDate
     }
     
     
-    let outsideMonthColor = UIColor.blue//UIColor.init(rgb:0x584a66)
-    let monthColor = UIColor.brown
+    let outsideMonthColor = UIColor.gray//UIColor.init(rgb:0x584a66)
+    let monthColor = UIColor.gray
     let selectedMonthColor = UIColor.gray //.withAlphaComponent(0.9) //UIColor.init(rgb:0x3a294b)
     
     func handleCellTextColor(view: JTAppleCell?, cellState: CellState) {
@@ -398,7 +400,7 @@ class FechasCell: UITableViewCell {
             validCell.dateLabel.textColor = UIColor.red
             
         } else if cellState.date < todaysDate && cellState.dateBelongsTo == .thisMonth {
-            validCell.dateLabel.textColor = UIColor.white //UIColor.lightGray
+            validCell.dateLabel.textColor = UIColor.lightGray
         } else {
             if cellState.isSelected {
                 if cellState.dateBelongsTo == .thisMonth {
@@ -414,34 +416,27 @@ class FechasCell: UITableViewCell {
         }
     }
     
-    //ParseColor.hexStringToUIColor(hex: StringColors.yellow)
     
     func handleCellSelected(view: JTAppleCell?, cellState: CellState) {
         guard let validCell = view as? CustomCell else { return }
         
         if cellState.isSelected && cellState.dateBelongsTo == .thisMonth {
             //-validCell.selectedView.isHidden = false
-            
             let todaysDate = Date()
             formatter.dateFormat = "yyyy MM dd"
             let day = currentCalendar.component(.day, from: todaysDate)
             if validCell.dateLabel.text! == "\(day)" {
-                
                 validCell.selectedView.layer.cornerRadius = 0
                 validCell.selectedView.layer.borderColor = UIColor.clear.cgColor
                 validCell.selectedView.layer.borderWidth = 1
                 validCell.selectedView.backgroundColor = UIColor.clear
-                
             }
             else {
-                
                 validCell.selectedView.layer.cornerRadius = (validCell.selectedView.bounds.width / 2) - 1 // 19
-                validCell.selectedView.layer.borderColor = UIColor.gris.cgColor
+                validCell.selectedView.layer.borderColor = UIColor.rosa.cgColor
                 validCell.selectedView.layer.borderWidth = 1
-                validCell.selectedView.backgroundColor = UIColor.gris
-                
+                validCell.selectedView.backgroundColor = UIColor.rosa
             }
-            
         }
         else {
             validCell.selectedView.layer.cornerRadius = 0
@@ -595,7 +590,7 @@ class CustomCell: JTAppleCell {
         addSubview(selectedView)
         addConstraintsWithFormat(format: "H:|[v0]|", views: selectedView)
         addConstraintsWithFormat(format: "V:|[v0]|", views: selectedView)
-        selectedView.backgroundColor = UIColor.clear
+        selectedView.backgroundColor = UIColor.rosa
         dateLabel = UILabel(frame: CGRect.zero)
         dateLabel.textAlignment = .center
         selectedView.addSubview(dateLabel)

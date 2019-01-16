@@ -13,8 +13,6 @@ import MapKit
 class UbicacionViewController: BaseViewController, UITextFieldDelegate {
     
     var resultsView: TextField!
-
-    let estados = ["Puebla", "Veracruz", "Oaxaca", "Tlaxcala", "Hidalgo", "CDMX"]
     
     let buscar: UIButton = {
         let button = UIButton()
@@ -23,9 +21,9 @@ class UbicacionViewController: BaseViewController, UITextFieldDelegate {
         button.backgroundColor = .rojo
         return button
     }()
+    
     /*
     let defaultReuseId = "cell"
-    
     lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.delegate = self
@@ -37,6 +35,7 @@ class UbicacionViewController: BaseViewController, UITextFieldDelegate {
         return tableView
     }()
     */
+    
     lazy var mapView: MKMapView = {
         let mapView = MKMapView()
         mapView.mapType = .standard
@@ -56,26 +55,24 @@ class UbicacionViewController: BaseViewController, UITextFieldDelegate {
         super.viewDidLoad()
         mainView.backgroundColor = .white
         self.navigationController?.isNavigationBarHidden = false
-        
         UINavigationBar.appearance().barTintColor = .rosa
         UINavigationBar.appearance().tintColor = .white
         UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
         UINavigationBar.appearance().isTranslucent = false
-        
         /*
         let _ = UIBarButtonItem(image: UIImage(named: "close"),
                                         style: .plain, target: self,
                                         action: #selector(close))*/
         //self.navigationItem.leftBarButtonItem = closeIcon
         
+        let imageView = UIImageView(image: UIImage(named: "search"))
+        imageView.image = imageView.image?.withRenderingMode(.alwaysTemplate)
+        imageView.tintColor = .gray
         resultsView = TextField()
         resultsView.textAlignment = .center
         resultsView.layer.cornerRadius = 15
         resultsView.placeholder = "Escribe tu dirección..."
         resultsView.delegate = self
-        let imageView = UIImageView(image: UIImage(named: "search"))
-        imageView.image = imageView.image?.withRenderingMode(.alwaysTemplate)
-        imageView.tintColor = .gray
         resultsView.leftView = imageView
         resultsView.leftViewMode = UITextField.ViewMode.always
         resultsView.leftViewMode = .always
@@ -116,8 +113,9 @@ class UbicacionViewController: BaseViewController, UITextFieldDelegate {
         self.present(acController, animated: true, completion: nil)
     }
     
+    let standarSize: CGSize = CGSize(width: 24, height: 24)
+    
     @objc func buscarLugares() {
-        
         let timeLineVC = TimeLineViewController()
         timeLineVC.title = "TIMELINE"
         let navTimeLine = UINavigationController(rootViewController: timeLineVC)
@@ -127,8 +125,15 @@ class UbicacionViewController: BaseViewController, UITextFieldDelegate {
         let mensajesVC = MensajesViewController()
         mensajesVC.title = "MENSAJES"
         let navMensajes = UINavigationController(rootViewController: mensajesVC)
-        let perfilVC = PerfilViewController()
-        perfilVC.title = "PERFIL"
+        var perfilVC: UIViewController!
+        if dataStorage.getTipo() == String(TipoUsuario.anfitrion.rawValue) {
+            perfilVC = PerfilViewController()
+            perfilVC.title = "PERFIL"
+        }
+        if dataStorage.getTipo() == String(TipoUsuario.cliente.rawValue) {
+            perfilVC = PerfilClienteViewController()
+            perfilVC.title = "PERFIL"
+        }
         let navPerfil = UINavigationController(rootViewController: perfilVC)
         let tabBar = UITabBarController()
         tabBar.viewControllers = [navTimeLine, navCategorias, navMensajes, navPerfil]
@@ -139,19 +144,14 @@ class UbicacionViewController: BaseViewController, UITextFieldDelegate {
         let mensajes = tabBar.tabBar.items![2]
         mensajes.image = UIImage(named: "mensajes")?.withRenderingMode(.alwaysTemplate)
         let perfil = tabBar.tabBar.items![3]
-        
-        
-        let image = UIImage(named: "chef_rosa")?.withRenderingMode(.alwaysTemplate)
-        perfil.image = image?.imageResize(sizeChange: CGSize(width: 24, height: 24) )
-        
-        /*
+        var imagePerfil: UIImage?
         if dataStorage.getTipo() == String(TipoUsuario.anfitrion.rawValue) {
-            let image = UIImage(named: "chef_rosa")?.withRenderingMode(.alwaysTemplate)
-            perfil.image = image?.imageResize(sizeChange: CGSize(width: 24, height: 24) )
+            imagePerfil = UIImage(named: "chef_rosa")?.withRenderingMode(.alwaysTemplate)
         }
         if dataStorage.getTipo() == String(TipoUsuario.cliente.rawValue) {
-            perfil.image = UIImage(named: "perfil")?.withRenderingMode(.alwaysTemplate)
-        }*/
+            imagePerfil = UIImage(named: "perfil")?.withRenderingMode(.alwaysTemplate)
+        }
+        perfil.image = imagePerfil?.imageResize(sizeChange: standarSize)
         UITabBar.appearance().tintColor = UIColor.rosa
         UITabBar.appearance().unselectedItemTintColor = UIColor.azul
         self.present(tabBar, animated: true, completion: nil)
@@ -164,7 +164,6 @@ class UbicacionViewController: BaseViewController, UITextFieldDelegate {
 
 
 extension UbicacionViewController : MKMapViewDelegate, CLLocationManagerDelegate {
-    
     
     /**
      * Obtiene la localizacion del Usuario

@@ -31,6 +31,7 @@
 		5E800EDA21E738C5008F4F66 /* Conekta.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E800ED121E738C4008F4F66 /* Conekta.m */; };
 		5E800EDB21E738C5008F4F66 /* Token.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E800ED221E738C4008F4F66 /* Token.m */; };
 		5E800EDC21E738C5008F4F66 /* Connection.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E800ED821E738C4008F4F66 /* Connection.m */; };
+		5E99DA8321EED42C005BB6AC /* PerfilClienteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E99DA8221EED42C005BB6AC /* PerfilClienteViewController.swift */; };
 		5EBEEEF921E2D80C00F718A4 /* DetallesEventoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBEEEF821E2D80C00F718A4 /* DetallesEventoCell.swift */; };
 		5EBEEEFB21E2F3C300F718A4 /* FormattedCurrentDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBEEEFA21E2F3C300F718A4 /* FormattedCurrentDate.swift */; };
 		5EC49D2E21D1F2F300DAC1BD /* ArchiaRegular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5EC49D2D21D1F2F300DAC1BD /* ArchiaRegular.ttf */; };
@@ -89,6 +90,7 @@
 		5E800ED621E738C4008F4F66 /* Conekta.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Conekta.h; path = Conekta/Conekta.h; sourceTree = SOURCE_ROOT; };
 		5E800ED721E738C4008F4F66 /* Card.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Card.h; path = Conekta/Card.h; sourceTree = SOURCE_ROOT; };
 		5E800ED821E738C4008F4F66 /* Connection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Connection.m; path = Conekta/Connection.m; sourceTree = SOURCE_ROOT; };
+		5E99DA8221EED42C005BB6AC /* PerfilClienteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PerfilClienteViewController.swift; path = Yuumee/perfil/PerfilClienteViewController.swift; sourceTree = SOURCE_ROOT; };
 		5EBEEEF821E2D80C00F718A4 /* DetallesEventoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetallesEventoCell.swift; sourceTree = "<group>"; };
 		5EBEEEFA21E2F3C300F718A4 /* FormattedCurrentDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormattedCurrentDate.swift; sourceTree = "<group>"; };
 		5EC49D2D21D1F2F300DAC1BD /* ArchiaRegular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = ArchiaRegular.ttf; sourceTree = "<group>"; };
@@ -234,6 +236,7 @@
 				5E68D6B621C8B04500DA00AB /* PerfilViewController.swift */,
 				9C90F5B921DD280900ACDA8F /* PerfilAnfitrionViewController.swift */,
 				9CA8E88821E8073600266E99 /* HistorialEventosViewController.swift */,
+				5E99DA8221EED42C005BB6AC /* PerfilClienteViewController.swift */,
 			);
 			path = perfil;
 			sourceTree = "<group>";
@@ -509,6 +512,7 @@
 				9C31C7A521E00CA400F5F585 /* BackgroundImageHeader.swift in Sources */,
 				9C31C7A921E00CFE00F5F585 /* EventoAnfitrionViewController.swift in Sources */,
 				9C99B32121E3CC5B00ADD584 /* UserDefaultsStorage.swift in Sources */,
+				5E99DA8321EED42C005BB6AC /* PerfilClienteViewController.swift in Sources */,
 				5EBEEEF921E2D80C00F718A4 /* DetallesEventoCell.swift in Sources */,
 				9CA8E88421E7D24700266E99 /* TarjetasViewController.swift in Sources */,
 				5E800EDC21E738C5008F4F66 /* Connection.m in Sources */,
@@ -684,7 +688,10 @@
 				DEVELOPMENT_TEAM = W4MERUEP35;
 				INFOPLIST_FILE = Yuumee/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Conekta",
@@ -711,7 +718,10 @@
 				DEVELOPMENT_TEAM = W4MERUEP35;
 				INFOPLIST_FILE = Yuumee/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Conekta",
