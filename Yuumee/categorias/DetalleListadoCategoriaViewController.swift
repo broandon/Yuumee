@@ -39,8 +39,10 @@ class DetalleListadoCategoriaViewController: BaseViewController {
         let backButton = UIBarButtonItem(title: "Regresar", style: .plain,
                                          target: self, action: #selector(back))
         
-        let settings = UIBarButtonItem(image: UIImage(named: "settings"), style: .plain,
-                                       target: self, action: #selector(settingsTap) )
+        let settings = UIBarButtonItem(image: UIImage(named: "settings"),
+                                       style: .plain,
+                                       target: self,
+                                       action: #selector(settingsTap))
         
         //self.navigationItem.backBarButtonItem = backButton
         self.navigationItem.rightBarButtonItem = settings
@@ -50,10 +52,6 @@ class DetalleListadoCategoriaViewController: BaseViewController {
         mainView.addSubview(tableView)
         mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: tableView)
         mainView.addConstraintsWithFormat(format: "V:|-[v0]|", views: tableView)
-        
-        
-        
-        
         
     }
     

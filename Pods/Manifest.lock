@@ -84,6 +84,7 @@ PODS:
   - nanopb/decode (0.3.901)
   - nanopb/encode (0.3.901)
   - Protobuf (3.6.1)
+  - ViewPager-Swift (1.2.1)
 
 DEPENDENCIES:
   - Alamofire
@@ -95,6 +96,7 @@ DEPENDENCIES:
   - GooglePlacePicker
   - GooglePlaces
   - JTAppleCalendar
+  - ViewPager-Swift
 
 SPEC CHECKSUMS:
   Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
@@ -116,7 +118,8 @@ SPEC CHECKSUMS:
   JTAppleCalendar: abb30678f42a4ef8a340a932b1dcb8c85a33dac2
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
   Protobuf: 1eb9700044745f00181c136ef21b8ff3ad5a0fd5
+  ViewPager-Swift: 2ec693504b75e818fc86437499860b64f0331b22
 
-PODFILE CHECKSUM: 9cbb30909abc966f4e62a29108ec1b3762846b97
+PODFILE CHECKSUM: 95b5bbd4ff714b9405c08c1b7e734214c8c78ccf
 
 COCOAPODS: 1.4.0

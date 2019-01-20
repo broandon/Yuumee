@@ -34,7 +34,7 @@ class TimeLineViewController: BaseViewController {
     }()
     
     
-    /*let settings: UIButton = {
+    let settings: UIButton = {
         let newSizeForSettings = CGSize(width: 24, height: 24)
         let imageResized = UIImage(named: "settings")?.imageResize(sizeChange: newSizeForSettings)
         let settingsImage = UIImageView(image: imageResized)
@@ -50,35 +50,28 @@ class TimeLineViewController: BaseViewController {
         settings.imageEdgeInsets = insetsPadding
         settings.addTarget(self, action: #selector(settingsEvent), for: .touchUpInside)
         return settings
-    }()*/
+    }()
     
     let filters: UIButton = {
+        let edgeInsets = UIEdgeInsets(top: -44, left: -44, bottom: -44, right: -44)
         let size = CGSize(width: 24, height: 24)
         let image = UIImage(named: "ubicacion")?.imageResize(sizeChange: size)
         let randomImage = UIImageView(image: image)
         randomImage.contentMode = .scaleAspectFit
-        //randomImage.image = randomImage.image?.withRenderingMode(.alwaysTemplate)
-        //randomImage.tintColor = UIColor.rojo
         let random = UIButton(type: .custom)
         random.setImage( randomImage.image, for: .normal)
-        //random.backgroundColor = .rojo
         random.tintColor = UIColor.rojo
         random.layer.cornerRadius = 15
-        let insetsPadding = UIEdgeInsets(top: -44, left: -44, bottom: -44, right: -44)
+        let insetsPadding = edgeInsets
         random.imageEdgeInsets = insetsPadding
         random.addTarget(self, action: #selector(filtersEvent), for: .touchUpInside)
         return random
     }()
     
     let currentDate: UILabel = {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "es_MX")
-        formatter.dateFormat = "E, d MMM yyyy" // salida -> Fri, 20 Jul 2018
-        let now = Date()
-        let dateString = formatter.string(from: now)
         let date = UILabel()
         date.textAlignment = .center
-        date.text = dateString // " 3 de agosto de 2018 "
+        date.text = FormattedCurrentDate.getFormattedCurrentDate(date: Date(), format: "E, d MMM yyyy")
         date.font = UIFont.boldSystemFont(ofSize: date.font.pointSize)
         return date
     }()
@@ -106,13 +99,15 @@ class TimeLineViewController: BaseViewController {
         mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: headerContent)
         mainView.addConstraintsWithFormat(format: "V:|-[v0(44)][v1]|", views: headerContent, tableView)
         
-        //headerContent.addSubview(settings)
+        headerContent.addSubview(settings)
         headerContent.addSubview(currentDate)
         headerContent.addSubview(filters)
-        headerContent.addConstraintsWithFormat(format: "H:|-[v0(30)]-[v1]-|", views: filters, currentDate)
+        
+        headerContent.addConstraintsWithFormat(format: "H:|-[v0(30)]-[v1]-[v2(30)]-|",
+                                               views: filters, currentDate, settings)
         headerContent.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: filters)
         headerContent.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: currentDate)
-        //headerContent.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: settings)
+        headerContent.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: settings)
         
         // ---------------------------------------------------------------------
         let headers: HTTPHeaders = [
@@ -134,26 +129,19 @@ class TimeLineViewController: BaseViewController {
                             case .success(let value):
                                 
                                 if let result = value as? Dictionary<String, Any> {
-                                    
                                     let statusMsg = result["status_msg"] as? String
                                     let state     = result["state"] as? String
-                                    
                                     if statusMsg == "OK" && state == "200" {
-                                        
                                         if let data = result["data"] as? [Dictionary<String, AnyObject>] {
                                             for r in data {
                                                 let newR = Restaurant(restaurant: r)
                                                 self.restaurants.append(newR)
                                             }
-                                            
                                             if self.restaurants.count > 0 {
                                                 self.tableView.reloadData()
                                             }
-                                            
                                         }
-                                        
                                     }
-                                    
                                 }
                                 //completionHandler(value as? NSDictionary, nil)
                                 break

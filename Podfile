@@ -19,5 +19,7 @@ target 'Yuumee' do
   
   pod 'Firebase/Core'
   pod 'Firebase/Messaging'
+  
+  pod 'ViewPager-Swift'
 
 end

@@ -34,7 +34,25 @@ class CategoriasViewController: BaseViewController {
     
     let dataStorage = UserDefaults.standard
     
-    // let settings = UIButton(type: .custom)
+    let ubicacion: UIButton = {
+        let edgeInsets = UIEdgeInsets(top: -44, left: -44, bottom: -44, right: -44)
+        let size = CGSize(width: 24, height: 24)
+        let image = UIImage(named: "ubicacion")?.imageResize(sizeChange: size)
+        let randomImage = UIImageView(image: image)
+        randomImage.contentMode = .scaleAspectFit
+        let random = UIButton(type: .custom)
+        random.setImage( randomImage.image, for: .normal)
+        random.tintColor = UIColor.rojo
+        random.layer.cornerRadius = 15
+        let insetsPadding = edgeInsets
+        random.imageEdgeInsets = insetsPadding
+        random.addTarget(self, action: #selector(filtersEvent), for: .touchUpInside)
+        return random
+    }()
+    
+    @objc func filtersEvent(sender: UIButton) {
+        self.navigationController?.dismiss(animated: true, completion: nil)
+    }
     
     override func viewDidLoad() {
         
@@ -86,11 +104,13 @@ class CategoriasViewController: BaseViewController {
         date.text = FormattedCurrentDate.getFormattedCurrentDate(date: Date(), format: "E, d MMM yyyy")
         date.font = UIFont.boldSystemFont(ofSize: date.font.pointSize)
         
+        //
         //headerContent.addSubview(settings)
         headerContent.addSubview(date)
+        headerContent.addSubview(ubicacion)
         //headerContent.addSubview(random)
-        headerContent.addConstraintsWithFormat(format: "H:|-[v0]-|", views: date)
-        //headerContent.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: random)
+        headerContent.addConstraintsWithFormat(format: "H:|-[v0(30)]-[v1]-|", views: ubicacion, date)
+        headerContent.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: ubicacion)
         headerContent.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: date)
         //headerContent.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: settings)
         // ---------------------------------------------------------------------

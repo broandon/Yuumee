@@ -227,7 +227,6 @@ class FechasCell: UITableViewCell {
     
     
     // -------------------------------------------------------------------------
-    
     var calendarView: JTAppleCalendarView = {
         let calendarView = JTAppleCalendarView(frame: CGRect.zero)
         calendarView.backgroundColor = UIColor.gris
@@ -247,7 +246,6 @@ class FechasCell: UITableViewCell {
         button.tintColor = .white
         return button
     }()
-    
     let prevMont: UIButton = {
         let button = UIButton(type: .system)
         button.addTarget(self, action: #selector(previous(_:)), for: .touchUpInside)
@@ -255,7 +253,6 @@ class FechasCell: UITableViewCell {
         button.tintColor = .white
         return button
     }()
-    
     func getDayOfWeek(day: String) -> ArchiaBoldLabel {
         let label = ArchiaBoldLabel()
         label.text = day
@@ -264,21 +261,19 @@ class FechasCell: UITableViewCell {
         label.textColor = UIColor.lightGray
         return label
     }
-    
     let formatter = DateFormatter()
     var currentCalendar = Calendar.current
     let stackView = UIStackView()
-    
     var currentMonthAndDate: ArchiaBoldLabel = {
         let label = ArchiaBoldLabel()
         //label.textColor = .white
         label.textAlignment = .center
         return label
     }()
-    
     var dateStringSelected: String!
     var dateSelected: Date? = nil
     // -------------------------------------------------------------------------
+    
     @objc func next(_ sender: UIButton) {
         self.calendarView.scrollToSegment(.next)
     }
@@ -299,7 +294,8 @@ class FechasCell: UITableViewCell {
         // Fecha
         containerDate.addSubview(fecha)
         containerDate.addSubview(fechaTextView)
-        containerDate.addConstraintsWithFormat(format: "H:|-[v0(70)]-[v1(150)]", views: fecha, fechaTextView)
+        containerDate.addConstraintsWithFormat(format: "H:|-[v0(70)]-[v1(150)]",
+                                               views: fecha, fechaTextView)
         containerDate.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: fecha)
         containerDate.addConstraintsWithFormat(format: "V:|-[v0(35)]", views: fechaTextView)
         // Repetir
@@ -315,21 +311,19 @@ class FechasCell: UITableViewCell {
         //----------------------------------------------------------------------
         //                           JTAppleCalendarView
         calendarView.calendarDataSource = self
-        calendarView.calendarDelegate = self
+        calendarView.calendarDelegate   = self
         calendarView.minimumLineSpacing = 0.0
         calendarView.minimumInteritemSpacing = 0.0
         calendarView.visibleDates {[unowned self] (visibleDates: DateSegmentInfo) in
             self.setupViewsOfCalendar(from: visibleDates)
         }
-        
-        let dom = getDayOfWeek(day: "DOM")
-        let lun = getDayOfWeek(day: "LUN")
-        let mar = getDayOfWeek(day: "MAR")
-        let mie = getDayOfWeek(day: "MIE")
-        let jue = getDayOfWeek(day: "JUE")
-        let vie = getDayOfWeek(day: "VIE")
-        let sab = getDayOfWeek(day: "SAB")
-        
+        let dom = getDayOfWeek(day: "D")
+        let lun = getDayOfWeek(day: "L")
+        let mar = getDayOfWeek(day: "M")
+        let mie = getDayOfWeek(day: "M")
+        let jue = getDayOfWeek(day: "J")
+        let vie = getDayOfWeek(day: "V")
+        let sab = getDayOfWeek(day: "S")
         addSubview(stackView)
         //Stack View
         stackView.axis         = NSLayoutConstraint.Axis.horizontal
@@ -347,7 +341,6 @@ class FechasCell: UITableViewCell {
         addSubview(stackView)
         addSubview(calendarView)
         addSubview(contHeaderMap)
-        
         contHeaderMap.addSubview(nextMonth)
         contHeaderMap.addSubview(prevMont)
         contHeaderMap.addSubview(currentMonthAndDate)
@@ -356,18 +349,15 @@ class FechasCell: UITableViewCell {
         contHeaderMap.addConstraintsWithFormat(format: "V:|-[v0(25)]", views: nextMonth)
         contHeaderMap.addConstraintsWithFormat(format: "V:|-[v0(25)]", views: prevMont)
         contHeaderMap.addConstraintsWithFormat(format: "V:|-[v0]", views: currentMonthAndDate)
-        
         addConstraintsWithFormat(format: "H:|-[v0]-|", views: contHeaderMap)
         addConstraintsWithFormat(format: "H:|-16-[v0]-16-|", views: stackView)
         addConstraintsWithFormat(format: "H:|[v0]|", views: calendarView)
-        
         addSubview(containerDate)
         addSubview(containerRepetir)
         addConstraintsWithFormat(format: "H:|[v0]|", views: containerDate)
         addConstraintsWithFormat(format: "H:|[v0]|", views: containerRepetir)
         addConstraintsWithFormat(format: "V:|[v0(0)]-[v1(0)][v2(40)][v3(30)][v4(300)]",
                                  views: containerDate, containerRepetir, contHeaderMap, stackView, calendarView)
-        
         dateSelected = Date()
         
     }
@@ -382,8 +372,8 @@ class FechasCell: UITableViewCell {
     }
     
     
-    let outsideMonthColor = UIColor.gray//UIColor.init(rgb:0x584a66)
-    let monthColor = UIColor.gray
+    let outsideMonthColor  = UIColor.gray//UIColor.init(rgb:0x584a66)
+    let monthColor         = UIColor.gray
     let selectedMonthColor = UIColor.gray //.withAlphaComponent(0.9) //UIColor.init(rgb:0x3a294b)
     
     func handleCellTextColor(view: JTAppleCell?, cellState: CellState) {
@@ -419,7 +409,6 @@ class FechasCell: UITableViewCell {
     
     func handleCellSelected(view: JTAppleCell?, cellState: CellState) {
         guard let validCell = view as? CustomCell else { return }
-        
         if cellState.isSelected && cellState.dateBelongsTo == .thisMonth {
             //-validCell.selectedView.isHidden = false
             let todaysDate = Date()
@@ -445,7 +434,6 @@ class FechasCell: UITableViewCell {
             validCell.selectedView.backgroundColor = UIColor.clear
         }
     }
-    
     
 }
 
@@ -482,30 +470,28 @@ extension FechasCell:JTAppleCalendarViewDelegate {
         cell.layoutIfNeeded()
         return cell
     }
+    
     func calendar(_ calendar: JTAppleCalendarView, willDisplay cell: JTAppleCell, forItemAt date: Date, cellState: CellState, indexPath: IndexPath) {
         handleCellSelected(view: cell, cellState: cellState)
         handleCellTextColor(view: cell, cellState: cellState)
         cell.layoutIfNeeded()
     }
     
-    
     func calendar(_ calendar: JTAppleCalendarView, didSelectDate date: Date, cell: JTAppleCell?, cellState: CellState) {
         handleCellSelected(view: cell, cellState: cellState)
         handleCellTextColor(view: cell, cellState: cellState)
-        
         // Fecha Seleccionada
         formatter.dateFormat = "yyyy-MM-dd"
         let todaysDate = formatter.string(from: date)
         dateStringSelected = todaysDate
         dateSelected = date
-        
         cell?.bounce()
     }
+    
     func calendar(_ calendar: JTAppleCalendarView, didDeselectDate date: Date, cell: JTAppleCell?, cellState: CellState) {
         handleCellSelected(view: cell, cellState: cellState)
         handleCellTextColor(view: cell, cellState: cellState)
     }
-    
     
     func calendar(_ calendar: JTAppleCalendarView, didScrollToDateSegmentWith visibleDates: DateSegmentInfo) {
         self.setupViewsOfCalendar(from: visibleDates)
@@ -515,7 +501,6 @@ extension FechasCell:JTAppleCalendarViewDelegate {
         formatter.dateFormat = "yyyy MM dd"
         let todayDateString = formatter.string(from: Date())
         let monthsDateString = formatter.string(from: cellState.date)
-        
         if cellState.dateBelongsTo != .thisMonth || (cellState.date < Date() && todayDateString != monthsDateString){
             return false
         } else {
@@ -535,14 +520,8 @@ extension FechasCell:JTAppleCalendarViewDelegate {
 
 
 
-
-
-
-
 extension FechasCell: UITextFieldDelegate {
-    
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-        
         if textField == fechaTextView {
             fechaTextView.resignFirstResponder();
             print(" se llama el modal de fecha ")
@@ -565,27 +544,22 @@ extension FechasCell: UITextFieldDelegate {
              */
             return false
         }
-        
         if textField == repetirTextView {
             return true
         }
-        
         return false
     }
-    
 }
 
 
 
 class CustomCell: JTAppleCell {
-    var dateLabel: UILabel!
+    var dateLabel:    UILabel!
     var selectedView: UIView!
-    var rightView: UIView!
-    var leftView: UIView!
-    
+    var rightView:    UIView!
+    var leftView:     UIView!
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
         selectedView = UIView(frame: CGRect.zero)
         addSubview(selectedView)
         addConstraintsWithFormat(format: "H:|[v0]|", views: selectedView)
@@ -596,13 +570,10 @@ class CustomCell: JTAppleCell {
         selectedView.addSubview(dateLabel)
         selectedView.addConstraintsWithFormat(format: "H:|[v0]|", views: dateLabel)
         selectedView.addConstraintsWithFormat(format: "V:|[v0]|", views: dateLabel)
-        
     }
-    
     required init?(coder aDecoder: NSCoder) {
         fatalError()
     }
-    
 }
 
 

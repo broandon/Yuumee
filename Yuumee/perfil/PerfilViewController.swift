@@ -40,7 +40,6 @@ class PerfilViewController: BaseViewController {
         // below code create swipe gestures function
         
         mainView.addSubview(tableView)
-        
         mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: tableView)
         mainView.addConstraintsWithFormat(format: "V:|-[v0]|", views: tableView)
         

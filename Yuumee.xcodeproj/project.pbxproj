@@ -31,6 +31,8 @@
 		5E800EDA21E738C5008F4F66 /* Conekta.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E800ED121E738C4008F4F66 /* Conekta.m */; };
 		5E800EDB21E738C5008F4F66 /* Token.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E800ED221E738C4008F4F66 /* Token.m */; };
 		5E800EDC21E738C5008F4F66 /* Connection.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E800ED821E738C4008F4F66 /* Connection.m */; };
+		5E88E3B421F429DA0043889A /* CalendarioViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E88E3B321F429DA0043889A /* CalendarioViewController.swift */; };
+		5E88E3B621F42A020043889A /* OrganizarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E88E3B521F42A020043889A /* OrganizarViewController.swift */; };
 		5E99DA8321EED42C005BB6AC /* PerfilClienteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E99DA8221EED42C005BB6AC /* PerfilClienteViewController.swift */; };
 		5EBEEEF921E2D80C00F718A4 /* DetallesEventoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBEEEF821E2D80C00F718A4 /* DetallesEventoCell.swift */; };
 		5EBEEEFB21E2F3C300F718A4 /* FormattedCurrentDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBEEEFA21E2F3C300F718A4 /* FormattedCurrentDate.swift */; };
@@ -90,6 +92,8 @@
 		5E800ED621E738C4008F4F66 /* Conekta.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Conekta.h; path = Conekta/Conekta.h; sourceTree = SOURCE_ROOT; };
 		5E800ED721E738C4008F4F66 /* Card.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Card.h; path = Conekta/Card.h; sourceTree = SOURCE_ROOT; };
 		5E800ED821E738C4008F4F66 /* Connection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Connection.m; path = Conekta/Connection.m; sourceTree = SOURCE_ROOT; };
+		5E88E3B321F429DA0043889A /* CalendarioViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarioViewController.swift; sourceTree = "<group>"; };
+		5E88E3B521F42A020043889A /* OrganizarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizarViewController.swift; sourceTree = "<group>"; };
 		5E99DA8221EED42C005BB6AC /* PerfilClienteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PerfilClienteViewController.swift; path = Yuumee/perfil/PerfilClienteViewController.swift; sourceTree = SOURCE_ROOT; };
 		5EBEEEF821E2D80C00F718A4 /* DetallesEventoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetallesEventoCell.swift; sourceTree = "<group>"; };
 		5EBEEEFA21E2F3C300F718A4 /* FormattedCurrentDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormattedCurrentDate.swift; sourceTree = "<group>"; };
@@ -164,6 +168,8 @@
 				5E68D65121C89FF500DA00AB /* Info.plist */,
 				5E68D64921C89FF400DA00AB /* Yuumee.xcdatamodeld */,
 				5E68D65721C8A3D100DA00AB /* InicioViewController.swift */,
+				5E88E3B321F429DA0043889A /* CalendarioViewController.swift */,
+				5E88E3B521F42A020043889A /* OrganizarViewController.swift */,
 			);
 			path = Yuumee;
 			sourceTree = "<group>";
@@ -456,6 +462,7 @@
 				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
 				"${BUILT_PRODUCTS_DIR}/JTAppleCalendar/JTAppleCalendar.framework",
 				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
+				"${BUILT_PRODUCTS_DIR}/ViewPager-Swift/ViewPager_Swift.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -468,6 +475,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/JTAppleCalendar.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Protobuf.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ViewPager_Swift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -504,6 +512,7 @@
 				9CA8E88921E8073600266E99 /* HistorialEventosViewController.swift in Sources */,
 				5EC49D3521D1F44F00DAC1BD /* TextField.swift in Sources */,
 				9C0CFCA221CAFF07006AA810 /* CustomSegmentedControl.swift in Sources */,
+				5E88E3B421F429DA0043889A /* CalendarioViewController.swift in Sources */,
 				5EC49D3721D1F46D00DAC1BD /* BaseViewController.swift in Sources */,
 				5E68D6A321C8AFAF00DA00AB /* CategoriasViewController.swift in Sources */,
 				9C31C7AC21E00D8200F5F585 /* CategoriaCell.swift in Sources */,
@@ -541,6 +550,7 @@
 				5E800EDA21E738C5008F4F66 /* Conekta.m in Sources */,
 				5E68D6B421C8B02E00DA00AB /* MensajesViewController.swift in Sources */,
 				5E68D6AC21C8AFEE00DA00AB /* RegistroViewController.swift in Sources */,
+				5E88E3B621F42A020043889A /* OrganizarViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
