@@ -83,13 +83,10 @@ class InicioViewController: BaseViewController {
         mainView.addSubview(buttonFacebook)
         buttonFacebook.delegate = self
         
-        
         mainView.addSubview(buttonFacebook)
         mainView.addSubview(registrate)
         mainView.addSubview(iniciaSesionAqui)
-        
         mainView.addSubview(containerBottom)
-        
         mainView.addConstraintsWithFormat(format: "H:|-64-[v0]-64-|", views: buttonFacebook)
         mainView.addConstraintsWithFormat(format: "H:|-64-[v0]-64-|", views: registrate)
         mainView.addConstraintsWithFormat(format: "H:|-[v0]-|", views: iniciaSesionAqui)
@@ -97,21 +94,16 @@ class InicioViewController: BaseViewController {
         let topMargin = mainView.bounds.height/4
         mainView.addConstraintsWithFormat(format: "V:|-\(topMargin)-[v0(40)]-[v1(40)]-20-[v2]-(>=8)-[v3(45)]|",
             views: buttonFacebook, registrate, iniciaSesionAqui, containerBottom)
-        
         containerBottom.addSubview(omitir)
         containerBottom.addSubview(imageArrow)
         containerBottom.addConstraintsWithFormat(format: "H:[v0][v1(10)]-16-|", views: omitir, imageArrow)
         containerBottom.addConstraintsWithFormat(format: "V:|[v0]|", views: omitir)
         containerBottom.addConstraintsWithFormat(format: "V:|-16-[v0(15)]", views: imageArrow)
-        
         registrate.addTarget(self, action: #selector(registro) , for: .touchUpInside)
-        
         let inicioSesion = UITapGestureRecognizer(target: self, action: #selector(login))
         inicioSesion.numberOfTapsRequired = 1
         iniciaSesionAqui.addGestureRecognizer(inicioSesion)
-        
         omitir.addTarget(self, action: #selector(omitirEvent) , for: .touchUpInside)
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {

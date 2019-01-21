@@ -24,16 +24,16 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
     
     lazy var tableView: UITableView = {
         let tableView = UITableView()
-        tableView.delegate = self
+        tableView.delegate   = self
         tableView.dataSource = self
         tableView.showsVerticalScrollIndicator = false
         tableView.register(UITableViewCell.classForCoder(), forCellReuseIdentifier: defaultReuseId)
         tableView.register(CategoriaCell.self, forCellReuseIdentifier: categoriaCell)
-        tableView.register(ComidaCell.self, forCellReuseIdentifier: comidaCell)
-        tableView.register(HorarioCell.self, forCellReuseIdentifier: horarioCell)
+        tableView.register(ComidaCell.self,    forCellReuseIdentifier: comidaCell)
+        tableView.register(HorarioCell.self,   forCellReuseIdentifier: horarioCell)
+        tableView.register(FechasCell.self,    forCellReuseIdentifier: fechasCell)
         tableView.register(DetallesEventoCell.self, forCellReuseIdentifier: detallesEventoCell)
-        tableView.register(FechasCell.self, forCellReuseIdentifier: fechasCell)
-        tableView.separatorStyle = .none
+        tableView.separatorStyle  = .none
         tableView.backgroundColor = UIColor.gris
         return tableView
     }()
@@ -58,9 +58,7 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
         let seccion = secciones[indexPath.row]
-        
         if seccion == "categoria" {
             let cell = tableView.dequeueReusableCell(withIdentifier: categoriaCell, for: indexPath)
             if let cell = cell as? CategoriaCell {
@@ -123,27 +121,20 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
     
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        
         let seccion = secciones[indexPath.row]
-        
         if seccion == "categoria" || seccion == "comida" {
             return 70
         }
-        
         if seccion == "horario" {
             return 100
         }
-        
         if seccion == "detalles_evento" {
             return ScreenSize.screenHeight
         }
-        
         if seccion == "fechas_evento" {
             return ScreenSize.screenHeight
         }
-        
         return UITableView.automaticDimension
-        
     }
     
     
@@ -178,27 +169,31 @@ class FechasCell: UITableViewCell {
         return view
     }()
     let fecha: ArchiaBoldLabel = {
-        let label = ArchiaBoldLabel()
+        let label  = ArchiaBoldLabel()
         label.text = "Fecha:"
         return label
     }()
     lazy var fechaTextView: UITextField = {
-        let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
-        let image = UIImage(named: "down_arrow")
+        let frameRectImg = CGRect(x: 0, y: 0, width: 20, height: 20)
+        let imageView   = UIImageView(frame: frameRectImg)
+        let image       = UIImage(named: "down_arrow")
         imageView.image = image
-        let textField = UITextField()
+        let textField   = UITextField()
         textField.addBorder(borderColor: .black, widthBorder: 1)
         textField.textColor = UIColor.darkGray
-        textField.font = UIFont(name: "ArchiaRegular", size: 14.0)
-        textField.textAlignment = .center
+        textField.font      = UIFont(name: "ArchiaRegular", size: 14.0)
         textField.layer.cornerRadius = 10
-        textField.keyboardType = UIKeyboardType.alphabet
+        textField.textAlignment = .center
+        textField.keyboardType  = UIKeyboardType.alphabet
         textField.rightViewMode = .always
-        textField.rightView = imageView
-        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: textField.frame.height) )
+        textField.rightView     = imageView
+        let rectPaddView = CGRect(x: 0, y: 0, width: 15,
+                                  height: textField.frame.height)
+        let paddingView = UIView(frame: rectPaddView)
         textField.leftView = paddingView
         textField.delegate = self
-        textField.text = FormattedCurrentDate.getFormattedCurrentDate(date: Date(), format: "d/MMM/yyyy")
+        textField.text = FormattedCurrentDate.getFormattedCurrentDate(date: Date(),
+                                                                      format: "d/MMM/yyyy")
         return textField
     }()
     

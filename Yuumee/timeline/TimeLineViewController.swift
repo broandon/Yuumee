@@ -71,7 +71,8 @@ class TimeLineViewController: BaseViewController {
     let currentDate: UILabel = {
         let date = UILabel()
         date.textAlignment = .center
-        date.text = FormattedCurrentDate.getFormattedCurrentDate(date: Date(), format: "E, d MMM yyyy")
+        date.text = FormattedCurrentDate.getFormattedCurrentDate(date: Date(),
+                                                                 format: "E, d MMM yyyy")
         date.font = UIFont.boldSystemFont(ofSize: date.font.pointSize)
         return date
     }()
@@ -179,8 +180,13 @@ class TimeLineViewController: BaseViewController {
     }
     
     
+    /**
+     * Abre el modal con el calendario y la vista de organizar.
+     *
+     */
     @objc func settingsEvent(sender: UIButton) {
-        let popVC = UINavigationController(rootViewController: ModalFiltersViewController())
+        let vc = ModalFiltersViewController()
+        let popVC = UINavigationController(rootViewController: vc)
         popVC.modalPresentationStyle = .popover
         let popOverVC = popVC.popoverPresentationController
         popOverVC?.delegate = self
@@ -189,7 +195,7 @@ class TimeLineViewController: BaseViewController {
                                        y: self.filters.bounds.minY,
                                        width: 0, height: 0)
         let widthModal = ScreenSize.screenWidth - 16
-        let heightModal = ScreenSize.screenWidth
+        let heightModal = ScreenSize.screenHeight - (ScreenSize.screenWidth * 0.6)
         popVC.preferredContentSize = CGSize(width: widthModal, height: heightModal)
         self.present(popVC, animated: true)
     }
@@ -357,49 +363,37 @@ class RestaurantCell: UITableViewCell {
 
 
 struct Restaurant {
-    
-    var id: String = ""
-    var imagen: String = ""
+    var id:        String = ""
+    var imagen:    String = ""
     var distancia: String = ""
-    var titulo: String = ""
+    var titulo:    String = ""
     var anfitrion: String = ""
-    var costo: String = ""
-    
+    var costo:     String = ""
     var dictionaryRestaurant: [String:Any]?
-    
     init(restaurant: Dictionary<String, Any>) {
         dictionaryRestaurant = restaurant
-        
         if let id = restaurant["Id"] as? String {
             self.id = id
         }
-        
         if let imagen = restaurant["imagen"] as? String {
             self.imagen = imagen
         }
-        
         if let distancia = restaurant["distancia"] as? String {
             self.distancia = distancia
         }
-        
         if let titulo = restaurant["titulo"] as? String {
             self.titulo = titulo
         }
-        
         if let anfitrion = restaurant["anfitrion"] as? String {
             self.anfitrion = anfitrion
         }
-        
         if let costo = restaurant["costo"] as? String {
             self.costo = costo
         }
-        
     }
-    
     func toDictionary() -> [String:Any]? {
         return self.dictionaryRestaurant
     }
-    
 }
 
 

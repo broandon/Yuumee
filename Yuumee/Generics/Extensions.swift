@@ -390,7 +390,6 @@ public extension String {
 
 extension UIView {
     func borders(for edges:[UIRectEdge], width:CGFloat = 1, color: UIColor = .black) {
-        
         if edges.contains(.all) {
             layer.borderWidth = width
             layer.borderColor = color.cgColor
@@ -432,6 +431,44 @@ extension UIView {
             }
         }
     }
+    
+    func check() {
+        let backgroundView = UIView()
+        backgroundView.backgroundColor = .gray
+        backgroundView.addBorder(borderColor: .white, widthBorder: 2)
+        self.addSubview(backgroundView)
+        self.addConstraintsWithFormat(format: "H:|-1-[v0]-1-|", views: backgroundView)
+        self.addConstraintsWithFormat(format: "V:|-1-[v0]-1-|", views: backgroundView)
+    }
+    
+    func unCheck() {
+        for v in self.subviews {
+            v.removeFromSuperview()
+        }
+    }
+    
+    // -------------------------------------------------------------------------
+    //                   Centra contenedor en SuperView
+    // -------------------------------------------------------------------------
+    func centerInView(superView: UIView, container: UIView, sizeV: CGFloat = 0.0, sizeH: CGFloat = 0.0) {
+        container.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(container)
+        var constraints = NSLayoutConstraint.constraints(
+            withVisualFormat: "V:[superview]-(<=1)-[container(\(sizeV))]",
+            options: NSLayoutConstraint.FormatOptions.alignAllCenterX,
+            metrics: nil,
+            views: ["superview": superView, "container": container])
+        self.addConstraints(constraints)
+        // Center vertically
+        constraints = NSLayoutConstraint.constraints(
+            withVisualFormat: "H:[superview]-(<=1)-[container(\(sizeH))]",
+            options: NSLayoutConstraint.FormatOptions.alignAllCenterY,
+            metrics: nil,
+            views: ["superview": superView, "container": container])
+        self.addConstraints(constraints)
+    }
+    // -------------------------------------------------------------------------
+    
 }
 
 

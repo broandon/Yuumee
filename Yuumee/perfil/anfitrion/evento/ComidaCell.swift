@@ -103,23 +103,3 @@ class ComidaCell: UITableViewCell {
     }
     
 }
-
-
-extension UIView {
-    
-    func check() {
-        let backgroundView = UIView()
-        backgroundView.backgroundColor = .gray
-        backgroundView.addBorder(borderColor: .white, widthBorder: 2)
-        self.addSubview(backgroundView)
-        self.addConstraintsWithFormat(format: "H:|-1-[v0]-1-|", views: backgroundView)
-        self.addConstraintsWithFormat(format: "V:|-1-[v0]-1-|", views: backgroundView)
-    }
-    
-    func unCheck() {
-        for v in self.subviews {
-            v.removeFromSuperview()
-        }
-    }
-    
-}

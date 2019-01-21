@@ -138,6 +138,7 @@ class CategoriasViewController: BaseViewController {
                                     let state     = result["state"] as? String
                                     if statusMsg == "OK" && state == "200" {
                                         if let data = result["data"] as? [Dictionary<String, AnyObject>] {
+                                            
                                             for c in data {
                                                 let newC = Categoria(categoria: c)
                                                 self.categorias.append(newC)
@@ -262,15 +263,12 @@ extension CategoriasViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         let view = UIView()
         view.backgroundColor = UIColor.white
-        
         let sep = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 3) )
         sep.backgroundColor = UIColor.black//.withAlphaComponent(0.7)
         sep.layer.cornerRadius = 2
         view.addSubview(sep)
-        
         view.addConstraintsWithFormat(format: "H:|-16-[v0]-16-|", views: sep)
         view.addConstraintsWithFormat(format: "V:|-[v0]-|", views: sep)
-        
         return view
     }
     
@@ -280,8 +278,9 @@ extension CategoriasViewController: UITableViewDelegate, UITableViewDataSource {
     
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
+        let categoria = categorias[indexPath.section]
         let vc = DetalleListadoCategoriaViewController()
+        vc.idCategoria = categoria.id
         let nav = UINavigationController(rootViewController: vc)
         self.present(nav, animated: true, completion: nil)
         //self.navigationController?.pushViewController(vc, animated: true)
@@ -296,7 +295,7 @@ extension CategoriasViewController: UITableViewDelegate, UITableViewDataSource {
 
 struct Categoria {
     
-    var id: String = ""
+    var id: String     = ""
     var imagen: String = ""
     var titulo: String = ""
     

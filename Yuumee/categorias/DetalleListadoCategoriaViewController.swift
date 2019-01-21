@@ -31,6 +31,15 @@ class DetalleListadoCategoriaViewController: BaseViewController {
     
     let dataStorage = UserDefaults.standard
     
+    var idCategoria: String = ""
+    
+    lazy var settings: UIButton = {
+        let button = UIButton(type: .system)
+        button.setImage(UIImage(named: "settings"), for: .normal)
+        button.addTarget(self, action: #selector(settingsTap), for: .touchUpInside)
+        return button
+    }()
+    
     override func viewDidLoad() {
         mainView.backgroundColor = .white
         // -------------------------------- Nav --------------------------------
@@ -38,14 +47,8 @@ class DetalleListadoCategoriaViewController: BaseViewController {
         self.navigationController?.navigationBar.backItem?.title = "Regresar"
         let backButton = UIBarButtonItem(title: "Regresar", style: .plain,
                                          target: self, action: #selector(back))
-        
-        let settings = UIBarButtonItem(image: UIImage(named: "settings"),
-                                       style: .plain,
-                                       target: self,
-                                       action: #selector(settingsTap))
-        
         //self.navigationItem.backBarButtonItem = backButton
-        self.navigationItem.rightBarButtonItem = settings
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: settings)
         self.navigationItem.leftBarButtonItem = backButton
         // ------------------------------- Datos -------------------------------
         
@@ -60,13 +63,33 @@ class DetalleListadoCategoriaViewController: BaseViewController {
         self.dismiss(animated: true, completion: nil)
     }
     
-    @objc func settingsTap() {
-        print(" settings ")
+    @objc func settingsTap(sender: UIButton) {
+        let vc = SubCategoriasViewController()
+        vc.idCategoria = self.idCategoria
+        let popVC = UINavigationController(rootViewController: vc)
+        popVC.modalPresentationStyle = .popover
+        let popOverVC = popVC.popoverPresentationController
+        popOverVC?.delegate = self
+        popOverVC?.sourceView = self.settings // self.button
+        popOverVC?.sourceRect = CGRect(x: self.settings.bounds.midX,
+                                       y: self.settings.bounds.minY,
+                                       width: 0, height: 0)
+        let widthModal = ScreenSize.screenWidth - 16
+        let heightModal = ScreenSize.screenWidth
+        popVC.preferredContentSize = CGSize(width: widthModal, height: heightModal)
+        self.present(popVC, animated: true)
+        
     }
     
     
 }
 
+extension DetalleListadoCategoriaViewController: UIPopoverPresentationControllerDelegate {
+    
+    func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+        return .none
+    }
+}
 
 extension DetalleListadoCategoriaViewController: UITableViewDelegate, UITableViewDataSource {
     
@@ -89,7 +112,6 @@ extension DetalleListadoCategoriaViewController: UITableViewDelegate, UITableVie
         return cell
     }
     
-    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let currentSection = indexPath.section
         let currentRow = indexPath.row
@@ -102,7 +124,6 @@ extension DetalleListadoCategoriaViewController: UITableViewDelegate, UITableVie
      let currentRow = indexPath.row
      return 550.0 // UITableViewAutomaticDimension
      }
-     
      func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
      tableView.deselectRow(at: indexPath, animated: true)
      let currentSection = indexPath.section
@@ -110,4 +131,9 @@ extension DetalleListadoCategoriaViewController: UITableViewDelegate, UITableVie
      //print(" currentRow ", currentRow)
      }
      */
-}
+    
+} // DetalleListadoCategoriaViewController
+
+
+
+

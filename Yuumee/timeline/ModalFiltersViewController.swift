@@ -15,21 +15,13 @@ enum Tabs: String {
     
     var description : String {
         switch self {
-        case .fecha: return "Fecha"
+        case .fecha:     return "Fecha"
         case .organizar: return "Organizar"
         }
     }
 }
 
 class ModalFiltersViewController: UIViewController {
-    
-    /*weak var interfaceSegmented: CustomSegmentedControl!{
-        didSet{
-            interfaceSegmented.setButtonTitles(buttonTitles: ["Fecha","Organizar"])
-            interfaceSegmented.selectorViewColor = UIColor.rosa
-            interfaceSegmented.selectorTextColor = UIColor.rosa
-        }
-    }*/
     
     var tabs = [
         ViewPagerTab(title: Tabs.fecha.description, image: nil),
@@ -46,8 +38,8 @@ class ModalFiltersViewController: UIViewController {
     }
     
     let cerrarBtn: UIBarButtonItem = {
-        let sizeImg = CGSize(width: 24, height: 24)
-        let imgClose = UIImage(named: "close")?.imageResize(sizeChange: sizeImg)
+        let sizeImg   = CGSize(width: 24, height: 24)
+        let imgClose  = UIImage(named: "close")?.imageResize(sizeChange: sizeImg)
         let cerrarBtn = UIBarButtonItem(image: imgClose, style: .plain,
                                         target: self, action: #selector(closeVC))
         cerrarBtn.tintColor = .white
@@ -60,33 +52,25 @@ class ModalFiltersViewController: UIViewController {
         cerrarBtn.target = self
         self.navigationItem.rightBarButtonItem = cerrarBtn
         
-        // CGRect(x: 0, y: 0, width: ScreenSize.screenWidth, height: 40)
-        /*let codeSegmented = CustomSegmentedControl(frame: CGRect.zero , buttonTitle: ["Fecha","Organizar"] )
-        codeSegmented.delegate = self
-        codeSegmented.backgroundColor = .clear
-        changeToIndex(index: 0)
-        mainView.addSubview(codeSegmented)
-        mainView.addConstraintsWithFormat(format: "H:|-[v0]-|", views: codeSegmented)
-        mainView.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: codeSegmented)
-        */
-        
         options = ViewPagerOptions(viewPagerWithFrame: mainView.bounds)
         options.tabType = ViewPagerTabType.basic
-        options.tabViewImageSize = CGSize(width: 20, height: 20)
-        options.tabViewPaddingLeft = 20
+        options.tabViewImageSize    = CGSize(width: 20, height: 20)
+        options.tabViewPaddingLeft  = 20
         options.tabViewPaddingRight = 20
-        options.fitAllTabsInView = true
-        options.isTabHighlightAvailable = true
+        options.fitAllTabsInView    = true
+        options.isTabHighlightAvailable    = true
         options.isEachTabEvenlyDistributed = true
         options.tabViewBackgroundDefaultColor = UIColor.white
-        // Background Color for current tab. Only displays if isTabViewHighlightAvailable is set to true
-        options.isTabIndicatorAvailable = true
+        // Background Color for current tab.
+        // Only displays if isTabViewHighlightAvailable is set to true
+        options.isTabIndicatorAvailable         = false
         options.tabViewBackgroundHighlightColor = UIColor.white
-        options.tabViewTextDefaultColor = UIColor.gray
-        options.tabViewTextHighlightColor = UIColor.black
+        options.tabViewTextDefaultColor         = UIColor.lightGray
+        options.tabViewTextHighlightColor       = UIColor.darkGray
         // Background Color for tab Indicator
-        options.tabIndicatorViewBackgroundColor = UIColor.rosa
-        //options.tabViewTextFont = UIFont(name: "ArchiaRegular", size: options.tabViewTextFont.pointSize)!
+        options.tabIndicatorViewBackgroundColor = UIColor.darkGray
+        options.tabViewTextFont = UIFont.boldSystemFont(ofSize: 19)
+        
         viewPager = ViewPagerController()
         viewPager.options = options
         viewPager.dataSource = self
@@ -147,55 +131,3 @@ extension ModalFiltersViewController: ViewPagerControllerDelegate {
         // print("Moved to page \(index)")
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-extension ModalFiltersViewController: CustomSegmentedControlDelegate {
-    func changeToIndex(index: Int) {
-        switch index {
-        case 0:
-            //self.view.backgroundColor = UIColor.green
-            mainView.addBorder()
-            let btn = UIButton(type: .system)
-            btn.setTitle("test 0", for: .normal)
-            btn.addBorder()
-            mainView.addSubview(btn)
-            mainView.addConstraintsWithFormat(format: "H:[v0]-|", views: btn)
-            mainView.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: btn)
-        case 1:
-            mainView.addBorder(borderColor: .blue, widthBorder: 1)
-            //self.view.backgroundColor = UIColor.blue
-            let btn = UIButton(type: .system)
-            btn.setTitle("test 1", for: .normal)
-            mainView.addSubview(btn)
-            mainView.addConstraintsWithFormat(format: "H:|-[v0]", views: btn)
-            mainView.addConstraintsWithFormat(format: "V:[v0(30)]-|", views: btn)
-        default:
-            print(" Default ")
-        }
-    }
-}
-*/
-
-
-
-
-
-
-
-
-
-
