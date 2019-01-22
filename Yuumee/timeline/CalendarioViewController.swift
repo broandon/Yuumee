@@ -183,9 +183,9 @@ class CalendarioViewController: BaseViewController {
         self.currentMonthAndDate.text = todaysDate // monthName + " " + String(year)
     }
     
-    let outsideMonthColor  = UIColor.clear
-    let monthColor         = UIColor.darkGray
-    let selectedMonthColor = UIColor.white
+    let outsideMonthColor  = UIColor.gray
+    let monthColor         = UIColor.gray
+    let selectedMonthColor = UIColor.gray
     
     func handleCellTextColor(view: JTAppleCell?, cellState: CellState) {
         guard let validCell = view as? CustomCell else {

@@ -27,9 +27,10 @@ class InformacionAnfitrionCell: UITableViewCell {
     }()
     
     var addCamera: UIButton = {
-        let button = UIButton(type: .system)
-        button.setImage(UIImage(named: "camera"), for: .normal)
+        let image        = UIImage(named: "camera")
+        let button       = UIButton(type: .system)
         button.tintColor = UIColor.rosa.withAlphaComponent(0.5)
+        button.setImage(image, for: .normal)
         return button
     }()
     
@@ -43,9 +44,9 @@ class InformacionAnfitrionCell: UITableViewCell {
         return view
     }()
     
-    
     // Info elements
     var nombre: UITextField!
+    var apellidos: UITextField!
     var edad: UITextField!
     var direccion: UITextField!
     var email: UITextField!
@@ -53,7 +54,7 @@ class InformacionAnfitrionCell: UITableViewCell {
     var profesion: UITextField!
     var idiomas: UITextField!
     var serviciosExtra: UITextField!
-    /*
+    
      var edadLbl: ArchiaRegularLabel!
      var direccionLbl: ArchiaRegularLabel!
      var emailLbl: ArchiaRegularLabel!
@@ -61,7 +62,7 @@ class InformacionAnfitrionCell: UITableViewCell {
      var profesionLbl: ArchiaRegularLabel!
      var idiomasLbl: ArchiaRegularLabel!
      var serviciosExtraLbl: ArchiaRegularLabel!
-     */
+    
     
     var espacioDegustarLbl: ArchiaRegularLabel!
     
@@ -76,11 +77,13 @@ class InformacionAnfitrionCell: UITableViewCell {
     func getLabelForInfo(text: String = "") -> ArchiaRegularLabel {
         let label = ArchiaRegularLabel()
         label.text = text
+        label.textColor = UIColor.darkGray
+        label.font = UIFont.init(name: "ArchiaRegular",
+                                 size: label.font.pointSize)
         return label
     }
     
-    /*
-     func getContentRowForInfo() -> UIView {
+     /*func getContentRowForInfo() -> UIView {
      let view = UIView()
      return view
      }*/
@@ -96,15 +99,15 @@ class InformacionAnfitrionCell: UITableViewCell {
     }()
     
     let agregarEvento: UIButton = {
-        let size = CGSize(width: 15, height: 15)
-        let image = UIImage(named: "add")?.imageResize(sizeChange: size)
+        let size   = CGSize(width: 15, height: 15)
+        let image  = UIImage(named: "add")?.imageResize(sizeChange: size)
         let button = UIButton(type: .system)
-        button.setTitle("Agregar evento", for: .normal)
-        button.titleLabel?.font = UIFont(name: "ArchiaRegular", size: (button.titleLabel?.font.pointSize)!)
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: (button.titleLabel?.font.pointSize)!)
-        button.backgroundColor = UIColor.gris
-        button.setImage(image, for: .normal)
+        button.titleLabel?.font   = UIFont(name: "ArchiaRegular", size: (button.titleLabel?.font.pointSize)!)
+        button.titleLabel?.font   = UIFont.boldSystemFont(ofSize: (button.titleLabel?.font.pointSize)!)
+        button.backgroundColor    = UIColor.gris
         button.layer.cornerRadius = 5
+        button.setTitle("Agregar evento", for: .normal)
+        button.setImage(image, for: .normal)
         button.addBorder(borderColor: .gray, widthBorder: 1)
         button.setTitleColor(UIColor.rosa, for: .normal)
         button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -10, bottom: 0, right: 10)
@@ -121,7 +124,10 @@ class InformacionAnfitrionCell: UITableViewCell {
         addSubview(guardarPerfil)
         addSubview(agregarEvento)
         
-        let sizeAvatar = ScreenSize.screenWidth / 4
+        // ---------------------------------------------------------------------
+        //                 Contenedores principales
+        
+        let sizeAvatar = ScreenSize.screenWidth / 6
         addConstraintsWithFormat(format: "H:|-[v0(\(sizeAvatar))]-[v1]-|", views: avatar, contentInfo)
         addConstraintsWithFormat(format: "H:|-[v0]-|", views: contentDescription)
         addConstraintsWithFormat(format: "H:|[v0]|", views: guardarPerfil)
@@ -129,10 +135,14 @@ class InformacionAnfitrionCell: UITableViewCell {
         addConstraintsWithFormat(format: "V:|-[v0(\(sizeAvatar))]", views: avatar)
         addConstraintsWithFormat(format: "V:|-[v0(270)]-[v1(100)]-16-[v2(30)]-16-[v3(30)]",
                                  views: contentInfo, contentDescription, guardarPerfil, agregarEvento)
+        // ---------------------------------------------------------------------
+        
         
         // Info
-        nombre = getTextFieldForInfo(placeHolder: "Nombre completo")
+        nombre = getTextFieldForInfo(placeHolder: "Nombre")
         nombre.delegate = self
+        apellidos = getTextFieldForInfo(placeHolder: "Apellidos")
+        apellidos.delegate = self
         edad = getTextFieldForInfo(placeHolder: "Edad")
         edad.delegate = self
         direccion = getTextFieldForInfo(placeHolder: "Dirección")
@@ -148,17 +158,19 @@ class InformacionAnfitrionCell: UITableViewCell {
         idiomas.delegate = self
         serviciosExtra = getTextFieldForInfo(placeHolder: "Servicios extra")
         serviciosExtra.delegate = self
-        /*
-         edadLbl = getLabelForInfo(text: "Edad:")
-         direccionLbl = getLabelForInfo(text: "Dirección:")
-         emailLbl = getLabelForInfo(text: "E-mail:")
-         telefonoLbl = getLabelForInfo(text: "Télefono:")
-         profesionLbl = getLabelForInfo(text: "Profesión:")
-         idiomasLbl = getLabelForInfo(text: "Idiomas:")
-         serviciosExtraLbl = getLabelForInfo(text: "Servicios extra:")
-         */
+        
+        serviciosExtraLbl  = getLabelForInfo(text: "Servicios extra:")
         espacioDegustarLbl = getLabelForInfo(text: "Espacio para degustar")
+        edadLbl      = getLabelForInfo(text: "Edad:")
+        direccionLbl = getLabelForInfo(text: "Dirección:")
+        emailLbl     = getLabelForInfo(text: "E-mail:")
+        telefonoLbl  = getLabelForInfo(text: "Télefono:")
+        profesionLbl = getLabelForInfo(text: "Profesión:")
+        idiomasLbl   = getLabelForInfo(text: "Idiomas:")
+        
+        // UITextField
         contentInfo.addSubview(nombre)
+        contentInfo.addSubview(apellidos)
         contentInfo.addSubview(edad)
         contentInfo.addSubview(direccion)
         contentInfo.addSubview(email)
@@ -166,27 +178,30 @@ class InformacionAnfitrionCell: UITableViewCell {
         contentInfo.addSubview(profesion)
         contentInfo.addSubview(idiomas)
         contentInfo.addSubview(serviciosExtra)
-        /*
-         contentInfo.addSubview(edadLbl)
-         contentInfo.addSubview(direccionLbl)
-         contentInfo.addSubview(emailLbl)
-         contentInfo.addSubview(telefonoLbl)
-         contentInfo.addSubview(profesionLbl)
-         contentInfo.addSubview(idiomasLbl)
-         contentInfo.addSubview(serviciosExtraLbl)
-         */
+        // Labels
+        contentInfo.addSubview(edadLbl)
+        contentInfo.addSubview(direccionLbl)
+        contentInfo.addSubview(emailLbl)
+        contentInfo.addSubview(telefonoLbl)
+        contentInfo.addSubview(profesionLbl)
+        contentInfo.addSubview(idiomasLbl)
+        contentInfo.addSubview(serviciosExtraLbl)
         contentInfo.addSubview(espacioDegustarLbl)
-        contentInfo.addConstraintsWithFormat(format: "H:|-[v0]-|", views: nombre)
-        contentInfo.addConstraintsWithFormat(format: "H:|-[v0]-|", views: edad)
-        contentInfo.addConstraintsWithFormat(format: "H:|-[v0]-|", views: direccion)
-        contentInfo.addConstraintsWithFormat(format: "H:|-[v0]-|", views: email)
-        contentInfo.addConstraintsWithFormat(format: "H:|-[v0]-|", views: telefono)
-        contentInfo.addConstraintsWithFormat(format: "H:|-[v0]-|", views: profesion)
-        contentInfo.addConstraintsWithFormat(format: "H:|-[v0]-|", views: idiomas)
+        // Constraints
+        contentInfo.addConstraintsWithFormat(format: "H:|-[v0(125)]-[v1(125)]", views: nombre, apellidos)
+        contentInfo.addConstraintsWithFormat(format: "H:|-[v0(100)]-[v1(125)]", views: edadLbl, edad)
+        contentInfo.addConstraintsWithFormat(format: "H:|-[v0(100)]-[v1(125)]", views: direccionLbl, direccion)
+        contentInfo.addConstraintsWithFormat(format: "H:|-[v0(100)]-[v1(125)]", views: emailLbl, email)
+        contentInfo.addConstraintsWithFormat(format: "H:|-[v0(100)]-[v1(125)]", views: telefonoLbl, telefono)
+        contentInfo.addConstraintsWithFormat(format: "H:|-[v0(100)]-[v1(125)]", views: profesionLbl, profesion)
+        contentInfo.addConstraintsWithFormat(format: "H:|-[v0(100)]-[v1(125)]", views: idiomasLbl, idiomas)
         contentInfo.addConstraintsWithFormat(format: "H:|-[v0]-|", views: espacioDegustarLbl)
-        contentInfo.addConstraintsWithFormat(format: "H:|-[v0]-|", views: serviciosExtra)
+        contentInfo.addConstraintsWithFormat(format: "H:|-[v0(125)]-[v1(120)]", views: serviciosExtraLbl, serviciosExtra)
         contentInfo.addConstraintsWithFormat(format: "V:|[v0]-[v1]-[v2]-[v3]-[v4]-[v5]-[v6]-[v7]-[v8]",
-                                             views: nombre, edad, direccion, email, telefono, profesion, idiomas, espacioDegustarLbl, serviciosExtra)
+                                             views: apellidos, edad, direccion, email, telefono, profesion, idiomas, espacioDegustarLbl, serviciosExtra)
+        contentInfo.addConstraintsWithFormat(format: "V:|[v0]-[v1]-[v2]-[v3]-[v4]-[v5]-[v6]-[v7]-[v8]",
+                                             views: nombre, edadLbl, direccionLbl, emailLbl, telefonoLbl, profesionLbl, idiomasLbl, espacioDegustarLbl, serviciosExtraLbl)
+        
         // Descripcion
         let desc = ArchiaBoldLabel()
         desc.text = "Descripción:"
@@ -206,9 +221,7 @@ class InformacionAnfitrionCell: UITableViewCell {
         avatar.addSubview(addCamera)
         avatar.addConstraintsWithFormat(format: "H:|-[v0]-|", views: addCamera)
         avatar.addConstraintsWithFormat(format: "V:|-[v0]-|", views: addCamera)
-        
         addCamera.addTarget(self, action: #selector(adNewImage) , for: .touchUpInside)
-        
         agregarEvento.addTarget(self, action: #selector(addEvento) , for: .touchUpInside)
     }
     

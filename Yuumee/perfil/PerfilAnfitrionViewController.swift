@@ -18,36 +18,35 @@ class PerfilAnfitrionViewController: BaseViewController {
     
     lazy var tableView: UITableView = {
         let tableView = UITableView() // frame: CGRect.zero, style: .grouped
-        tableView.delegate = self
+        tableView.delegate   = self
         tableView.dataSource = self
+        tableView.separatorStyle  = .none
+        tableView.backgroundColor = UIColor.gris
         tableView.showsVerticalScrollIndicator = false
         tableView.register(UITableViewCell.classForCoder(), forCellReuseIdentifier: defaultReuseId)
         tableView.register(BackgroundImageHeader.self, forCellReuseIdentifier: backgroundImageId)
         tableView.register(InformacionAnfitrionCell.self, forCellReuseIdentifier: informacionAnfitrionCell)
-        tableView.separatorStyle = .none
-        tableView.backgroundColor = UIColor.gris
         return tableView
     }()
     
     
     let secciones = ["background_image", "info"]
     
+    let dataStorage = UserDefaults.standard
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         //mainView.backgroundColor = UIColor.gris
         self.hideKeyboardWhenTappedAround()
-        
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillAppear),
                                                name: UIApplication.keyboardWillShowNotification,
                                                object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillDisappear),
                                                name: UIApplication.keyboardWillHideNotification,
                                                object: nil)
-        
         mainView.addSubview(tableView)
         mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: tableView)
         mainView.addConstraintsWithFormat(format: "V:|-[v0]|", views: tableView)
-        
     }
     
     
@@ -106,9 +105,7 @@ extension PerfilAnfitrionViewController: UITableViewDelegate, UITableViewDataSou
             }
         }
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: defaultReuseId, for: indexPath)
-        //cell.addBorder()
-        return cell
+        return UITableViewCell()
     }
     
     
@@ -122,6 +119,7 @@ extension PerfilAnfitrionViewController: UITableViewDelegate, UITableViewDataSou
         }
         return UITableView.automaticDimension
     }
+    
     
     
 }

@@ -97,24 +97,6 @@ extension PerfilViewController: UITableViewDelegate, UITableViewDataSource {
             cell.addConstraintsWithFormat(format: "V:|-16-[v0(40)]", views: avatar)
         }
         
-        if seccion == "historial" {
-            cell.textLabel?.text = "Historal de eventos"
-            let avatarImg = UIImage(named: "historial")
-            let avatar = UIImageView(image: avatarImg)
-            cell.addSubview(avatar)
-            cell.addConstraintsWithFormat(format: "H:[v0(40)]-|", views: avatar)
-            cell.addConstraintsWithFormat(format: "V:|-16-[v0(40)]", views: avatar)
-        }
-        
-        if seccion == "metodos_pago" {
-            cell.textLabel?.text = "Método de pago"
-            let avatarImg = UIImage(named: "tarjeta")
-            let avatar = UIImageView(image: avatarImg)
-            cell.addSubview(avatar)
-            cell.addConstraintsWithFormat(format: "H:[v0(40)]-|", views: avatar)
-            cell.addConstraintsWithFormat(format: "V:|-16-[v0(40)]", views: avatar)
-        }
-        
         if seccion == "cerrar_sesion" {
             cell.textLabel?.text = "Cerrar sesión"
             let avatarImg = UIImage(named: "power")
@@ -157,10 +139,8 @@ extension PerfilViewController: UITableViewDelegate, UITableViewDataSource {
         }
         
         if seccion == "historial" {
-            
             let vc = HistorialEventosViewController()
             self.navigationController?.pushViewController(vc, animated: true)
-            
         }
         
         if seccion == "metodos_pago" {
@@ -169,7 +149,6 @@ extension PerfilViewController: UITableViewDelegate, UITableViewDataSource {
         }
         
         if seccion == "cerrar_sesion" {
-            
             let refreshAlert = UIAlertController(title: "Cerrar Sesión",
                                                  message: "¿Realmete desea cerrarsu sesión?",
                                                  preferredStyle: UIAlertController.Style.alert)
@@ -197,7 +176,6 @@ extension PerfilViewController: UITableViewDelegate, UITableViewDataSource {
                                                     let vc = InicioViewController()
                                                     //let nav = UINavigationController(rootViewController: vc)
                                                     self.present(vc, animated: true, completion: nil)
-                                                    
                                                     
             }))
             refreshAlert.addAction(UIAlertAction(title: "Cancelar", style: .cancel, handler: nil))

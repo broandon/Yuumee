@@ -23,7 +23,9 @@ class PerfilClienteViewController: BaseViewController, UITableViewDelegate, UITa
         return tableView
     }()
     
-    let secciones = ["mis_datos", "push", "aviso", "salir"]
+    // "push", "aviso"
+    
+    let secciones = ["perfil", "historial", "metodos_pago", "salir"]
     
     let switchPush: CustomSwitch = {
         let switchP = CustomSwitch(frame: CGRect(x: 50, y: 50, width: 55, height: 25))
@@ -54,6 +56,8 @@ class PerfilClienteViewController: BaseViewController, UITableViewDelegate, UITa
         return buttonItem
     }()
     
+    let dataStorage = UserDefaults.standard
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         mainView.backgroundColor = .white
@@ -70,7 +74,6 @@ class PerfilClienteViewController: BaseViewController, UITableViewDelegate, UITa
     }
     
     @objc func activateNotifications() {
-        
         let isActivated = switchPush.isOn
         if isActivated {
             print(" si lo es ")
@@ -100,39 +103,64 @@ class PerfilClienteViewController: BaseViewController, UITableViewDelegate, UITa
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: defaultReuseID, for: indexPath)
         cell.backgroundColor = .clear
+        
         let seccion = secciones[indexPath.row]
-        let size = CGSize(width: 24, height: 24)
-        cell.textLabel?.font = UIFont.init(name: "MyriadPro-Regular",
-                                           size: (cell.textLabel?.font.pointSize)!)
-        if seccion == "mis_datos" {
-            cell.textLabel?.text = "Datos"
-            let imageArrow = UIImage(named: "right_arrow")?.imageResize(sizeChange: size)
+        let size = CGSize(width: 25, height: 25)
+        
+        cell.textLabel?.font = UIFont.init(name: "MyriadPro-Regular", size: (cell.textLabel?.font.pointSize)!)
+        
+        if seccion == "perfil" {
+            cell.textLabel?.text = "Perfil"
+            let imageArrow = UIImage(named: "avatar")?.imageResize(sizeChange: size)
             let detailArrow = UIImageView(image: imageArrow)
+            detailArrow.contentMode = .scaleAspectFit
             cell.accessoryView = detailArrow
         }
         
-        if seccion == "push" {
+        if seccion == "historial" {
+            cell.textLabel?.text = "Historal de eventos"
+            let avatarImg = UIImage(named: "historial")?.imageResize(sizeChange: size)
+            let avatar = UIImageView(image: avatarImg)
+            avatar.contentMode = .scaleAspectFit
+            cell.addSubview(avatar)
+            cell.addConstraintsWithFormat(format: "H:[v0(25)]-|", views: avatar)
+            cell.addConstraintsWithFormat(format: "V:|-[v0(25)]", views: avatar)
+        }
+        
+        if seccion == "metodos_pago" {
+            cell.textLabel?.text = "Método de pago"
+            let avatarImg = UIImage(named: "tarjeta")?.imageResize(sizeChange: size)
+            let avatar = UIImageView(image: avatarImg)
+            avatar.contentMode = .scaleAspectFit
+            cell.addSubview(avatar)
+            cell.addConstraintsWithFormat(format: "H:[v0(25)]-|", views: avatar)
+            cell.addConstraintsWithFormat(format: "V:|-[v0(25)]", views: avatar)
+        }
+        
+        /*if seccion == "push" {
             cell.textLabel?.text = "Push"
-            switchPush.addTarget(self, action: #selector(activateNotifications),
-                                 for: .valueChanged)
+            switchPush.addTarget(self, action: #selector(activateNotifications), for: .valueChanged)
             cell.accessoryView = switchPush
             cell.selectionStyle = .none
             return cell
         }
-        
         if seccion == "aviso" {
             cell.textLabel?.text = "Aviso"
             let imageArrow = UIImage(named: "right_arrow")?.imageResize(sizeChange: size)
             let detailArrow = UIImageView(image: imageArrow)
             cell.accessoryView = detailArrow
-        }
+        }*/
+        
         
         if seccion == "salir" {
-            cell.textLabel?.text = "Cerrar"
-            let sizeForClose = CGSize(width: 28, height: 24)
-            let imageArrow = UIImage(named: "salir")?.imageResize(sizeChange: sizeForClose)
-            let detailArrow = UIImageView(image: imageArrow)
-            cell.accessoryView = detailArrow
+            cell.textLabel?.text = "Cerrar sesión"
+            let avatarImg = UIImage(named: "power")
+            let avatar = UIImageView(image: avatarImg)
+            avatar.image = avatar.image!.withRenderingMode(.alwaysTemplate)
+            avatar.tintColor = UIColor.rosa
+            cell.addSubview(avatar)
+            cell.addConstraintsWithFormat(format: "H:[v0(25)]-|", views: avatar)
+            cell.addConstraintsWithFormat(format: "V:|-16-[v0(25)]", views: avatar)
         }
         
         return cell
@@ -144,19 +172,61 @@ class PerfilClienteViewController: BaseViewController, UITableViewDelegate, UITa
         
         let seccion = secciones[indexPath.row]
         
-        if seccion == "mis_datos" {
+        if seccion == "perfil" {
             let viewController = MisDatosViewController()
             let nav = UINavigationController(rootViewController: viewController)
             self.present(nav, animated: true, completion: nil)
         }
         
-        if seccion == "aviso" {
+        if seccion == "historial" {
+            let vc = HistorialEventosViewController()
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
+        
+        if seccion == "metodos_pago" {
+            let vc = TarjetasViewController()
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
+        
+        /*if seccion == "aviso" {
             let viewController = WebViewController()
             viewController.titleVC = ""
             viewController.url = "http://easycode.mx/solestra/img/Privacidad/terminos.pdf"
             let nav = UINavigationController(rootViewController: viewController)
             self.present(nav, animated: true, completion: nil)
             //self.navigationController?.pushViewController(viewController, animated: true)
+        }*/
+        
+        
+        if seccion == "salir" {
+            let refreshAlert = UIAlertController(title: "Cerrar Sesión",
+                                                 message: "¿Realmete desea cerrarsu sesión?",
+                                                 preferredStyle: UIAlertController.Style.alert)
+            refreshAlert.addAction(UIAlertAction(title: "Aceptar", style: .default,
+                                                 handler: { (action: UIAlertAction!) in
+                                                    
+                                                    let dictionary = self.dataStorage.dictionaryRepresentation()
+                                                    dictionary.keys.forEach { key in
+                                                        self.dataStorage.removeObject(forKey: key)
+                                                    }
+                                                    
+                                                    self.dataStorage.setUserId(userId: "")
+                                                    self.dataStorage.setLoggedIn(value: false)
+                                                    self.dataStorage.setFirstName(firstName: "")
+                                                    self.dataStorage.setLastName(lastName: "")
+                                                    self.dataStorage.setEmail(email: "")
+                                                    self.dataStorage.setTipo(tipo: "")
+                                                    self.dataStorage.setLoggedInFacebook(value: false)
+                                                    self.dataStorage.setAvatarFacebook(userId: "")
+                                                    
+                                                    let vc = InicioViewController()
+                                                    //let nav = UINavigationController(rootViewController: vc)
+                                                    self.present(vc, animated: true, completion: nil)
+                                                    
+            }))
+            refreshAlert.addAction(UIAlertAction(title: "Cancelar", style: .cancel, handler: nil))
+            self.present(refreshAlert, animated: true, completion: nil)
+            
         }
         
         

@@ -54,6 +54,7 @@
 		9C31C7B021E00DD400F5F585 /* HorarioCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C31C7AF21E00DD400F5F585 /* HorarioCell.swift */; };
 		9C90F5BA21DD280900ACDA8F /* PerfilAnfitrionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C90F5B921DD280900ACDA8F /* PerfilAnfitrionViewController.swift */; };
 		9C99B32121E3CC5B00ADD584 /* UserDefaultsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C99B32021E3CC5B00ADD584 /* UserDefaultsStorage.swift */; };
+		9CA66DA521F7B23200D473D5 /* FechasCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CA66DA421F7B23200D473D5 /* FechasCell.swift */; };
 		9CA8E88221E7C26F00266E99 /* StringConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CA8E88121E7C26F00266E99 /* StringConstants.swift */; };
 		9CA8E88421E7D24700266E99 /* TarjetasViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CA8E88321E7D24700266E99 /* TarjetasViewController.swift */; };
 		9CA8E88921E8073600266E99 /* HistorialEventosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CA8E88821E8073600266E99 /* HistorialEventosViewController.swift */; };
@@ -120,6 +121,7 @@
 		9C8B90DE21E9550200229B38 /* Yuumee.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Yuumee.entitlements; sourceTree = "<group>"; };
 		9C90F5B921DD280900ACDA8F /* PerfilAnfitrionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerfilAnfitrionViewController.swift; sourceTree = "<group>"; };
 		9C99B32021E3CC5B00ADD584 /* UserDefaultsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsStorage.swift; sourceTree = "<group>"; };
+		9CA66DA421F7B23200D473D5 /* FechasCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FechasCell.swift; sourceTree = "<group>"; };
 		9CA8E88121E7C26F00266E99 /* StringConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringConstants.swift; sourceTree = "<group>"; };
 		9CA8E88321E7D24700266E99 /* TarjetasViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TarjetasViewController.swift; sourceTree = "<group>"; };
 		9CA8E88821E8073600266E99 /* HistorialEventosViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistorialEventosViewController.swift; sourceTree = "<group>"; };
@@ -335,6 +337,7 @@
 				9C31C7AD21E00DB300F5F585 /* ComidaCell.swift */,
 				9C31C7AF21E00DD400F5F585 /* HorarioCell.swift */,
 				5EBEEEF821E2D80C00F718A4 /* DetallesEventoCell.swift */,
+				9CA66DA421F7B23200D473D5 /* FechasCell.swift */,
 			);
 			path = evento;
 			sourceTree = "<group>";
@@ -553,6 +556,7 @@
 				5EC49D3321D1F42200DAC1BD /* ArchiaBoldLabel.swift in Sources */,
 				9C31C7B021E00DD400F5F585 /* HorarioCell.swift in Sources */,
 				5E68D6BB21C8B05900DA00AB /* MetodoDePagoViewController.swift in Sources */,
+				9CA66DA521F7B23200D473D5 /* FechasCell.swift in Sources */,
 				5E68D65821C8A3D100DA00AB /* InicioViewController.swift in Sources */,
 				5E800ED921E738C5008F4F66 /* Card.m in Sources */,
 				5E68D6B321C8B02E00DA00AB /* DetalleConversacionViewController.swift in Sources */,

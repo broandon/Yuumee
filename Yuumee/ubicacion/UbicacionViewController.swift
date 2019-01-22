@@ -125,15 +125,19 @@ class UbicacionViewController: BaseViewController, UITextFieldDelegate {
         let mensajesVC = MensajesViewController()
         mensajesVC.title = "MENSAJES"
         let navMensajes = UINavigationController(rootViewController: mensajesVC)
+        
         var perfilVC: UIViewController!
         if dataStorage.getTipo() == String(TipoUsuario.anfitrion.rawValue) {
-            perfilVC = PerfilViewController()
+            print(" Anfitrion ")
+            perfilVC = PerfilAnfitrionViewController()
             perfilVC.title = "PERFIL"
         }
         if dataStorage.getTipo() == String(TipoUsuario.cliente.rawValue) {
-            perfilVC = PerfilClienteViewController()
+            print(" Cliente ")
+            perfilVC = PerfilClienteViewController() // ()
             perfilVC.title = "PERFIL"
         }
+        
         let navPerfil = UINavigationController(rootViewController: perfilVC)
         let tabBar = UITabBarController()
         tabBar.viewControllers = [navTimeLine, navCategorias, navMensajes, navPerfil]
@@ -232,14 +236,12 @@ extension UbicacionViewController : MKMapViewDelegate, CLLocationManagerDelegate
      *
      */
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, didChange newState: MKAnnotationView.DragState, fromOldState oldState: MKAnnotationView.DragState) {
-        
         /*switch newState {
          case .ending:
          //lastLocation = (view.annotation?.coordinate)!
          print(" (view.annotation?.coordinate)!: \((view.annotation?.coordinate)!) ")
          default: break
          }*/
-        
         /*switch newState {
          case .starting:
          print("starting")
@@ -250,7 +252,6 @@ extension UbicacionViewController : MKMapViewDelegate, CLLocationManagerDelegate
          case .canceling: break
          default: break
          }*/
-        
         switch (newState) {
         case .ending, .canceling:
             view.dragState = .none
