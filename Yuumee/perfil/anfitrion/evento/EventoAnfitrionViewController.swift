@@ -224,49 +224,7 @@ class ProductoExtraCell: UITableViewCell {
     
     
     
-    private func getOpcionLabel(text: String) -> UILabel {
-        let label  = UILabel()
-        label.text = text
-        return label
-    }
-    private func getCostoLabel() -> UILabel {
-        let label  = UILabel()
-        label.text = "Costo:"
-        return label
-    }
-    private func getOpcionTextField() -> UITextField {
-        let textField  = UITextField()
-        return textField
-    }
-    private func getCostoTextField() -> UITextField {
-        let textField  = UITextField()
-        return textField
-    }
     
-    var opcion1Label: UILabel!
-    var costo1Label: UILabel!
-    var opcion1Input: UITextField!
-    var costo1Input: UITextField!
-    
-    var opcion2Label: UILabel!
-    var costo2Label: UILabel!
-    var opcion2Input: UITextField!
-    var costo2Input: UITextField!
-    
-    var opcion3Label: UILabel!
-    var costo3Label: UILabel!
-    var opcion3Input: UITextField!
-    var costo3Input: UITextField!
-    
-    var opcion4Label: UILabel!
-    var costo4Label: UILabel!
-    var opcion4Input: UITextField!
-    var costo4Input: UITextField!
-    
-    var opcion5Label: UILabel!
-    var costo5Label: UILabel!
-    var opcion5Input: UITextField!
-    var costo5Input: UITextField!
     
     
     
@@ -285,32 +243,16 @@ class ProductoExtraCell: UITableViewCell {
         
         
         // -------------------------- Bebidas ----------------------------------
+        let bebidasView = BebidasView()
+        bebidasView.setUpView()
+        
         contentBebidas.addSubview(bebidas)
+        contentBebidas.addSubview(bebidasView)
+        
         contentBebidas.addConstraintsWithFormat(format: "H:|-[v0]",     views: bebidas)
-        contentBebidas.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: bebidas)
+        contentBebidas.addConstraintsWithFormat(format: "H:|[v0]|",     views: bebidasView)
+        contentBebidas.addConstraintsWithFormat(format: "V:|-[v0(30)]-[v1]|", views: bebidas, bebidasView)
         
-        opcion1Label = getOpcionLabel(text: "Opción 1")
-        costo1Label  = getCostoLabel()
-        opcion1Input = getOpcionTextField()
-        costo1Input  = getCostoTextField()
-        opcion2Label = getOpcionLabel(text: "Opción 2")
-        costo2Label  = getCostoLabel()
-        opcion2Input = getOpcionTextField()
-        costo2Input  = getCostoTextField()
-        opcion3Label = getOpcionLabel(text: "Opción 3")
-        costo3Label  = getCostoLabel()
-        opcion3Input = getOpcionTextField()
-        costo3Input  = getCostoTextField()
-        opcion4Label = getOpcionLabel(text: "Opción 4")
-        costo4Label  = getCostoLabel()
-        opcion4Input = getOpcionTextField()
-        costo4Input  = getCostoTextField()
-        opcion5Label = getOpcionLabel(text: "Opción 5")
-        costo5Label  = getCostoLabel()
-        opcion5Input = getOpcionTextField()
-        costo5Input  = getCostoTextField()
-        
-        contentBebidas.addSubview( opcion1Label )
         
         
         // -------------------------- Postres ----------------------------------
@@ -332,6 +274,92 @@ class BebidasView: UIView {
     }
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+    }
+    
+    
+    private func getOpcionLabel(text: String) -> UILabel {
+        let label  = UILabel()
+        label.text = text
+        return label
+    }
+    private func getCostoLabel() -> UILabel {
+        let label  = UILabel()
+        label.text = "Costo:"
+        return label
+    }
+    private func getOpcionTextField() -> UITextField {
+        let textField  = UITextField()
+        textField.backgroundColor = .gris
+        return textField
+    }
+    private func getCostoTextField() -> UITextField {
+        let textField  = UITextField()
+        textField.addBorder(borderColor: .gris, widthBorder: 1)
+        return textField
+    }
+    
+    var opcion1Label: UILabel!
+    var costo1Label:  UILabel!
+    var opcion1Input: UITextField!
+    var costo1Input:  UITextField!
+    
+    var opcion2Label: UILabel!
+    var costo2Label:  UILabel!
+    var opcion2Input: UITextField!
+    var costo2Input:  UITextField!
+    
+    var opcion3Label: UILabel!
+    var costo3Label:  UILabel!
+    var opcion3Input: UITextField!
+    var costo3Input:  UITextField!
+    
+    var opcion4Label: UILabel!
+    var costo4Label:  UILabel!
+    var opcion4Input: UITextField!
+    var costo4Input:  UITextField!
+    
+    var opcion5Label: UILabel!
+    var costo5Label:  UILabel!
+    var opcion5Input: UITextField!
+    var costo5Input:  UITextField!
+    
+    
+    func setUpView() {
+        opcion1Label = getOpcionLabel(text: "Opción 1")
+        costo1Label  = getCostoLabel()
+        opcion1Input = getOpcionTextField()
+        costo1Input  = getCostoTextField()
+        
+        opcion2Label = getOpcionLabel(text: "Opción 2")
+        costo2Label  = getCostoLabel()
+        opcion2Input = getOpcionTextField()
+        costo2Input  = getCostoTextField()
+        opcion3Label = getOpcionLabel(text: "Opción 3")
+        costo3Label  = getCostoLabel()
+        opcion3Input = getOpcionTextField()
+        costo3Input  = getCostoTextField()
+        opcion4Label = getOpcionLabel(text: "Opción 4")
+        costo4Label  = getCostoLabel()
+        opcion4Input = getOpcionTextField()
+        costo4Input  = getCostoTextField()
+        opcion5Label = getOpcionLabel(text: "Opción 5")
+        costo5Label  = getCostoLabel()
+        opcion5Input = getOpcionTextField()
+        costo5Input  = getCostoTextField()
+        
+        addSubview(opcion1Label)
+        addSubview(opcion1Input)
+        addSubview(costo1Label); addSubview(costo1Input)
+        
+        addConstraintsWithFormat(format: "H:|-[v0]", views: opcion1Label)
+        addConstraintsWithFormat(format: "H:|-[v0]-|", views: opcion1Input)
+        
+        addConstraintsWithFormat(format: "V:|-[v0(25)]-[v1(30)]",
+                                 views: opcion1Label, opcion1Input)
+        
+        
+        
+        
     }
     
 }
