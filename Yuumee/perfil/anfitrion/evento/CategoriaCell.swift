@@ -9,7 +9,6 @@
 import UIKit
 
 class CategoriaCell: UITableViewCell {
-    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
     }
@@ -17,11 +16,20 @@ class CategoriaCell: UITableViewCell {
         fatalError(" Error to init ")
     }
     
+    
+    
     var reference: UIViewController!
     
     let categoriaLbl: ArchiaRegularLabel = {
-        let label = ArchiaRegularLabel()
+        let label  = ArchiaRegularLabel()
         label.text = "Categoría de comida:"
+        return label
+    }()
+    
+    let subCategoriaLbl: ArchiaRegularLabel = {
+        let label  = ArchiaRegularLabel()
+        label.text = "Sub categoría de comida:"
+        label.numberOfLines = 0
         return label
     }()
     
@@ -35,7 +43,7 @@ class CategoriaCell: UITableViewCell {
         textField.layer.cornerRadius = 10
         textField.keyboardType = UIKeyboardType.alphabet
         textField.rightViewMode = .always
-        textField.text = "Regional"
+        textField.text = ""
         textField.textColor = UIColor.lightGray
         textField.textAlignment = .center
         textField.rightView = imageView
@@ -46,13 +54,39 @@ class CategoriaCell: UITableViewCell {
         return textField
     }()
     
+    let subCategoria: UITextField = {
+        let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
+        let image = UIImage(named: "down_arrow")
+        imageView.image = image
+        let textField = UITextField()
+        textField.backgroundColor = .white
+        textField.addBorder(borderColor: .black, widthBorder: 1)
+        textField.layer.cornerRadius = 10
+        textField.keyboardType = UIKeyboardType.alphabet
+        textField.rightViewMode = .always
+        textField.text = ""
+        textField.textColor = UIColor.lightGray
+        textField.textAlignment = .center
+        textField.rightView = imageView
+        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: textField.frame.height) )
+        textField.leftView = paddingView
+        // textField.clearButtonMode = UITextField.ViewMode.whileEditing -> Muestra el auto.corrector
+        textField.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
+        return textField
+    }()
+    
+    
     func setUpView() {
         addSubview(categoria)
+        addSubview(subCategoria)
         categoria.delegate = self
+        subCategoria.delegate = self
         addSubview(categoriaLbl)
+        addSubview(subCategoriaLbl)
         addConstraintsWithFormat(format: "H:|-[v0(170)]-[v1]-|", views: categoriaLbl, categoria)
-        addConstraintsWithFormat(format: "V:|-[v0(30)]", views: categoria)
-        addConstraintsWithFormat(format: "V:|-[v0(30)]", views: categoriaLbl)
+        addConstraintsWithFormat(format: "H:|-[v0(170)]-[v1]-|", views: subCategoriaLbl, subCategoria)
+        addConstraintsWithFormat(format: "V:|-[v0(30)]-16-[v1(30)]", views: categoria, subCategoria)
+        addConstraintsWithFormat(format: "V:|-[v0(30)]-16-[v1(60)]", views: categoriaLbl, subCategoriaLbl)
     }
     
 }

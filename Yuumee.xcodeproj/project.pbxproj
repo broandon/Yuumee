@@ -39,6 +39,9 @@
 		5EBD6AF821F5A8FA00621297 /* CustomThumbView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBD6AF621F5A8FA00621297 /* CustomThumbView.swift */; };
 		5EBEEEF921E2D80C00F718A4 /* DetallesEventoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBEEEF821E2D80C00F718A4 /* DetallesEventoCell.swift */; };
 		5EBEEEFB21E2F3C300F718A4 /* FormattedCurrentDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBEEEFA21E2F3C300F718A4 /* FormattedCurrentDate.swift */; };
+		5EC3636521F83F7300729047 /* ProductosExtraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC3636421F83F7300729047 /* ProductosExtraView.swift */; };
+		5EC3636721F840C600729047 /* ProductoExtraCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC3636621F840C600729047 /* ProductoExtraCell.swift */; };
+		5EC3636921F8533200729047 /* EspaciosDegustarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC3636821F8533200729047 /* EspaciosDegustarViewController.swift */; };
 		5EC49D2E21D1F2F300DAC1BD /* ArchiaRegular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5EC49D2D21D1F2F300DAC1BD /* ArchiaRegular.ttf */; };
 		5EC49D3121D1F3FC00DAC1BD /* ArchiaRegularLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC49D3021D1F3FC00DAC1BD /* ArchiaRegularLabel.swift */; };
 		5EC49D3321D1F42200DAC1BD /* ArchiaBoldLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC49D3221D1F42200DAC1BD /* ArchiaBoldLabel.swift */; };
@@ -104,6 +107,9 @@
 		5EBD6AF621F5A8FA00621297 /* CustomThumbView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomThumbView.swift; sourceTree = "<group>"; };
 		5EBEEEF821E2D80C00F718A4 /* DetallesEventoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetallesEventoCell.swift; sourceTree = "<group>"; };
 		5EBEEEFA21E2F3C300F718A4 /* FormattedCurrentDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormattedCurrentDate.swift; sourceTree = "<group>"; };
+		5EC3636421F83F7300729047 /* ProductosExtraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductosExtraView.swift; sourceTree = "<group>"; };
+		5EC3636621F840C600729047 /* ProductoExtraCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductoExtraCell.swift; sourceTree = "<group>"; };
+		5EC3636821F8533200729047 /* EspaciosDegustarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EspaciosDegustarViewController.swift; sourceTree = "<group>"; };
 		5EC49D2D21D1F2F300DAC1BD /* ArchiaRegular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = ArchiaRegular.ttf; sourceTree = "<group>"; };
 		5EC49D3021D1F3FC00DAC1BD /* ArchiaRegularLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiaRegularLabel.swift; sourceTree = "<group>"; };
 		5EC49D3221D1F42200DAC1BD /* ArchiaBoldLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiaBoldLabel.swift; sourceTree = "<group>"; };
@@ -325,6 +331,7 @@
 				9C31C7AA21E00D6D00F5F585 /* evento */,
 				9C31C7A421E00CA400F5F585 /* BackgroundImageHeader.swift */,
 				9C31C7A621E00CC200F5F585 /* InformacionAnfitrionCell.swift */,
+				5EC3636821F8533200729047 /* EspaciosDegustarViewController.swift */,
 			);
 			path = anfitrion;
 			sourceTree = "<group>";
@@ -338,6 +345,8 @@
 				9C31C7AF21E00DD400F5F585 /* HorarioCell.swift */,
 				5EBEEEF821E2D80C00F718A4 /* DetallesEventoCell.swift */,
 				9CA66DA421F7B23200D473D5 /* FechasCell.swift */,
+				5EC3636421F83F7300729047 /* ProductosExtraView.swift */,
+				5EC3636621F840C600729047 /* ProductoExtraCell.swift */,
 			);
 			path = evento;
 			sourceTree = "<group>";
@@ -565,13 +574,16 @@
 				5E68D69D21C8AF6400DA00AB /* Extensions.swift in Sources */,
 				5E68D6B721C8B04500DA00AB /* PerfilViewController.swift in Sources */,
 				5E68D6A421C8AFAF00DA00AB /* DetalleListadoCategoriaViewController.swift in Sources */,
+				5EC3636521F83F7300729047 /* ProductosExtraView.swift in Sources */,
 				5E68D6AB21C8AFEE00DA00AB /* LoginViewController.swift in Sources */,
 				5E68D6A721C8AFCE00DA00AB /* UbicacionViewController.swift in Sources */,
 				5EBEEEFB21E2F3C300F718A4 /* FormattedCurrentDate.swift in Sources */,
 				5EC49D3121D1F3FC00DAC1BD /* ArchiaRegularLabel.swift in Sources */,
 				5EBD6AF821F5A8FA00621297 /* CustomThumbView.swift in Sources */,
+				5EC3636721F840C600729047 /* ProductoExtraCell.swift in Sources */,
 				9CA8E88221E7C26F00266E99 /* StringConstants.swift in Sources */,
 				5E800EDA21E738C5008F4F66 /* Conekta.m in Sources */,
+				5EC3636921F8533200729047 /* EspaciosDegustarViewController.swift in Sources */,
 				5E68D6B421C8B02E00DA00AB /* MensajesViewController.swift in Sources */,
 				5E68D6AC21C8AFEE00DA00AB /* RegistroViewController.swift in Sources */,
 				5E88E3B621F42A020043889A /* OrganizarViewController.swift in Sources */,

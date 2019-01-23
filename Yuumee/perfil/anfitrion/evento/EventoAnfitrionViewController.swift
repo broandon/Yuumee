@@ -10,6 +10,8 @@ import UIKit
 
 class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UITableViewDataSource {
     
+    let backgroundImageId = "backgroundImageId"
+    
     let productoExtraCell = "productoExtraCell"
     
     let fechasCell = "FechasCell"
@@ -36,12 +38,13 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
         tableView.register(FechasCell.self,    forCellReuseIdentifier: fechasCell)
         tableView.register(DetallesEventoCell.self, forCellReuseIdentifier: detallesEventoCell)
         tableView.register(ProductoExtraCell.self, forCellReuseIdentifier: productoExtraCell)
+        tableView.register(BackgroundImageHeader.self, forCellReuseIdentifier: backgroundImageId)
         tableView.separatorStyle  = .none
         tableView.backgroundColor = UIColor.gris
         return tableView
     }()
     
-    let secciones = ["categoria", "comida", "horario", "detalles_evento", "fechas_evento", "producto_extra"]
+    let secciones = ["background_image", "categoria", "comida", "horario", "detalles_evento", "fechas_evento", "producto_extra", "total"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -62,6 +65,16 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let seccion = secciones[indexPath.row]
+        
+        if seccion == "background_image" {
+            let cell = tableView.dequeueReusableCell(withIdentifier: backgroundImageId, for: indexPath)
+            if let cell = cell as? BackgroundImageHeader {
+                cell.selectionStyle = .none
+                cell.setUpView()
+                return cell
+            }
+        }
+        
         if seccion == "categoria" {
             let cell = tableView.dequeueReusableCell(withIdentifier: categoriaCell, for: indexPath)
             if let cell = cell as? CategoriaCell {
@@ -99,15 +112,6 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
             }
         }
         
-        /*if seccion == "detalles_evento" {
-            let cell = tableView.dequeueReusableCell(withIdentifier: detallesEventoCell, for: indexPath)
-            if let cell = cell as? DetallesEventoCell {
-                cell.selectionStyle = .none
-                cell.setUpView()
-                return cell
-            }
-        }*/
-        
         if seccion == "fechas_evento" {
             let cell = tableView.dequeueReusableCell(withIdentifier: fechasCell, for: indexPath)
             if let cell = cell as? FechasCell {
@@ -128,15 +132,60 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
             }
         }
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: defaultReuseId, for: indexPath)
-        cell.addBorder()
-        return cell
+        if seccion == "total" {
+            let cell = tableView.dequeueReusableCell(withIdentifier: defaultReuseId, for: indexPath)
+            cell.releaseView()
+            cell.selectionStyle = .none
+            cell.addSubview(personasRecibir)
+            cell.addSubview(personasRecibirInput)
+            cell.addSubview(guardar)
+            cell.addConstraintsWithFormat(format: "H:|-[v0(150)]-[v1]-|", views: personasRecibir, personasRecibirInput)
+            cell.addConstraintsWithFormat(format: "H:[v0(120)]-|", views: guardar)
+            cell.addConstraintsWithFormat(format: "V:|-[v0]", views: personasRecibir)
+            cell.addConstraintsWithFormat(format: "V:|-[v0(30)]-[v1(40)]", views: personasRecibirInput, guardar)
+            return cell
+        }
+        
+        
+        return UITableViewCell()
     }
+    
+    let personasRecibir: ArchiaBoldLabel = {
+        let label  = ArchiaBoldLabel()
+        label.text = "Personas a recibir:"
+        label.textColor = .darkGray
+        return label
+    }()
+    let personasRecibirInput: UITextField = {
+        let textField = UITextField()
+        textField.addBorder(borderColor: .gris, widthBorder: 1)
+        textField.keyboardType = .numberPad
+        return textField
+    }()
+    let guardar: UIButton = {
+        let button = UIButton(type: .system)
+        button.titleLabel?.font   = UIFont(name: "ArchiaRegular", size: (button.titleLabel?.font.pointSize)!)
+        button.titleLabel?.font   = UIFont.boldSystemFont(ofSize: (button.titleLabel?.font.pointSize)!)
+        button.backgroundColor    = UIColor.white
+        button.layer.cornerRadius = 5
+        button.setTitle("Guardar", for: .normal)
+        button.addBorder(borderColor: .azul, widthBorder: 2)
+        button.setTitleColor(UIColor.rosa, for: .normal)
+        button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -10, bottom: 0, right: 10)
+        button.tintColor = UIColor.rosa
+        return button
+    }()
     
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let seccion = secciones[indexPath.row]
-        if seccion == "categoria" || seccion == "comida" {
+        if seccion == "background_image" {
+            return ScreenSize.screenWidth / 2
+        }
+        if seccion == "categoria" {
+            return 150
+        }
+        if seccion == "comida" {
             return 70
         }
         if seccion == "horario" {
@@ -148,221 +197,15 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
         if seccion == "fechas_evento" {
             return ScreenSize.screenWidth
         }
-        
         if seccion == "producto_extra" {
-            return ScreenSize.screenWidth
+            return ScreenSize.screenHeight + (ScreenSize.screenWidth/4)
         }
-        
+        if seccion == "total" {
+            return 100
+        }
         return UITableView.automaticDimension
     }
     
     
 }
-
-
-
-
-
-
-
-
-
-
-class ProductoExtraCell: UITableViewCell {
-    
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-    }
-    required init?(coder aDecoder: NSCoder) {
-        fatalError(" Error to init ")
-    }
-    
-    let productoExtra: UILabel = {
-        let label = UILabel()
-        label.text = "Producto extra"
-        label.borders(for: [.top, .bottom], width: 1.0, color: UIColor.verde)
-        label.textAlignment = .center
-        label.textColor = .darkGray
-        return label
-    }()
-    
-    let contentBebidas: UIView = {
-        let view = UIView()
-        return view
-    }()
-    
-    let sep: UIView = {
-        let view = UIView()
-        view.backgroundColor = .verde
-        return view
-    }()
-    
-    let contentPostres: UIView = {
-        let view = UIView()
-        return view
-    }()
-    
-    
-    let bebidas: ArchiaBoldLabel = {
-        let label  = ArchiaBoldLabel()
-        label.text = "Bebidas"
-        label.textAlignment = .center
-        label.textColor     = .rosa
-        return label
-    }()
-    
-    let postres: ArchiaBoldLabel = {
-        let label  = ArchiaBoldLabel()
-        label.text = "Postres"
-        label.textAlignment = .center
-        label.textColor     = .rosa
-        return label
-    }()
-    
-    
-    let width = (ScreenSize.screenWidth - 50) / 2
-    
-    
-    
-    
-    
-    
-    
-    func setUpView() {
-        addSubview(productoExtra)
-        addSubview(contentBebidas)
-        addSubview(sep)
-        addSubview(contentPostres)
-        
-        addConstraintsWithFormat(format: "H:|-[v0]-|", views: productoExtra)
-        addConstraintsWithFormat(format: "H:|-[v0(\(width))]-[v1(2)]-[v2(\(width))]", views: contentBebidas, sep, contentPostres)
-        addConstraintsWithFormat(format: "V:|-[v0(30)]-[v1]-|", views: productoExtra, contentBebidas)
-        addConstraintsWithFormat(format: "V:|-[v0(30)]-[v1]-|", views: productoExtra, sep)
-        addConstraintsWithFormat(format: "V:|-[v0(30)]-[v1]-|", views: productoExtra, contentPostres)
-        
-        
-        
-        // -------------------------- Bebidas ----------------------------------
-        let bebidasView = BebidasView()
-        bebidasView.setUpView()
-        
-        contentBebidas.addSubview(bebidas)
-        contentBebidas.addSubview(bebidasView)
-        
-        contentBebidas.addConstraintsWithFormat(format: "H:|-[v0]",     views: bebidas)
-        contentBebidas.addConstraintsWithFormat(format: "H:|[v0]|",     views: bebidasView)
-        contentBebidas.addConstraintsWithFormat(format: "V:|-[v0(30)]-[v1]|", views: bebidas, bebidasView)
-        
-        
-        
-        // -------------------------- Postres ----------------------------------
-        contentPostres.addSubview(postres)
-        contentPostres.addConstraintsWithFormat(format: "H:|-[v0]", views: postres)
-        contentPostres.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: postres)
-        
-    }
-    
-    
-}
-
-
-
-class BebidasView: UIView {
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-    }
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
-    
-    
-    private func getOpcionLabel(text: String) -> UILabel {
-        let label  = UILabel()
-        label.text = text
-        return label
-    }
-    private func getCostoLabel() -> UILabel {
-        let label  = UILabel()
-        label.text = "Costo:"
-        return label
-    }
-    private func getOpcionTextField() -> UITextField {
-        let textField  = UITextField()
-        textField.backgroundColor = .gris
-        return textField
-    }
-    private func getCostoTextField() -> UITextField {
-        let textField  = UITextField()
-        textField.addBorder(borderColor: .gris, widthBorder: 1)
-        return textField
-    }
-    
-    var opcion1Label: UILabel!
-    var costo1Label:  UILabel!
-    var opcion1Input: UITextField!
-    var costo1Input:  UITextField!
-    
-    var opcion2Label: UILabel!
-    var costo2Label:  UILabel!
-    var opcion2Input: UITextField!
-    var costo2Input:  UITextField!
-    
-    var opcion3Label: UILabel!
-    var costo3Label:  UILabel!
-    var opcion3Input: UITextField!
-    var costo3Input:  UITextField!
-    
-    var opcion4Label: UILabel!
-    var costo4Label:  UILabel!
-    var opcion4Input: UITextField!
-    var costo4Input:  UITextField!
-    
-    var opcion5Label: UILabel!
-    var costo5Label:  UILabel!
-    var opcion5Input: UITextField!
-    var costo5Input:  UITextField!
-    
-    
-    func setUpView() {
-        opcion1Label = getOpcionLabel(text: "Opción 1")
-        costo1Label  = getCostoLabel()
-        opcion1Input = getOpcionTextField()
-        costo1Input  = getCostoTextField()
-        
-        opcion2Label = getOpcionLabel(text: "Opción 2")
-        costo2Label  = getCostoLabel()
-        opcion2Input = getOpcionTextField()
-        costo2Input  = getCostoTextField()
-        opcion3Label = getOpcionLabel(text: "Opción 3")
-        costo3Label  = getCostoLabel()
-        opcion3Input = getOpcionTextField()
-        costo3Input  = getCostoTextField()
-        opcion4Label = getOpcionLabel(text: "Opción 4")
-        costo4Label  = getCostoLabel()
-        opcion4Input = getOpcionTextField()
-        costo4Input  = getCostoTextField()
-        opcion5Label = getOpcionLabel(text: "Opción 5")
-        costo5Label  = getCostoLabel()
-        opcion5Input = getOpcionTextField()
-        costo5Input  = getCostoTextField()
-        
-        addSubview(opcion1Label)
-        addSubview(opcion1Input)
-        addSubview(costo1Label); addSubview(costo1Input)
-        
-        addConstraintsWithFormat(format: "H:|-[v0]", views: opcion1Label)
-        addConstraintsWithFormat(format: "H:|-[v0]-|", views: opcion1Input)
-        
-        addConstraintsWithFormat(format: "V:|-[v0(25)]-[v1(30)]",
-                                 views: opcion1Label, opcion1Input)
-        
-        
-        
-        
-    }
-    
-}
-
-
 

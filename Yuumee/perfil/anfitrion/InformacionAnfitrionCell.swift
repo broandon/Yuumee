@@ -36,11 +36,13 @@ class InformacionAnfitrionCell: UITableViewCell {
     
     let contentInfo: UIView = {
         let view = UIView()
+        view.isUserInteractionEnabled = true
         return view
     }()
     
     let contentDescription: UIView = {
         let view = UIView()
+        view.isUserInteractionEnabled = true
         return view
     }()
     
@@ -115,6 +117,14 @@ class InformacionAnfitrionCell: UITableViewCell {
         return button
     }()
     
+    let rightArrow: UIButton = {
+        let image  = UIImage(named: "right_arrow")
+        let button = UIButton(type: .system)
+        button.tintColor = .darkGray
+        button.setImage(image, for: .normal)
+        return button
+    }()
+    
     func setUpView() {
         backgroundColor = UIColor.gris
         
@@ -126,7 +136,6 @@ class InformacionAnfitrionCell: UITableViewCell {
         
         // ---------------------------------------------------------------------
         //                 Contenedores principales
-        
         let sizeAvatar = ScreenSize.screenWidth / 6
         addConstraintsWithFormat(format: "H:|-[v0(\(sizeAvatar))]-[v1]-|", views: avatar, contentInfo)
         addConstraintsWithFormat(format: "H:|-[v0]-|", views: contentDescription)
@@ -178,6 +187,8 @@ class InformacionAnfitrionCell: UITableViewCell {
         contentInfo.addSubview(profesion)
         contentInfo.addSubview(idiomas)
         contentInfo.addSubview(serviciosExtra)
+        contentInfo.addSubview(rightArrow)
+        
         // Labels
         contentInfo.addSubview(edadLbl)
         contentInfo.addSubview(direccionLbl)
@@ -195,12 +206,22 @@ class InformacionAnfitrionCell: UITableViewCell {
         contentInfo.addConstraintsWithFormat(format: "H:|-[v0(100)]-[v1(125)]", views: telefonoLbl, telefono)
         contentInfo.addConstraintsWithFormat(format: "H:|-[v0(100)]-[v1(125)]", views: profesionLbl, profesion)
         contentInfo.addConstraintsWithFormat(format: "H:|-[v0(100)]-[v1(125)]", views: idiomasLbl, idiomas)
-        contentInfo.addConstraintsWithFormat(format: "H:|-[v0]-|", views: espacioDegustarLbl)
+        contentInfo.addConstraintsWithFormat(format: "H:|-[v0]-[v1(15)]-|", views: espacioDegustarLbl, rightArrow)
         contentInfo.addConstraintsWithFormat(format: "H:|-[v0(125)]-[v1(120)]", views: serviciosExtraLbl, serviciosExtra)
-        contentInfo.addConstraintsWithFormat(format: "V:|[v0]-[v1]-[v2]-[v3]-[v4]-[v5]-[v6]-[v7]-[v8]",
-                                             views: apellidos, edad, direccion, email, telefono, profesion, idiomas, espacioDegustarLbl, serviciosExtra)
+        contentInfo.addConstraintsWithFormat(format: "V:|[v0]-[v1]-[v2]-[v3]-[v4]-[v5]-[v6]-[v7(15)]-[v8]",
+                                             views: apellidos, edad, direccion, email, telefono, profesion, idiomas, rightArrow, serviciosExtra)
         contentInfo.addConstraintsWithFormat(format: "V:|[v0]-[v1]-[v2]-[v3]-[v4]-[v5]-[v6]-[v7]-[v8]",
                                              views: nombre, edadLbl, direccionLbl, emailLbl, telefonoLbl, profesionLbl, idiomasLbl, espacioDegustarLbl, serviciosExtraLbl)
+        
+        // button.addTarget(self, action: #selector(espacioParaDegustarEvent), for: .touchUpInside)
+        
+        espacioDegustarLbl.isUserInteractionEnabled = true
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(espacioParaDegustarEvent))
+        tapGesture.numberOfTapsRequired = 1
+        espacioDegustarLbl.addGestureRecognizer(tapGesture)
+        
+        
+        rightArrow.addTarget(self, action: #selector(espacioParaDegustarEvent), for: .touchUpInside)
         
         // Descripcion
         let desc = ArchiaBoldLabel()
@@ -229,10 +250,14 @@ class InformacionAnfitrionCell: UITableViewCell {
         print(" adNewImage ")
     }
     
-    
-    
     @objc func addEvento() {
         let vc = EventoAnfitrionViewController()
+        self.reference.navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    
+    @objc func espacioParaDegustarEvent() {
+        let vc = EspaciosDegustarViewController()
         self.reference.navigationController?.pushViewController(vc, animated: true)
     }
     
