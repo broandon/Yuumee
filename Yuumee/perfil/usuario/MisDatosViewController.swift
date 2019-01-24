@@ -127,8 +127,8 @@ class MisDatosViewController: BaseViewController, UITableViewDelegate, UITableVi
     
     
     
-    @objc func actualizarDatos() {
-        let nameImage         = lastImagedownloaded.lastPathComponent
+    @objc func actualizarDatos(newImage: String = "") {
+        let nameImage         = newImage.isEmpty ? lastImagedownloaded.lastPathComponent : newImage
         let nameToUpdate      = nombre.text!
         let telephoneToUpdate = telefono.text!
         let apellidosToUpdate = apellidos.text!
@@ -352,7 +352,7 @@ class MisDatosViewController: BaseViewController, UITableViewDelegate, UITableVi
                 multipartFormData: { MultipartFormData in
                     
                     MultipartFormData.append("uploadImage".data(using: String.Encoding.utf8)!, withName: "funcion")
-                    let imgString = image.base64 //self.convertImageToBase64(image: image)
+                    let imgString = self.convertImageToBase64(image: image)
                     MultipartFormData.append(imgString.data(using: String.Encoding.utf8)!, withName: "image")
                     
                     //MultipartFormData.append(UIImagePNGRepresentation(pickedImage)! , withName: "image", fileName: lastPathComponent, mimeType: "image/png")
@@ -361,25 +361,24 @@ class MisDatosViewController: BaseViewController, UITableViewDelegate, UITableVi
                 switch result {
                 case .success(let upload, _, _):
                     upload.responseJSON { response in
-                        
-                        print(response)
-                        print(response.result)
-                        print(response.result.value)
+                        //print(response)
+                        //print(response.result)
+                        //print(response.result.value)
                         
                         if let resultUpload = response.result.value as! Dictionary<String, Any>? {
-                            
-                            print(" resultUpload: \(resultUpload) ")
                             
                             if let state = resultUpload["state"] as! String? {
                                 if state == "200" {
                                     
                                     if let imageInfo = resultUpload["data"] as! Dictionary<String, Any>? {
                                         
-                                        print(" imageInfo ")
-                                        print(imageInfo)
+                                        let nombreImagen = imageInfo["image_name"]
+                                        
+                                        DispatchQueue.main.async {
+                                            self.actualizarDatos(newImage: nombreImagen as! String)
+                                        }
                                         
                                         /*
-                                        let nombreImagen = imageInfo["image_name"]
                                         self.params["image"] = nombreImagen!
                                         let atributtes = [NSAttributedString.Key.foregroundColor: .gray,
                                                           NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)]
@@ -387,13 +386,7 @@ class MisDatosViewController: BaseViewController, UITableViewDelegate, UITableVi
                                         */
                                         
                                     }
-                                    else{
-                                        print(" error ")
-                                    }
                                     
-                                }
-                                else{
-                                    print(" error ")
                                 }
                             }
                         }
@@ -434,7 +427,17 @@ class MisDatosViewController: BaseViewController, UITableViewDelegate, UITableVi
         
     }
     
-   
+    //
+    // Convert String to base64
+    //
+    func convertImageToBase64(image: UIImage) -> String {
+        //let imageData = UIImage.jpegData(compressionQuality: image) // UIImageJPEGRepresentation(image, 1.0) // (image)!
+        //return imageData!.base64EncodedString(options: Data.Base64EncodingOptions.lineLength64Characters)
+        
+        let imageData = image.jpegData(compressionQuality: 0.0)
+        let base64String = imageData?.base64EncodedString(options: .lineLength64Characters) //base64EncodedStringWithOptions(.allZeros
+        return base64String!
+    }
     
     
     
