@@ -55,6 +55,8 @@
 		9C31C7AC21E00D8200F5F585 /* CategoriaCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C31C7AB21E00D8200F5F585 /* CategoriaCell.swift */; };
 		9C31C7AE21E00DB300F5F585 /* ComidaCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C31C7AD21E00DB300F5F585 /* ComidaCell.swift */; };
 		9C31C7B021E00DD400F5F585 /* HorarioCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C31C7AF21E00DD400F5F585 /* HorarioCell.swift */; };
+		9C3C8E5421F8DBC1007C2A77 /* ReservasViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C3C8E5321F8DBC1007C2A77 /* ReservasViewController.swift */; };
+		9C3C8E5621F8EA6F007C2A77 /* MisDatosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C3C8E5521F8EA6F007C2A77 /* MisDatosViewController.swift */; };
 		9C90F5BA21DD280900ACDA8F /* PerfilAnfitrionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C90F5B921DD280900ACDA8F /* PerfilAnfitrionViewController.swift */; };
 		9C99B32121E3CC5B00ADD584 /* UserDefaultsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C99B32021E3CC5B00ADD584 /* UserDefaultsStorage.swift */; };
 		9CA66DA521F7B23200D473D5 /* FechasCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CA66DA421F7B23200D473D5 /* FechasCell.swift */; };
@@ -101,7 +103,7 @@
 		5E800ED821E738C4008F4F66 /* Connection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Connection.m; path = Conekta/Connection.m; sourceTree = SOURCE_ROOT; };
 		5E88E3B321F429DA0043889A /* CalendarioViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarioViewController.swift; sourceTree = "<group>"; };
 		5E88E3B521F42A020043889A /* OrganizarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizarViewController.swift; sourceTree = "<group>"; };
-		5E99DA8221EED42C005BB6AC /* PerfilClienteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PerfilClienteViewController.swift; path = Yuumee/perfil/PerfilClienteViewController.swift; sourceTree = SOURCE_ROOT; };
+		5E99DA8221EED42C005BB6AC /* PerfilClienteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PerfilClienteViewController.swift; path = Yuumee/perfil/usuario/PerfilClienteViewController.swift; sourceTree = SOURCE_ROOT; };
 		5EBD6AF321F578E200621297 /* SubCategoriasViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubCategoriasViewController.swift; sourceTree = "<group>"; };
 		5EBD6AF521F5A8FA00621297 /* CustomSwitch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomSwitch.swift; sourceTree = "<group>"; };
 		5EBD6AF621F5A8FA00621297 /* CustomThumbView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomThumbView.swift; sourceTree = "<group>"; };
@@ -124,6 +126,8 @@
 		9C31C7AB21E00D8200F5F585 /* CategoriaCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriaCell.swift; sourceTree = "<group>"; };
 		9C31C7AD21E00DB300F5F585 /* ComidaCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComidaCell.swift; sourceTree = "<group>"; };
 		9C31C7AF21E00DD400F5F585 /* HorarioCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HorarioCell.swift; sourceTree = "<group>"; };
+		9C3C8E5321F8DBC1007C2A77 /* ReservasViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReservasViewController.swift; sourceTree = "<group>"; };
+		9C3C8E5521F8EA6F007C2A77 /* MisDatosViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MisDatosViewController.swift; sourceTree = "<group>"; };
 		9C8B90DE21E9550200229B38 /* Yuumee.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Yuumee.entitlements; sourceTree = "<group>"; };
 		9C90F5B921DD280900ACDA8F /* PerfilAnfitrionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerfilAnfitrionViewController.swift; sourceTree = "<group>"; };
 		9C99B32021E3CC5B00ADD584 /* UserDefaultsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsStorage.swift; sourceTree = "<group>"; };
@@ -255,10 +259,6 @@
 			children = (
 				9C31C7A321DFF7F700F5F585 /* anfitrion */,
 				5E68D6B821C8B04800DA00AB /* usuario */,
-				5E68D6B621C8B04500DA00AB /* PerfilViewController.swift */,
-				9C90F5B921DD280900ACDA8F /* PerfilAnfitrionViewController.swift */,
-				9CA8E88821E8073600266E99 /* HistorialEventosViewController.swift */,
-				5E99DA8221EED42C005BB6AC /* PerfilClienteViewController.swift */,
 			);
 			path = perfil;
 			sourceTree = "<group>";
@@ -266,9 +266,12 @@
 		5E68D6B821C8B04800DA00AB /* usuario */ = {
 			isa = PBXGroup;
 			children = (
+				5E99DA8221EED42C005BB6AC /* PerfilClienteViewController.swift */,
+				9CA8E88821E8073600266E99 /* HistorialEventosViewController.swift */,
 				5E68D6B921C8B05900DA00AB /* MetodoDePagoViewController.swift */,
 				5E68D6BA21C8B05900DA00AB /* PerfilUsuarioViewController.swift */,
 				9CA8E88321E7D24700266E99 /* TarjetasViewController.swift */,
+				9C3C8E5521F8EA6F007C2A77 /* MisDatosViewController.swift */,
 			);
 			path = usuario;
 			sourceTree = "<group>";
@@ -332,6 +335,9 @@
 				9C31C7A421E00CA400F5F585 /* BackgroundImageHeader.swift */,
 				9C31C7A621E00CC200F5F585 /* InformacionAnfitrionCell.swift */,
 				5EC3636821F8533200729047 /* EspaciosDegustarViewController.swift */,
+				9C3C8E5321F8DBC1007C2A77 /* ReservasViewController.swift */,
+				5E68D6B621C8B04500DA00AB /* PerfilViewController.swift */,
+				9C90F5B921DD280900ACDA8F /* PerfilAnfitrionViewController.swift */,
 			);
 			path = anfitrion;
 			sourceTree = "<group>";
@@ -574,10 +580,12 @@
 				5E68D69D21C8AF6400DA00AB /* Extensions.swift in Sources */,
 				5E68D6B721C8B04500DA00AB /* PerfilViewController.swift in Sources */,
 				5E68D6A421C8AFAF00DA00AB /* DetalleListadoCategoriaViewController.swift in Sources */,
+				9C3C8E5421F8DBC1007C2A77 /* ReservasViewController.swift in Sources */,
 				5EC3636521F83F7300729047 /* ProductosExtraView.swift in Sources */,
 				5E68D6AB21C8AFEE00DA00AB /* LoginViewController.swift in Sources */,
 				5E68D6A721C8AFCE00DA00AB /* UbicacionViewController.swift in Sources */,
 				5EBEEEFB21E2F3C300F718A4 /* FormattedCurrentDate.swift in Sources */,
+				9C3C8E5621F8EA6F007C2A77 /* MisDatosViewController.swift in Sources */,
 				5EC49D3121D1F3FC00DAC1BD /* ArchiaRegularLabel.swift in Sources */,
 				5EBD6AF821F5A8FA00621297 /* CustomThumbView.swift in Sources */,
 				5EC3636721F840C600729047 /* ProductoExtraCell.swift in Sources */,

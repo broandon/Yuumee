@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Alamofire
 
 class PerfilClienteViewController: BaseViewController, UITableViewDelegate, UITableViewDataSource {
 
@@ -163,7 +164,20 @@ class PerfilClienteViewController: BaseViewController, UITableViewDelegate, UITa
             cell.addConstraintsWithFormat(format: "V:|-16-[v0(25)]", views: avatar)
         }
         
+        let sep = UIView()
+        sep.backgroundColor = UIColor.rosa
+        sep.layer.cornerRadius = 2
+        cell.addSubview(sep)
+        cell.addConstraintsWithFormat(format: "H:|-16-[v0]-16-|", views: sep)
+        cell.addConstraintsWithFormat(format: "V:[v0(1)]|", views: sep)
+        
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        //let currentSection = indexPath.section
+        //let currentRow = indexPath.row
+        return 50.0 // UITableViewAutomaticDimension
     }
     
     

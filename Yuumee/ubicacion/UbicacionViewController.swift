@@ -129,12 +129,12 @@ class UbicacionViewController: BaseViewController, UITextFieldDelegate {
         var perfilVC: UIViewController!
         if dataStorage.getTipo() == String(TipoUsuario.anfitrion.rawValue) {
             print(" Anfitrion ")
-            perfilVC = PerfilAnfitrionViewController()
+            perfilVC = PerfilViewController() // PerfilAnfitrionViewController()
             perfilVC.title = "PERFIL"
         }
         if dataStorage.getTipo() == String(TipoUsuario.cliente.rawValue) {
             print(" Cliente ")
-            perfilVC = PerfilClienteViewController() // ()
+            perfilVC = PerfilClienteViewController()
             perfilVC.title = "PERFIL"
         }
         

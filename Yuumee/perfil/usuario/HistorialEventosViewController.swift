@@ -143,10 +143,6 @@ extension HistorialEventosViewController: UITableViewDataSource, UITableViewDele
 
 
 
-
-
-
-
 struct Evento {
     
     var id: String

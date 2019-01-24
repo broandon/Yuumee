@@ -8,7 +8,7 @@
 
 import UIKit
 
-class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UITableViewDataSource {
+class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UITableViewDataSource, UIPickerViewDelegate, UIPickerViewDataSource, UITextFieldDelegate {
     
     let backgroundImageId = "backgroundImageId"
     
@@ -143,13 +143,15 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
             cell.addConstraintsWithFormat(format: "H:[v0(120)]-|", views: guardar)
             cell.addConstraintsWithFormat(format: "V:|-[v0]", views: personasRecibir)
             cell.addConstraintsWithFormat(format: "V:|-[v0(30)]-[v1(40)]", views: personasRecibirInput, guardar)
+            personasRecibirInput.inputAccessoryView = toolbarPicker
+            personasRecibirInput.inputView = picker
             return cell
         }
-        
         
         return UITableViewCell()
     }
     
+    // # de personas a recibir...
     let personasRecibir: ArchiaBoldLabel = {
         let label  = ArchiaBoldLabel()
         label.text = "Personas a recibir:"
@@ -158,8 +160,8 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
     }()
     let personasRecibirInput: UITextField = {
         let textField = UITextField()
+        textField.textAlignment = .center
         textField.addBorder(borderColor: .gris, widthBorder: 1)
-        textField.keyboardType = .numberPad
         return textField
     }()
     let guardar: UIButton = {
@@ -168,11 +170,11 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
         button.titleLabel?.font   = UIFont.boldSystemFont(ofSize: (button.titleLabel?.font.pointSize)!)
         button.backgroundColor    = UIColor.white
         button.layer.cornerRadius = 5
+        button.tintColor          = UIColor.rosa
         button.setTitle("Guardar", for: .normal)
         button.addBorder(borderColor: .azul, widthBorder: 2)
         button.setTitleColor(UIColor.rosa, for: .normal)
         button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -10, bottom: 0, right: 10)
-        button.tintColor = UIColor.rosa
         return button
     }()
     
@@ -189,7 +191,7 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
             return 70
         }
         if seccion == "horario" {
-            return 100
+            return 120
         }
         if seccion == "detalles_evento" {
             return ScreenSize.screenHeight
@@ -205,6 +207,70 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
         }
         return UITableView.automaticDimension
     }
+    
+    // MARK: UIPicker
+    
+    lazy var picker: UIPickerView = {
+        let picker = UIPickerView()
+        picker.delegate = self
+        return picker
+    }()
+    var pickerData: [String] = ["1", "2", "3", "4", "5"]
+    
+    // Number of columns of data
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    // The number of rows of data
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return pickerData.count
+    }
+    
+    // The data to return fopr the row and component (column) that's being passed in
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return pickerData[row]
+    }
+    
+   
+    
+    private lazy var toolbarPicker: UIToolbar = {
+        let rect    = CGRect(x: 0, y: 0, width: ScreenSize.screenWidth, height: 40)
+        let toolbar = UIToolbar(frame: rect)
+        self.embedButtons(toolbar)
+        return toolbar
+    }()
+    private func embedButtons(_ toolbar: UIToolbar) {
+        let cancelButton = UIBarButtonItem(title: "Cancelar", style: .plain, target: self, action: #selector(cancelPressed) )
+        let doneButton = UIBarButtonItem(title: "Ok", style: .done, target: self, action: #selector(donePressed))
+        let flexButton = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
+        toolbar.setItems([cancelButton, flexButton, doneButton], animated: true)
+    }
+    
+    @objc func cancelPressed() {
+        personasRecibirInput.resignFirstResponder()
+    }
+    
+    
+    @objc func donePressed() {
+        let selectedValue = pickerData[picker.selectedRow(inComponent: 0)]
+        personasRecibirInput.text = "\(selectedValue)"
+        personasRecibirInput.resignFirstResponder()
+        /*
+        let timeFormatter = DateFormatter()
+        timeFormatter.locale = Locale(identifier: "es_MX")
+        timeFormatter.timeStyle = DateFormatter.Style.short
+        let strDate = timeFormatter.string(from: pickerView.date)
+        if comienzaIsSelected {
+            comienzaInput.text = strDate
+            comienzaInput.resignFirstResponder();
+        }else{
+            terminaInput.text = strDate
+            terminaInput.resignFirstResponder();
+        }
+        */
+    }
+    
     
     
 }

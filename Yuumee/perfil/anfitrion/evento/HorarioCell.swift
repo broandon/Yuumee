@@ -91,28 +91,40 @@ class HorarioCell: UITableViewCell {
         return view
     }()
     
+    
+    let titulo: ArchiaRegularLabel = {
+        let label = ArchiaRegularLabel()
+        label.text = "Título"
+        return label
+    }()
+    
+    let tituloInput: UITextField = {
+        let textField = UITextField()
+        textField.addBorder(borderColor: .gris, widthBorder: 1)
+        return textField
+    }()
+    
     func setUpView() {
-        
         addSubview(auxPadding)
         addSubview(comienzaInput)
         addSubview(terminaInput)
         comienzaInput.delegate = self
-        terminaInput.delegate = self
-        
+        terminaInput.delegate  = self
         addSubview(comienza)
         addSubview(termina)
         addSubview(hora)
+        addSubview(titulo)
+        addSubview(tituloInput)
         
         addConstraintsWithFormat(format: "H:|-[v0(50)]-16-[v1(100)]-32-[v2(100)]", views: auxPadding, comienza, termina)
         addConstraintsWithFormat(format: "H:|-[v0(50)]-16-[v1(110)]-32-[v2(110)]", views: hora, comienzaInput, terminaInput)
-        addConstraintsWithFormat(format: "V:|[v0(v1)]-[v1(v1)]", views: auxPadding, hora)
-        addConstraintsWithFormat(format: "V:|[v0]-[v1(30)]", views: comienza, comienzaInput)
+        addConstraintsWithFormat(format: "H:|-[v0(50)]-[v1]-|", views: titulo, tituloInput)
+        addConstraintsWithFormat(format: "V:|[v0(v1)]-[v1(v1)]-20-[v2(30)]", views: auxPadding, hora, titulo)
+        addConstraintsWithFormat(format: "V:|[v0]-[v1(30)]-16-[v2(30)]", views: comienza, comienzaInput, tituloInput)
         addConstraintsWithFormat(format: "V:|[v0]-[v1(30)]", views: termina, terminaInput)
-        
         //comienzaInput.addTarget(self, action: #selector(comienzoSeleccionado), for: .touchUpInside)
         comienzaInput.inputAccessoryView = toolbar_Picker
         comienzaInput.inputView = pickerView
-        
         //terminaInput.addTarget(self, action: #selector(terminaSeleccionado), for: .touchUpInside)
         terminaInput.inputAccessoryView = toolbar_Picker
         terminaInput.inputView = pickerView
@@ -132,22 +144,10 @@ class HorarioCell: UITableViewCell {
         let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0,
                                               width: ScreenSize.screenWidth,
                                               height: 40) )
-        //toolbar.barStyle = .blackTranslucent
-        //toolbar.barTintColor = .white
-        //toolbar.tintColor = .lightGray
         self.embedButtons(toolbar)
         return toolbar
     }()
-    
     private func embedButtons(_ toolbar: UIToolbar) {
-        /*func setupLabelBarButtonItem() -> UIBarButtonItem {
-         let label = UILabel()
-         label.text = "Set Alarm Time"
-         label.textColor = .lightGray
-         return UIBarButtonItem(customView: label)
-         }*/
-        //UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(self.donePressed))
-        //toolbar.setItems([todayButton, flexButton, setupLabelBarButtonItem(), flexButton, doneButton], animated: true)
         let cancelButton = UIBarButtonItem(title: "Cancelar", style: .plain, target: self, action: #selector(cancelPressed) )
         let doneButton = UIBarButtonItem(title: "Ok", style: .done, target: self, action: #selector(donePressed))
         let flexButton = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
@@ -159,15 +159,15 @@ class HorarioCell: UITableViewCell {
         terminaInput.resignFirstResponder()
     }
     
+    
     var comienzaIsSelected: Bool = false
     
+    
     @objc func donePressed() {
-        
         let timeFormatter = DateFormatter()
         timeFormatter.locale = Locale(identifier: "es_MX")
         timeFormatter.timeStyle = DateFormatter.Style.short
         let strDate = timeFormatter.string(from: pickerView.date)
-        
         if comienzaIsSelected {
             comienzaInput.text = strDate
             comienzaInput.resignFirstResponder();
@@ -175,7 +175,6 @@ class HorarioCell: UITableViewCell {
             terminaInput.text = strDate
             terminaInput.resignFirstResponder();
         }
-        
     }
     
     

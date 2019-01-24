@@ -39,12 +39,12 @@ class TimeLineViewController: BaseViewController {
         let imageResized = UIImage(named: "settings")?.imageResize(sizeChange: newSizeForSettings)
         let settingsImage = UIImageView(image: imageResized)
         settingsImage.contentMode = .scaleAspectFit
-        settingsImage.image = settingsImage.image?.withRenderingMode(.alwaysTemplate)
-        settingsImage.tintColor = .white
+        //settingsImage.image = settingsImage.image?.withRenderingMode(.alwaysTemplate)
+        //settingsImage.tintColor = .white
         let settings = UIButton(type: .custom)
         settings.setImage( settingsImage.image , for: .normal)
-        settings.backgroundColor = .rojo
-        settings.tintColor = .white
+        settings.backgroundColor = .rosa
+        //settings.tintColor = .white
         settings.layer.cornerRadius = 15
         let insetsPadding = UIEdgeInsets(top: -44, left: -44, bottom: -44, right: -44)
         settings.imageEdgeInsets = insetsPadding
@@ -275,7 +275,7 @@ class RestaurantCell: UITableViewCell {
     
     let restaurantImage: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "hamburger")
+        //imageView.image = UIImage(named: "hamburger")
         //imageView.contentMode = .scaleAspectFit
         return imageView
     }()

@@ -121,6 +121,12 @@ class MensajesViewController: BaseViewController {
         }
         let parameters: Parameters = ["funcion" : funcion,
                                       "id_user" : dataStorage.getUserId()] as [String: Any]
+        
+        print("-----------------------------------")
+        print(" parameters: ")
+        print(parameters)
+        print("-----------------------------------")
+        
         Alamofire.request(BaseURL.baseUrl() , method: .post, parameters: parameters,
                           encoding: ParameterQueryEncoding(),
                           headers: headers).responseJSON{ (response: DataResponse) in
@@ -128,6 +134,10 @@ class MensajesViewController: BaseViewController {
                             case .success(let value):
                                 
                                 if let result = value as? Dictionary<String, Any> {
+                                    print("-----------------------------------")
+                                    print(" result: ")
+                                    print(result)
+                                    print("-----------------------------------")
                                     
                                     let statusMsg = result["status_msg"] as? String
                                     let state     = result["state"] as? String

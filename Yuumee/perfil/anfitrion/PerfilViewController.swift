@@ -60,7 +60,7 @@ class PerfilViewController: BaseViewController {
         }
     }
     
-    let secciones = ["perfil", "historial", "metodos_pago", "cerrar_sesion"]
+    let secciones = ["perfil", "reservas", "aviso", "cerrar_sesion"]
     
     let dataStorage = UserDefaults.standard
     
@@ -90,24 +90,41 @@ extension PerfilViewController: UITableViewDelegate, UITableViewDataSource {
         
         if seccion == "perfil" {
             cell.textLabel?.text = "Perfil"
-            let avatarImg = UIImage(named: "avatar")
+            let avatarImg = UIImage(named: "chef_rosa")
             let avatar = UIImageView(image: avatarImg)
             cell.addSubview(avatar)
-            cell.addConstraintsWithFormat(format: "H:[v0(40)]-|", views: avatar)
-            cell.addConstraintsWithFormat(format: "V:|-16-[v0(40)]", views: avatar)
+            cell.addConstraintsWithFormat(format: "H:[v0(24)]-|", views: avatar)
+            cell.addConstraintsWithFormat(format: "V:|-16-[v0(24)]", views: avatar)
+        }
+        
+        
+        if seccion == "reservas" {
+            cell.textLabel?.text = "Reservas activas"
+            let avatarImg = UIImage(named: "reservar")
+            let avatar = UIImageView(image: avatarImg)
+            cell.addSubview(avatar)
+            cell.addConstraintsWithFormat(format: "H:[v0(24)]-|", views: avatar)
+            cell.addConstraintsWithFormat(format: "V:|-16-[v0(24)]", views: avatar)
+        }
+        
+        if seccion == "aviso" {
+            cell.textLabel?.text = "Aviso de privacidad"
+            let avatarImg = UIImage(named: "aviso_privacidad")
+            let avatar = UIImageView(image: avatarImg)
+            cell.addSubview(avatar)
+            cell.addConstraintsWithFormat(format: "H:[v0(24)]-|", views: avatar)
+            cell.addConstraintsWithFormat(format: "V:|-16-[v0(24)]", views: avatar)
         }
         
         if seccion == "cerrar_sesion" {
             cell.textLabel?.text = "Cerrar sesión"
             let avatarImg = UIImage(named: "power")
             let avatar = UIImageView(image: avatarImg)
-            
             avatar.image = avatar.image!.withRenderingMode(.alwaysTemplate)
             avatar.tintColor = UIColor.rosa
-            
             cell.addSubview(avatar)
-            cell.addConstraintsWithFormat(format: "H:[v0(40)]-|", views: avatar)
-            cell.addConstraintsWithFormat(format: "V:|-16-[v0(40)]", views: avatar)
+            cell.addConstraintsWithFormat(format: "H:[v0(24)]-|", views: avatar)
+            cell.addConstraintsWithFormat(format: "V:|-16-[v0(24)]", views: avatar)
         }
         
         let sep = UIView()
@@ -124,7 +141,7 @@ extension PerfilViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         //let currentSection = indexPath.section
         //let currentRow = indexPath.row
-        return 70.0 // UITableViewAutomaticDimension
+        return 50.0 // UITableViewAutomaticDimension
     }
     
     
@@ -134,19 +151,32 @@ extension PerfilViewController: UITableViewDelegate, UITableViewDataSource {
         let seccion = secciones[currentRow]
         
         if seccion == "perfil" {
-            let vc = PerfilAnfitrionViewController() // PerfilUsuarioViewController()
+            let vc = PerfilAnfitrionViewController()
             self.navigationController?.pushViewController(vc, animated: true)
         }
         
-        if seccion == "historial" {
+        if seccion == "reservas" {
+            let vc = ReservasViewController()
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
+        /*if seccion == "historial" {
             let vc = HistorialEventosViewController()
             self.navigationController?.pushViewController(vc, animated: true)
         }
-        
         if seccion == "metodos_pago" {
             let vc = TarjetasViewController()
             self.navigationController?.pushViewController(vc, animated: true)
+        }*/
+        
+        if seccion == "aviso" {
+            let viewController = WebViewController()
+            viewController.titleVC = ""
+            viewController.url = "http://easycode.mx/solestra/img/Privacidad/terminos.pdf"
+            let nav = UINavigationController(rootViewController: viewController)
+            self.present(nav, animated: true, completion: nil)
+            //self.navigationController?.pushViewController(viewController, animated: true)
         }
+        
         
         if seccion == "cerrar_sesion" {
             let refreshAlert = UIAlertController(title: "Cerrar Sesión",
@@ -186,6 +216,5 @@ extension PerfilViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
 }
-
 
 
