@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import Alamofire
+
 
 class InformacionAnfitrionCell: UITableViewCell {
     
@@ -57,6 +59,7 @@ class InformacionAnfitrionCell: UITableViewCell {
     var profesion: UITextField!
     var idiomas: UITextField!
     var serviciosExtra: UITextField!
+    let descripcion = UITextView()
     
      var edadLbl: ArchiaRegularLabel!
      var direccionLbl: ArchiaRegularLabel!
@@ -126,9 +129,9 @@ class InformacionAnfitrionCell: UITableViewCell {
         return button
     }()
     
+    
     func setUpView(info: Dictionary<String, AnyObject> = [:]) {
         backgroundColor = UIColor.gris
-        let imagen      = (info["imagen"] as? String) ?? ""
         
         addSubview(avatar)
         addSubview(contentInfo)
@@ -150,6 +153,7 @@ class InformacionAnfitrionCell: UITableViewCell {
         /* let id              = info["id"] as? String */
         
         // Info
+        //imagenPortada = (info["imagen_portada"] as? String)!
         nombre = getTextFieldForInfo(placeHolder: "") // "Nombre"
         nombre.delegate = self
         nombre.text = info["nombre"] as? String
@@ -246,7 +250,6 @@ class InformacionAnfitrionCell: UITableViewCell {
         let desc = ArchiaBoldLabel()
         desc.text = "Descripción:"
         
-        let descripcion = UITextView()
         descripcion.addBorder(borderColor: .gray, widthBorder: 1)
         descripcion.delegate = self
         descripcion.text = info["descripcion"] as? String
@@ -263,18 +266,88 @@ class InformacionAnfitrionCell: UITableViewCell {
         avatar.addConstraintsWithFormat(format: "H:|-[v0]-|", views: addCamera)
         avatar.addConstraintsWithFormat(format: "V:|-[v0]-|", views: addCamera)
         
+        let imagen = (info["imagen"] as? String) ?? ""
         if !(imagen.isEmpty) {
             for v in avatar.subviews {
                 v.removeFromSuperview()
             }
-            let url = URL(string: imagen)
-            avatar.af_setImage(withURL: url!)
+            urlAvatar = URL(string: imagen)
+            avatar.af_setImage(withURL: urlAvatar!)
         }
         
+        let portada = (info["imagen_portada"] as? String) ?? ""
+        if !portada.isEmpty {
+            imagenPortada = URL(string: portada)
+        }
         
         addCamera.addTarget(self, action: #selector(adNewImage) , for: .touchUpInside)
         agregarEvento.addTarget(self, action: #selector(addEvento) , for: .touchUpInside)
+        guardarPerfil.addTarget(self, action: #selector(guardarPerfilEvent), for: .touchUpInside)
+        
     }
+    
+    let dataStorage = UserDefaults.standard
+    
+    var imagenPortada: URL!
+    var urlAvatar: URL!
+    
+    @objc func guardarPerfilEvent() {
+        
+        let userId = dataStorage.getUserId()
+        
+        let headers: HTTPHeaders = ["Accept": "application/json",
+                                    "Content-Type" : "application/x-www-form-urlencoded"]
+        let parameters: Parameters=["funcion"    : "updateUserAmphitryon",
+                                    "id_user"    : userId,
+                                    "first_name" : nombre.text!,
+                                    "last_name"  : apellidos.text!,
+                                    "image"      : urlAvatar.lastPathComponent,
+                                    "image_page" : imagenPortada.lastPathComponent,
+                                    "age"        : edad.text!,
+                                    "address"    : direccion.text!,
+                                    "phone"      : telefono.text!,
+                                    "profession" : profesion.text!,
+                                    "languages"  : idiomas.text!,
+                                    "services"   : serviciosExtra.text!,
+                                    "description": descripcion.text!] as [String: Any]
+        
+        Alamofire.request(BaseURL.baseUrl(), method: .post, parameters: parameters, encoding: ParameterQueryEncoding(), headers: headers).responseJSON
+            { (response: DataResponse) in
+                switch(response.result) {
+                case .success(let value):
+                    if let result = value as? Dictionary<String, Any> {
+                        let statusMsg = result["status_msg"] as? String
+                        let state     = result["state"] as? String
+                        
+                        if statusMsg == "OK" && state == "200" {
+                            
+                            let alert = UIAlertController(title: "Información actualizada.", message: "", preferredStyle: UIAlertController.Style.alert)
+                            alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+                            self.reference.present(alert, animated: true, completion: nil)
+                            return;
+                            
+                        }
+                        else{
+                            let alert = UIAlertController(title: "Ocurrió un error al realizar la petición.", message: "\(statusMsg!)", preferredStyle: UIAlertController.Style.alert)
+                            alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+                            self.reference.present(alert, animated: true, completion: nil)
+                            return;
+                        }
+                    }
+                    //completionHandler(value as? NSDictionary, nil)
+                    break
+                case .failure(let error):
+                    //completionHandler(nil, error as NSError?)
+                    //print(" error:  ")
+                    //print(error)
+                    break
+                }
+        }
+        
+        
+    }
+    
+    
     
     @objc func adNewImage() {
         print(" adNewImage ")
