@@ -7,19 +7,18 @@
 //
 
 import UIKit
+import Alamofire
 
 class PerfilAnfitrionViewController: BaseViewController {
     
     let informacionAnfitrionCell = "InformacionAnfitrionCell"
-    
-    let backgroundImageId = "backgroundImageId"
-    
-    let defaultReuseId = "cell"
+    let backgroundImageId        = "backgroundImageId"
+    let defaultReuseId           = "cell"
     
     lazy var tableView: UITableView = {
         let tableView = UITableView() // frame: CGRect.zero, style: .grouped
-        tableView.delegate   = self
-        tableView.dataSource = self
+        tableView.delegate        = self
+        tableView.dataSource      = self
         tableView.separatorStyle  = .none
         tableView.backgroundColor = UIColor.gris
         tableView.showsVerticalScrollIndicator = false
@@ -32,9 +31,12 @@ class PerfilAnfitrionViewController: BaseViewController {
     
     let secciones = ["background_image", "info"]
     
-    let eventos = ["", "", "", "", ""]
+    var eventos = [EventoAnfitrion]()
     
     let dataStorage = UserDefaults.standard
+    
+    var infoAnfitrion: Dictionary<String, AnyObject> = [:]
+    var imagenPortada: String = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,7 +53,59 @@ class PerfilAnfitrionViewController: BaseViewController {
         mainView.addConstraintsWithFormat(format: "V:|-[v0]|", views: tableView)
     }
     
-    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        // ---------------------------------------------------------------------
+        let headers: HTTPHeaders = [
+            "Accept" : "application/json",
+            "Content-Type" : "application/x-www-form-urlencoded"
+        ]
+        let parameters: Parameters = ["funcion" : "getUserInfoAmphitryon",
+                                      "id_user" : dataStorage.getUserId()] as [String: Any]
+        Alamofire.request(BaseURL.baseUrl() , method: .post, parameters: parameters,
+                          encoding: ParameterQueryEncoding(),
+                          headers: headers).responseJSON{ (response: DataResponse) in
+                            switch(response.result) {
+                            case .success(let value):
+                                
+                                
+                                if let result = value as? Dictionary<String, Any> {
+                                    let statusMsg = result["status_msg"] as? String
+                                    let state     = result["state"] as? String
+                                    
+                                    if statusMsg == "OK" && state == "200" {
+                                        if let data = result["data"] as? Dictionary<String, AnyObject> {
+                                            
+                                            if let info = data["info"] as? Dictionary<String, AnyObject> {
+                                                self.imagenPortada = (info["imagen_portada"] as? String)!
+                                                self.infoAnfitrion = info
+                                            }
+                                            
+                                            if let eventos = data["events"] as? [Dictionary<String, AnyObject>] {
+                                                for e in eventos {
+                                                    let newE = EventoAnfitrion(eventoArray: e)
+                                                    self.eventos.append(newE)
+                                                }
+                                            }
+                                            
+                                            self.tableView.reloadData()
+                                        }
+                                    }
+                                }
+                                
+                                //completionHandler(value as? NSDictionary, nil)
+                                break
+                            case .failure(let error):
+                                //completionHandler(nil, error as NSError?)
+                                print(error)
+                                print(error.localizedDescription)
+                                break
+                            }
+        }
+        // ---------------------------------------------------------------------
+        
+    }
     
     @objc func keyboardWillAppear(notification: NSNotification) {
         self.view.frame.origin.y -= 200
@@ -98,7 +152,7 @@ extension PerfilAnfitrionViewController: UITableViewDelegate, UITableViewDataSou
                 let cell = tableView.dequeueReusableCell(withIdentifier: backgroundImageId, for: indexPath)
                 if let cell = cell as? BackgroundImageHeader {
                     cell.selectionStyle = .none
-                    cell.setUpView()
+                    cell.setUpView(urlImage: self.imagenPortada)
                     return cell
                 }
             }
@@ -107,30 +161,34 @@ extension PerfilAnfitrionViewController: UITableViewDelegate, UITableViewDataSou
                 if let cell = cell as? InformacionAnfitrionCell {
                     cell.selectionStyle = .none
                     cell.reference = self
-                    cell.setUpView()
+                    cell.setUpView(info: infoAnfitrion)
                     return cell
                 }
             }
         }
         
         if currentSection == 1 {
+            
+            let evento = self.eventos[currentRow]
+            
             let cell = tableView.dequeueReusableCell(withIdentifier: defaultReuseId, for: indexPath)
+            cell.releaseView()
             let titulo = ArchiaBoldLabel()
             titulo.textColor = .rosa
-            titulo.text = "Desayuno anfitrión"
+            titulo.text = evento.titulo
             let descripcion = ArchiaRegularLabel()
-            descripcion.text = "Desayuno completo"
+            descripcion.text = evento.descripcion
             let tipoMenu = ArchiaRegularLabel()
             tipoMenu.textColor = .verde
-            tipoMenu.text = "Menú: Comida"
+            tipoMenu.text = "Menu: \(evento.menu)"
             let fecha = ArchiaRegularLabel()
-            fecha.text = "Fecha: 24 de enero 2019"
+            fecha.text = evento.fecha
             let horario = ArchiaRegularLabel()
-            horario.text = "Horario: 07:00 - 10:00"
+            horario.text = "Horario: \(evento.horario)"
             let capacidad = ArchiaRegularLabel()
-            capacidad.text = "Capacidad: 1"
+            capacidad.text = "Capacidad: \(evento.capacidad)"
             let costo = ArchiaRegularLabel()
-            costo.text = "Costo: $ 55.0 mxn"
+            costo.text = evento.costo
             let button = UIButton(type: .system)
             button.titleLabel?.font   = UIFont(name: "ArchiaRegular", size: (button.titleLabel?.font.pointSize)!)
             button.titleLabel?.font   = UIFont.boldSystemFont(ofSize: (button.titleLabel?.font.pointSize)!)
@@ -173,12 +231,11 @@ extension PerfilAnfitrionViewController: UITableViewDelegate, UITableViewDataSou
     }
     
     
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let currentSection = indexPath.section
         let currentRow     = indexPath.row
-        
         if currentSection == 0 {
-            
             let section = secciones[currentRow]
             if section == "background_image" {
                 return ScreenSize.screenWidth / 2
@@ -186,16 +243,43 @@ extension PerfilAnfitrionViewController: UITableViewDelegate, UITableViewDataSou
             if section == "info" {
                 return ScreenSize.screenHeight - (ScreenSize.screenWidth*0.3)
             }
-            
         }
-        
         if currentSection == 1 {
             return 320
         }
-        
         return UITableView.automaticDimension
     }
     
     
     
 }
+
+
+
+
+struct EventoAnfitrion {
+    
+    var id: String
+    var costo: String
+    var fecha: String
+    var titulo: String
+    var horario: String
+    var capacidad: String
+    var menu: String
+    var descripcion: String
+    
+    init(eventoArray: Dictionary<String, AnyObject>) {
+        self.id = eventoArray["id"] as! String
+        self.costo = eventoArray["costo"] as! String
+        self.fecha = eventoArray["fecha"] as! String
+        self.titulo = eventoArray["titulo"] as! String
+        self.horario = eventoArray["horario"] as! String
+        self.capacidad = eventoArray["capacidad"] as! String
+        self.menu = eventoArray["menu"] as! String
+        self.descripcion = eventoArray["descripcion"] as! String
+    }
+    
+}
+
+
+

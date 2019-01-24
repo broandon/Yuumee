@@ -23,6 +23,7 @@ class InformacionAnfitrionCell: UITableViewCell {
         let imageView = UIImageView()
         imageView.addBorder(borderColor: UIColor.rosa, widthBorder: 1)
         imageView.isUserInteractionEnabled = true
+        imageView.clipsToBounds = true
         return imageView
     }()
     
@@ -125,8 +126,9 @@ class InformacionAnfitrionCell: UITableViewCell {
         return button
     }()
     
-    func setUpView() {
+    func setUpView(info: Dictionary<String, AnyObject> = [:]) {
         backgroundColor = UIColor.gris
+        let imagen      = (info["imagen"] as? String) ?? ""
         
         addSubview(avatar)
         addSubview(contentInfo)
@@ -145,28 +147,45 @@ class InformacionAnfitrionCell: UITableViewCell {
         addConstraintsWithFormat(format: "V:|-[v0(270)]-[v1(100)]-16-[v2(30)]-16-[v3(30)]",
                                  views: contentInfo, contentDescription, guardarPerfil, agregarEvento)
         // ---------------------------------------------------------------------
-        
+        /* let id              = info["id"] as? String */
         
         // Info
-        nombre = getTextFieldForInfo(placeHolder: "Nombre")
+        nombre = getTextFieldForInfo(placeHolder: "") // "Nombre"
         nombre.delegate = self
-        apellidos = getTextFieldForInfo(placeHolder: "Apellidos")
+        nombre.text = info["nombre"] as? String
+        
+        apellidos = getTextFieldForInfo(placeHolder: "") // "Apellidos"
         apellidos.delegate = self
-        edad = getTextFieldForInfo(placeHolder: "Edad")
+        apellidos.text = info["apellidos"] as? String
+        
+        edad = getTextFieldForInfo(placeHolder: "") // "Edad"
         edad.delegate = self
-        direccion = getTextFieldForInfo(placeHolder: "Dirección")
+        edad.text = info["fecha_nacimiento"] as? String
+        
+        direccion = getTextFieldForInfo(placeHolder: "") // "Dirección"
         direccion.delegate = self
-        email = getTextFieldForInfo(placeHolder: "E-mail")
+        direccion.text = info["direccion"] as? String
+        
+        email = getTextFieldForInfo(placeHolder: "") // "E-mail"
         email.keyboardType = .emailAddress
         email.delegate = self
-        telefono = getTextFieldForInfo(placeHolder: "Télefono")
+        email.text = info["email"] as? String
+        
+        telefono = getTextFieldForInfo(placeHolder: "") // "Télefono"
         telefono.delegate = self
-        profesion = getTextFieldForInfo(placeHolder: "Profesión")
+        telefono.text = info["telefono"] as? String
+        
+        profesion = getTextFieldForInfo(placeHolder: "") // "Profesión"
         profesion.delegate = self
-        idiomas = getTextFieldForInfo(placeHolder: "Idiomas")
+        profesion.text = info["profesion"] as? String
+        
+        idiomas = getTextFieldForInfo(placeHolder: "") // "Idiomas"
         idiomas.delegate = self
-        serviciosExtra = getTextFieldForInfo(placeHolder: "Servicios extra")
+        idiomas.text = info["idiomas"] as? String
+        
+        serviciosExtra = getTextFieldForInfo(placeHolder: "") // "Servicios extra"
         serviciosExtra.delegate = self
+        serviciosExtra.text = info["servicios_extra"] as? String
         
         serviciosExtraLbl  = getLabelForInfo(text: "Servicios extra:")
         espacioDegustarLbl = getLabelForInfo(text: "Espacio para degustar")
@@ -230,6 +249,7 @@ class InformacionAnfitrionCell: UITableViewCell {
         let descripcion = UITextView()
         descripcion.addBorder(borderColor: .gray, widthBorder: 1)
         descripcion.delegate = self
+        descripcion.text = info["descripcion"] as? String
         
         contentDescription.addSubview(desc)
         contentDescription.addSubview(descripcion)
@@ -242,6 +262,16 @@ class InformacionAnfitrionCell: UITableViewCell {
         avatar.addSubview(addCamera)
         avatar.addConstraintsWithFormat(format: "H:|-[v0]-|", views: addCamera)
         avatar.addConstraintsWithFormat(format: "V:|-[v0]-|", views: addCamera)
+        
+        if !(imagen.isEmpty) {
+            for v in avatar.subviews {
+                v.removeFromSuperview()
+            }
+            let url = URL(string: imagen)
+            avatar.af_setImage(withURL: url!)
+        }
+        
+        
         addCamera.addTarget(self, action: #selector(adNewImage) , for: .touchUpInside)
         agregarEvento.addTarget(self, action: #selector(addEvento) , for: .touchUpInside)
     }
