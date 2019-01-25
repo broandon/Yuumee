@@ -46,6 +46,8 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
     
     let secciones = ["background_image", "categoria", "comida", "horario", "detalles_evento", "fechas_evento", "producto_extra", "total"]
     
+    let dataStorage = UserDefaults.standard
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Reemplaza el titulo del back qu eviene por Default
@@ -70,7 +72,7 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
             let cell = tableView.dequeueReusableCell(withIdentifier: backgroundImageId, for: indexPath)
             if let cell = cell as? BackgroundImageHeader {
                 cell.selectionStyle = .none
-                cell.setUpView()
+                cell.setUpView(info: [:])
                 return cell
             }
         }
@@ -145,6 +147,7 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
             cell.addConstraintsWithFormat(format: "V:|-[v0(30)]-[v1(40)]", views: personasRecibirInput, guardar)
             personasRecibirInput.inputAccessoryView = toolbarPicker
             personasRecibirInput.inputView = picker
+            guardar.addTarget(self, action: #selector(guardarEvento) , for: .touchUpInside)
             return cell
         }
         
@@ -271,6 +274,104 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
         */
     }
     
+    
+    
+    @objc func guardarEvento() {
+        print(" guardarEvento ")
+        print(" personasRecibirInput.text: \(personasRecibirInput.text) ")
+        
+        if let view = mainView.viewWithTag( ProductoExtraCell.TAG_BEBIDAS_VIEW ) as? ProductosExtraView {
+            
+            print(view.opcion1Input.text)
+            print(view.costo1Input.text)
+            
+            print(view.opcion2Input.text)
+            print(view.costo2Input.text)
+            
+            print(view.opcion3Input.text)
+            print(view.costo3Input.text)
+            
+            print(view.opcion4Input.text)
+            print(view.costo4Input.text)
+            
+            print(view.opcion5Input.text)
+            print(view.costo5Input.text)
+        }
+        
+        
+        
+        
+        if let view = mainView.viewWithTag( ProductoExtraCell.TAG_POSTRES_VIEW ) as? ProductosExtraView {
+            
+            print(view.opcion1Input.text)
+            print(view.costo1Input.text)
+            
+            print(view.opcion2Input.text)
+            print(view.costo2Input.text)
+            
+            print(view.opcion3Input.text)
+            print(view.costo3Input.text)
+            
+            print(view.opcion4Input.text)
+            print(view.costo4Input.text)
+            
+            print(view.opcion5Input.text)
+            print(view.costo5Input.text)
+            
+        }
+        
+        print(" Ultima fecha seleccionada: \(dataStorage.getDate()) ")
+        
+        if let textView = mainView.viewWithTag(TAG_DESCRIPCION_EVENT) as? UITextView {
+            print(" textView.text: \(textView.text) ")
+        }
+        
+        if let textView = mainView.viewWithTag(TAG_MENU_EVENT) as? UITextView {
+            print(" textView.text: \(textView.text) ")
+        }
+        
+        if let textView = mainView.viewWithTag(TAG_BEBIDAS_EVENT) as? UITextView {
+            print(" textView.text: \(textView.text) ")
+        }
+        
+        if let textView = mainView.viewWithTag(TAG_POSTRES_EVENT) as? UITextView {
+            print(" textView.text: \(textView.text) ")
+        }
+        
+        
+        if let textView = mainView.viewWithTag(TAG_COSTO_MENU_EVENT) as? UITextView {
+            print(" textView.text: \(textView.text) ")
+        }
+        
+        if let textView = mainView.viewWithTag(TAG_COSTO_BEBIDAS_EVENT) as? UITextView {
+            print(" textView.text: \(textView.text) ")
+        }
+        
+        if let textView = mainView.viewWithTag(TAG_COSTO_POSTRES_EVENT) as? UITextView {
+            print(" textView.text: \(textView.text) ")
+        }
+        
+        
+        if let textView = mainView.viewWithTag(TAG_TITULO_EVENT) as? UITextView {
+            print(" titulo evento: \(textView.text) ")
+        }
+        
+        if let textView = mainView.viewWithTag(TAG_COMIENZA_EVENT) as? UITextView {
+            print(" TAG_COMIENZA_EVENT: \(textView.text) ")
+        }
+        
+        
+        if let textView = mainView.viewWithTag(TAG_TERMINA_EVENT) as? UITextView {
+            print(" TAG_TERMINA_EVENT: \(textView.text) ")
+        }
+        
+        
+        print(" Ultima comida seleccionada: \(dataStorage.getLastFoodSelectedEvent()) ")
+        
+        
+        
+        
+    }
     
     
 }

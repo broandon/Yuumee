@@ -151,8 +151,9 @@ extension PerfilAnfitrionViewController: UITableViewDelegate, UITableViewDataSou
             if section == "background_image" {
                 let cell = tableView.dequeueReusableCell(withIdentifier: backgroundImageId, for: indexPath)
                 if let cell = cell as? BackgroundImageHeader {
+                    cell.reference = self
                     cell.selectionStyle = .none
-                    cell.setUpView(urlImage: self.imagenPortada)
+                    cell.setUpView(urlImage: self.imagenPortada, info: infoAnfitrion)
                     return cell
                 }
             }

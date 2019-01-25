@@ -75,14 +75,26 @@ class DetallesEventoCell: UITableViewCell {
         bebidas = getBoldLabel(text: "Bebidas:")
         postres = getBoldLabel(text: "Postres:")
         
-        descTextView = getTextView()
-        menuTextView = getTextView()
-        bebidasTextView = getTextView()
-        postresTextView = getTextView()
         
+        descTextView = getTextView()
+        descTextView.tag = TAG_DESCRIPCION_EVENT
+        
+        
+        menuTextView = getTextView()
+        menuTextView.tag = TAG_MENU_EVENT
+            
+        bebidasTextView = getTextView()
+        bebidasTextView.tag = TAG_BEBIDAS_EVENT
+            
+        postresTextView = getTextView()
+        postresTextView.tag = TAG_POSTRES_EVENT
+        
+            
         contCostoMenu = getView()
         contCostoBebidas = getView()
         contCostoPostres = getView()
+        
+        
         // Labels
         addSubview(dscripcion)
         addSubview(menu)
@@ -115,6 +127,7 @@ class DetallesEventoCell: UITableViewCell {
         // Vista de Menu
         costoMenu = getBoldLabel(text: "Costo:")
         costoMenuTextView = getTextView()
+        costoMenuTextView.tag = TAG_COSTO_MENU_EVENT
         costoMenuTextView.textAlignment = .center
         costoMenuTextView.font = UIFont.boldSystemFont(ofSize: 14)
         costoMenuTextView.addBorder(borderColor: .black, widthBorder: 1)
@@ -136,6 +149,7 @@ class DetallesEventoCell: UITableViewCell {
         // Vista de Bebidas
         costoBebidas = getBoldLabel(text: "Costo:")
         costoBebidasTextView = getTextView()
+        costoBebidasTextView.tag = TAG_COSTO_BEBIDAS_EVENT
         costoBebidasTextView.textAlignment = .center
         costoBebidasTextView.font = UIFont.boldSystemFont(ofSize: 14)
         costoBebidasTextView.addBorder(borderColor: .black, widthBorder: 1)
@@ -157,6 +171,7 @@ class DetallesEventoCell: UITableViewCell {
         // Vista de Postres
         costoPostres = getBoldLabel(text: "Costo:")
         costoPostreTextView = getTextView()
+        costoPostreTextView.tag = TAG_COSTO_POSTRES_EVENT
         costoPostreTextView.textAlignment = .center
         costoPostreTextView.font = UIFont.boldSystemFont(ofSize: 14)
         costoPostreTextView.addBorder(borderColor: .black, widthBorder: 1)

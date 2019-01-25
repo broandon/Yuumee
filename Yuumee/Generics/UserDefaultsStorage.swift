@@ -24,6 +24,9 @@ enum UserDefaultKeys: String {
     case avatarFacebook
     case isLoggedInFacebook
     
+    case lastDateEventSelected
+    case lastFoodSelectedEvent
+    
 }
 
 // -----------------------------------------------------------------------------
@@ -80,6 +83,29 @@ extension UserDefaults {
     func getTipo() -> String {
         return string(forKey: UserDefaultKeys.tipo.rawValue)!
     }
+    
+    
+    
+    // Ultima fecha seleccionada del evento
+    //
+    func setDate(tipo: String) {
+        set(tipo, forKey: UserDefaultKeys.lastDateEventSelected.rawValue)
+    }
+    func getDate() -> String {
+        return string(forKey: UserDefaultKeys.lastDateEventSelected.rawValue)!
+    }
+    
+    // Ultima comida seleccionada del evento
+    //
+    func setLastFoodSelectedEvent(tipo: String) {
+        set(tipo, forKey: UserDefaultKeys.lastFoodSelectedEvent.rawValue)
+    }
+    func getLastFoodSelectedEvent() -> String {
+        return string(forKey: UserDefaultKeys.lastFoodSelectedEvent.rawValue)!
+    }
+    
+    
+    
     
     
     // Latitud

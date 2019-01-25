@@ -54,6 +54,8 @@ class ComidaCell: UITableViewCell {
         return view
     }()
     
+    let dataStorage = UserDefaults.standard
+    
     func setUpView() {
         addSubview(desayuno)
         addSubview(comida)
@@ -85,18 +87,21 @@ class ComidaCell: UITableViewCell {
     }
     
     @objc func checkDesayuno(ckeck: Any) {
+        dataStorage.setLastFoodSelectedEvent(tipo: TipoComida.desayuno.rawValue)
         self.checkBoxDesayuno.check()
         self.checkBoxComida.unCheck()
         self.checkBoxCena.unCheck()
     }
     
     @objc func checkComida(ckeck: Any) {
+        dataStorage.setLastFoodSelectedEvent(tipo: TipoComida.comida.rawValue)
         self.checkBoxDesayuno.unCheck()
         self.checkBoxComida.check()
         self.checkBoxCena.unCheck()
     }
     
     @objc func checkCena(ckeck: Any) {
+        dataStorage.setLastFoodSelectedEvent(tipo: TipoComida.cena.rawValue)
         self.checkBoxDesayuno.unCheck()
         self.checkBoxComida.unCheck()
         self.checkBoxCena.check()

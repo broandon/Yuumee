@@ -62,6 +62,10 @@ class ProductoExtraCell: UITableViewCell {
     
     let width = (ScreenSize.screenWidth - 50) / 2
     
+    let bebidasView = ProductosExtraView()
+    
+    let postresView = ProductosExtraView()
+    
     func setUpView() {
         addSubview(productoExtra)
         addSubview(contentBebidas)
@@ -75,8 +79,8 @@ class ProductoExtraCell: UITableViewCell {
         addConstraintsWithFormat(format: "V:|-[v0(30)]-[v1]-|", views: productoExtra, contentPostres)
         
         // -------------------------- Bebidas ----------------------------------
-        let bebidasView = ProductosExtraView()
         bebidasView.setUpView()
+        bebidasView.tag = ProductoExtraCell.TAG_BEBIDAS_VIEW
         contentBebidas.addSubview(bebidas)
         contentBebidas.addSubview(bebidasView)
         contentBebidas.addConstraintsWithFormat(format: "H:|-[v0]",     views: bebidas)
@@ -84,8 +88,8 @@ class ProductoExtraCell: UITableViewCell {
         contentBebidas.addConstraintsWithFormat(format: "V:|-[v0(30)]-[v1]|", views: bebidas, bebidasView)
         
         // -------------------------- Postres ----------------------------------
-        let postresView = ProductosExtraView()
         postresView.setUpView()
+        postresView.tag = ProductoExtraCell.TAG_POSTRES_VIEW
         contentPostres.addSubview(postres)
         contentPostres.addSubview(postresView)
         contentPostres.addConstraintsWithFormat(format: "H:|-[v0]", views: postres)
@@ -93,5 +97,7 @@ class ProductoExtraCell: UITableViewCell {
         contentPostres.addConstraintsWithFormat(format: "V:|-[v0(30)]-[v1]|", views: postres, postresView)
     }
     
+    static let TAG_BEBIDAS_VIEW: Int = 246
+    static let TAG_POSTRES_VIEW: Int = 357
     
 }

@@ -37,6 +37,11 @@ enum TipoUsuario: Int {
 }
 
 
+enum TipoComida: String {
+    case desayuno = "1"
+    case comida   = "2"
+    case cena     = "3"
+}
 
 class Utils {
     
@@ -159,20 +164,17 @@ protocol FoodSelected {
 
 
 class WebViewController: UIViewController, UIWebViewDelegate {
-    
     var mainView: UIView {
         return self.view
     }
     
     var url: String?
-    
     var titleVC: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         mainView.backgroundColor = UIColor.white
         self.navigationController?.isNavigationBarHidden = false
-        
         let imageBtn = UIImage(named: "back")?.imageResize(sizeChange: CGSize(width: 30.0, height: 30.0))
         let back = UIButton(type: .system)
         back.setImage(imageBtn, for: .normal)
@@ -183,13 +185,10 @@ class WebViewController: UIViewController, UIWebViewDelegate {
         back.addTarget(self, action: #selector(regresar), for: .touchUpInside)
         back.tintColor = UIColor.white
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: back)
-        
-        
         let webView = UIWebView()
         mainView.addSubview(webView)
         mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: webView)
         mainView.addConstraintsWithFormat(format: "V:|[v0]|", views: webView)
-        
         if !(url?.isEmpty)! {
             let url = NSURL(string: self.url!)
             let requestObj = NSURLRequest(url: url! as URL)
@@ -198,20 +197,28 @@ class WebViewController: UIViewController, UIWebViewDelegate {
         }
     }
     
-    
     @objc func regresar() {
         //self.navigationController?.popViewController(animated: true)
         self.dismiss(animated: true, completion: nil)
-        
     }
-    
 }
 
 
 
 
+let TAG_DESCRIPCION_EVENT: Int  = 121212
 
+let TAG_MENU_EVENT: Int         = 213141
+let TAG_BEBIDAS_EVENT: Int      = 146777
+let TAG_POSTRES_EVENT: Int      = 324566
 
+let TAG_COSTO_MENU_EVENT: Int   = 214532
+let TAG_COSTO_BEBIDAS_EVENT:Int = 121980
+let TAG_COSTO_POSTRES_EVENT:Int = 232167
+
+let TAG_TITULO_EVENT: Int       = 989876
+let TAG_COMIENZA_EVENT: Int     = 565678
+let TAG_TERMINA_EVENT: Int      = 324564
 
 
 /*
