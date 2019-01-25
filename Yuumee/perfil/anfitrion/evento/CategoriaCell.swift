@@ -89,42 +89,82 @@ class CategoriaCell: UITableViewCell {
         addConstraintsWithFormat(format: "V:|-[v0(30)]-16-[v1(60)]", views: categoriaLbl, subCategoriaLbl)
     }
     
+    var idCategoriaSelected: String = ""
+    
 }
 
 
 extension CategoriaCell: UITextFieldDelegate {
     
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-        categoria.resignFirstResponder();
-        // ToDo
-        let vc = CategoriasComidaViewController()
-        vc.delegate = self
-        vc.currentFood = self.categoria.text!
-        let popVC = UINavigationController(rootViewController: vc)
-        popVC.modalPresentationStyle = .popover
-        let popOverVC = popVC.popoverPresentationController
-        popOverVC?.delegate = self
-        popOverVC?.sourceView = categoria // self.button
-        popOverVC?.sourceRect = CGRect(x: self.categoria.bounds.midX,
-                                       y: self.categoria.bounds.minY,
-                                       width: 0, height: 0)
-        let widthModal = ScreenSize.screenWidth - 16
-        let heightModal = ScreenSize.screenWidth
-        popVC.preferredContentSize = CGSize(width: widthModal, height: heightModal)
-        reference.present(popVC, animated: true)
         
-        return false
+        if textField == categoria {
+            categoria.resignFirstResponder();
+            // ToDo
+            let vc = CategoriasComidaViewController()
+            vc.delegate = self
+            vc.currentFood = self.categoria.text!
+            let popVC = UINavigationController(rootViewController: vc)
+            popVC.modalPresentationStyle = .popover
+            let popOverVC = popVC.popoverPresentationController
+            popOverVC?.permittedArrowDirections = .up
+            popOverVC?.delegate = self
+            popOverVC?.sourceView = categoria // self.button
+            popOverVC?.sourceRect = CGRect(x: self.categoria.bounds.midX,
+                                           y: self.categoria.bounds.minY,
+                                           width: 0, height: 0)
+            let widthModal = ScreenSize.screenWidth - 16
+            let heightModal = ScreenSize.screenWidth
+            popVC.preferredContentSize = CGSize(width: widthModal, height: heightModal)
+            reference.present(popVC, animated: true)
+            return false
+        }
+        
+        if textField == subCategoria {
+            subCategoria.resignFirstResponder();
+            // ToDo
+            let vc = SubCategoriasComidaViewController()
+            vc.delegate = self
+            vc.idSubCategoria = idCategoriaSelected
+            vc.currentFood = subCategoria.text!
+            let popVC = UINavigationController(rootViewController: vc)
+            popVC.modalPresentationStyle = .popover
+            let popOverVC = popVC.popoverPresentationController
+            popOverVC?.permittedArrowDirections = .up
+            popOverVC?.delegate = self
+            popOverVC?.sourceView = subCategoria // self.button
+            popOverVC?.sourceRect = CGRect(x: self.subCategoria.bounds.midX,
+                                           y: self.subCategoria.bounds.minY,
+                                           width: 0, height: 0)
+            let widthModal = ScreenSize.screenWidth - 16
+            let heightModal = ScreenSize.screenWidth
+            popVC.preferredContentSize = CGSize(width: widthModal, height: heightModal)
+            reference.present(popVC, animated: true)
+            return false
+        }
+        
+        
+        return true
     }
     
 }
 
 extension CategoriaCell: FoodSelected {
+    func getFoodSelected(food: Categoria) {
+        self.categoria.text = food.titulo
+        idCategoriaSelected = food.id
+    }
+}
+
+extension CategoriaCell : SubCategoriaFoodSelected {
     
-    func getFoodSelected(food: String) {
-        self.categoria.text = food
+    func getSubFoodSelected(food: Categoria) {
+        self.subCategoria.text = food.titulo
     }
     
+    
 }
+
 
 extension CategoriaCell: UIPopoverPresentationControllerDelegate {
     

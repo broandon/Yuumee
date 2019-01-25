@@ -41,6 +41,7 @@ class PerfilAnfitrionViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         //mainView.backgroundColor = UIColor.gris
+        self.navigationController?.navigationBar.backItem?.title = "Regresar"
         self.hideKeyboardWhenTappedAround()
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillAppear),
                                                name: UIApplication.keyboardWillShowNotification,
@@ -69,26 +70,21 @@ class PerfilAnfitrionViewController: BaseViewController {
                             switch(response.result) {
                             case .success(let value):
                                 
-                                
                                 if let result = value as? Dictionary<String, Any> {
                                     let statusMsg = result["status_msg"] as? String
                                     let state     = result["state"] as? String
-                                    
                                     if statusMsg == "OK" && state == "200" {
                                         if let data = result["data"] as? Dictionary<String, AnyObject> {
-                                            
                                             if let info = data["info"] as? Dictionary<String, AnyObject> {
                                                 self.imagenPortada = (info["imagen_portada"] as? String)!
                                                 self.infoAnfitrion = info
                                             }
-                                            
                                             if let eventos = data["events"] as? [Dictionary<String, AnyObject>] {
                                                 for e in eventos {
                                                     let newE = EventoAnfitrion(eventoArray: e)
                                                     self.eventos.append(newE)
                                                 }
                                             }
-                                            
                                             self.tableView.reloadData()
                                         }
                                     }

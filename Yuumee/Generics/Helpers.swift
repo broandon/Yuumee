@@ -84,6 +84,7 @@ class BaseURL {
 
 
 
+
 class CategoriasComidaViewController: BaseViewController, UITableViewDelegate, UITableViewDataSource {
     
     let cerrarBtn: UIBarButtonItem = {
@@ -106,11 +107,14 @@ class CategoriasComidaViewController: BaseViewController, UITableViewDelegate, U
         return tableView
     }()
     
-    let secciones = ["Regional", "Ocasional", "Mediterranea", "Chida", "Una mas"]
+    // let secciones = ["Regional", "Ocasional", "Mediterranea", "Chida", "Una mas"]
+    var categorias = [Categoria]()
     
     var delegate: FoodSelected?
     
     var currentFood = ""
+    
+    let dataStorage = UserDefaults.standard
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -120,6 +124,49 @@ class CategoriasComidaViewController: BaseViewController, UITableViewDelegate, U
         mainView.addSubview(tableView)
         mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: tableView)
         mainView.addConstraintsWithFormat(format: "V:|-[v0]|", views: tableView)
+        
+        // ---------------------------------------------------------------------
+        let headers: HTTPHeaders = [
+            "Accept" : "application/json",
+            "Content-Type" : "application/x-www-form-urlencoded"
+        ]
+        let parameters: Parameters = ["funcion" : "getCategories",
+                                      "id_user" : dataStorage.getUserId()] as [String: Any]
+        Alamofire.request(BaseURL.baseUrl() , method: .post, parameters: parameters,
+                          encoding: ParameterQueryEncoding(),
+                          headers: headers).responseJSON{ (response: DataResponse) in
+                            switch(response.result) {
+                            case .success(let value):
+                                
+                                if let result = value as? Dictionary<String, Any> {
+                                    let statusMsg = result["status_msg"] as? String
+                                    let state     = result["state"] as? String
+                                    if statusMsg == "OK" && state == "200" {
+                                        if let data = result["data"] as? [Dictionary<String, AnyObject>] {
+                                            
+                                            for c in data {
+                                                let newC = Categoria(categoria: c)
+                                                self.categorias.append(newC)
+                                            }
+                                            if self.categorias.count > 0 {
+                                                self.tableView.reloadData()
+                                            }
+                                        }
+                                    }
+                                    
+                                }
+                                
+                                //completionHandler(value as? NSDictionary, nil)
+                                break
+                            case .failure(let error):
+                                //completionHandler(nil, error as NSError?)
+                                print(error)
+                                print(error.localizedDescription)
+                                break
+                            }
+        }
+        // ---------------------------------------------------------------------
+        
     }
     
     @objc func closeVC() {
@@ -128,23 +175,23 @@ class CategoriasComidaViewController: BaseViewController, UITableViewDelegate, U
     
     // MARK: Data Table
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return secciones.count
+        return categorias.count
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: defaultReuseId, for: indexPath)
         // cell.releaseView()
-        let seccion = secciones[indexPath.row]
-        if seccion == currentFood {
+        let seccion = categorias[indexPath.row]
+        if seccion.titulo == currentFood {
             cell.accessoryType = .checkmark
         }
-        cell.textLabel?.text = seccion
+        cell.textLabel?.text = seccion.titulo
         return cell
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let seccion = secciones[indexPath.row]
+        let seccion = categorias[indexPath.row]
         self.dismiss(animated: true, completion: {
             self.delegate?.getFoodSelected(food: seccion)
         })
@@ -152,8 +199,138 @@ class CategoriasComidaViewController: BaseViewController, UITableViewDelegate, U
     
 }
 protocol FoodSelected {
-    func getFoodSelected(food: String)
+    func getFoodSelected(food: Categoria)
 }
+
+
+/**
+ *
+ * SUB-Categorias
+ *
+ **/
+class SubCategoriasComidaViewController: BaseViewController, UITableViewDelegate, UITableViewDataSource {
+    
+    let cerrarBtn: UIBarButtonItem = {
+        let sizeImg = CGSize(width: 24, height: 24)
+        let imgClose = UIImage(named: "close")?.imageResize(sizeChange: sizeImg)
+        let cerrarBtn = UIBarButtonItem(image: imgClose, style: .plain, target: self, action: #selector(closeVC) )
+        cerrarBtn.tintColor = .white
+        return cerrarBtn
+    }()
+    
+    let defaultReuseId = "cell"
+    
+    lazy var tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.showsVerticalScrollIndicator = false
+        tableView.register(UITableViewCell.classForCoder(), forCellReuseIdentifier: defaultReuseId)
+        tableView.separatorStyle = .none
+        return tableView
+    }()
+    
+    // let secciones = ["Regional", "Ocasional", "Mediterranea", "Chida", "Una mas"]
+    var categorias = [Categoria]()
+    
+    var delegate: SubCategoriaFoodSelected?
+    
+    var currentFood = ""
+    
+    let dataStorage = UserDefaults.standard
+    
+    var idSubCategoria: String = ""
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        mainView.backgroundColor = UIColor.gris
+        cerrarBtn.target = self
+        self.navigationItem.leftBarButtonItem = cerrarBtn
+        mainView.addSubview(tableView)
+        mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: tableView)
+        mainView.addConstraintsWithFormat(format: "V:|-[v0]|", views: tableView)
+        
+        // ---------------------------------------------------------------------
+        if !idSubCategoria.isEmpty {
+            let headers: HTTPHeaders = [
+                "Accept" : "application/json",
+                "Content-Type" : "application/x-www-form-urlencoded"
+            ]
+            let parameters: Parameters = ["funcion" : "getSubCategories",
+                                          "id_cat" : idSubCategoria] as [String: Any]
+            Alamofire.request(BaseURL.baseUrl() , method: .post, parameters: parameters,
+                              encoding: ParameterQueryEncoding(), headers: headers).responseJSON{ (response: DataResponse) in
+                                switch(response.result) {
+                                case .success(let value):
+                                    
+                                    if let result = value as? Dictionary<String, Any> {
+                                        let statusMsg = result["status_msg"] as? String
+                                        let state     = result["state"] as? String
+                                        if statusMsg == "OK" && state == "200" {
+                                            if let data = result["data"] as? [Dictionary<String, AnyObject>] {
+                                                
+                                                for c in data {
+                                                    let newC = Categoria(categoria: c)
+                                                    self.categorias.append(newC)
+                                                }
+                                                if self.categorias.count > 0 {
+                                                    self.tableView.reloadData()
+                                                }
+                                            }
+                                        }
+                                    }
+                                    
+                                    //completionHandler(value as? NSDictionary, nil)
+                                    break
+                                case .failure(let error):
+                                    //completionHandler(nil, error as NSError?)
+                                    print(error)
+                                    print(error.localizedDescription)
+                                    break
+                                }
+            }
+            
+        }
+        
+        // ---------------------------------------------------------------------
+        
+    }
+    
+    @objc func closeVC() {
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+    // MARK: Data Table
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return categorias.count
+    }
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: defaultReuseId, for: indexPath)
+        // cell.releaseView()
+        let seccion = categorias[indexPath.row]
+        if seccion.titulo == currentFood {
+            cell.accessoryType = .checkmark
+        }
+        cell.textLabel?.text = seccion.titulo
+        return cell
+    }
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableView.automaticDimension
+    }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let seccion = categorias[indexPath.row]
+        self.dismiss(animated: true, completion: {
+            self.delegate?.getSubFoodSelected(food: seccion)
+        })
+    }
+    
+}
+protocol SubCategoriaFoodSelected {
+    func getSubFoodSelected(food: Categoria)
+}
+
+
+
 
 
 
@@ -299,6 +476,7 @@ echo getSubCategories($_POST['id_cat']);
  let parameters: Parameters = ["funcion" : "uploadImage_event", "image": ""] as [String: Any]
  
  
+ 
  case 'saveEvent'://PROBADA
  let parameters: Parameters=["funcion"    : "saveEvent",
  "id_user"    : idDownloaded,
@@ -361,94 +539,6 @@ echo getSubCategories($_POST['id_cat']);
  
  let parameters: Parameters = ["funcion" : "cancelEvent",
  "id_user": "", "id_event" : ""] as [String: Any]
- let headers: HTTPHeaders = ["Accept": "application/json",
- "Content-Type" : "application/x-www-form-urlencoded"]
- Alamofire.request(BaseURL.baseUrl(), method: .post, parameters: parameters, encoding: ParameterQueryEncoding(), headers: headers).responseJSON
- { (response: DataResponse) in
- switch(response.result) {
- case .success(let value):
- if let result = value as? Dictionary<String, Any> {
- let statusMsg = result["status_msg"] as? String
- let state     = result["state"] as? String
- if statusMsg == "OK" && state == "200" {
- let alert = UIAlertController(title: "Información actualizada.", message: "", preferredStyle: UIAlertController.Style.alert)
- alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
- self.present(alert, animated: true, completion: nil)
- return;
- }
- else{
- let alert = UIAlertController(title: "Ocurrió un error al realizar la petición.", message: "\(statusMsg!)", preferredStyle: UIAlertController.Style.alert)
- alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
- self.present(alert, animated: true, completion: nil)
- return;
- }
- }
- //completionHandler(value as? NSDictionary, nil)
- break
- case .failure(let error):
- //completionHandler(nil, error as NSError?)
- //print(" error:  ")
- //print(error)
- break
- }
- }
- 
- 
- 
- 
- 
- 
- 
- 
- 
- case 'getSpaces':
- 
- let parameters: Parameters = ["funcion" : "getSpaces",
- "id_user": ""] as [String: Any]
- let headers: HTTPHeaders = ["Accept": "application/json",
- "Content-Type" : "application/x-www-form-urlencoded"]
- Alamofire.request(BaseURL.baseUrl(), method: .post, parameters: parameters, encoding: ParameterQueryEncoding(), headers: headers).responseJSON
- { (response: DataResponse) in
- switch(response.result) {
- case .success(let value):
- if let result = value as? Dictionary<String, Any> {
- let statusMsg = result["status_msg"] as? String
- let state     = result["state"] as? String
- if statusMsg == "OK" && state == "200" {
- let alert = UIAlertController(title: "Información actualizada.", message: "", preferredStyle: UIAlertController.Style.alert)
- alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
- self.present(alert, animated: true, completion: nil)
- return;
- }
- else{
- let alert = UIAlertController(title: "Ocurrió un error al realizar la petición.", message: "\(statusMsg!)", preferredStyle: UIAlertController.Style.alert)
- alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
- self.present(alert, animated: true, completion: nil)
- return;
- }
- }
- //completionHandler(value as? NSDictionary, nil)
- break
- case .failure(let error):
- //completionHandler(nil, error as NSError?)
- //print(" error:  ")
- //print(error)
- break
- }
- }
- 
- 
- case 'saveSpaces':
- 
- let parameters: Parameters=["funcion" : "saveSpaces",
- "id_user": "",
- "space1" : "",
- "space2" : "",
- "space3" : "",
- "space4" : "",
- "space5" : "",
- "space6" : "",
- "space_other" : ""] as [String: Any]
  let headers: HTTPHeaders = ["Accept": "application/json",
  "Content-Type" : "application/x-www-form-urlencoded"]
  Alamofire.request(BaseURL.baseUrl(), method: .post, parameters: parameters, encoding: ParameterQueryEncoding(), headers: headers).responseJSON

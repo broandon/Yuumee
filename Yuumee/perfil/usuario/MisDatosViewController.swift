@@ -44,7 +44,12 @@ class MisDatosViewController: BaseViewController, UITableViewDelegate, UITableVi
     let dataStorage = UserDefaults.standard
     
     // UIPicker
-    let imagePicker = UIImagePickerController()
+    
+    lazy var imagePicker: UIImagePickerController = {
+        let imagePicker = UIImagePickerController()
+        imagePicker.delegate = self
+        return imagePicker
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -54,7 +59,6 @@ class MisDatosViewController: BaseViewController, UITableViewDelegate, UITableVi
         mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: tableView)
         mainView.addConstraintsWithFormat(format: "V:|-[v0]|", views: tableView)
         self.navigationItem.leftBarButtonItem = closeIcon
-        imagePicker.delegate = self
     }
     
     
@@ -78,10 +82,6 @@ class MisDatosViewController: BaseViewController, UITableViewDelegate, UITableVi
                         if statusMsg == "OK" && state == "200" {
                             
                             if let info = result["data"] as? Dictionary<String, AnyObject> {
-                                
-                                print(" info: ")
-                                print(info)
-                                
                                 let id        = info["info"]!["id"] as? String
                                 let apellidos = info["info"]!["apellidos"] as? String
                                 let imagen    = info["info"]!["imagen"] as? String
@@ -117,14 +117,6 @@ class MisDatosViewController: BaseViewController, UITableViewDelegate, UITableVi
                 }
         }
     }
-    
-    
-    
-    
-    @objc func close() {
-        self.dismiss(animated: true, completion: nil)
-    }
-    
     
     
     @objc func actualizarDatos(newImage: String = "") {
@@ -184,6 +176,9 @@ class MisDatosViewController: BaseViewController, UITableViewDelegate, UITableVi
     let telefono  = UITextField()
     let email     = UITextField()
     
+    @objc func close() {
+        self.dismiss(animated: true, completion: nil)
+    }
     
     // UITableView: Datasource & Delegate
     
@@ -440,12 +435,9 @@ class MisDatosViewController: BaseViewController, UITableViewDelegate, UITableVi
     }
     
     
-    
-    
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated:  true, completion: nil)
     }
-    
     
     
 }
