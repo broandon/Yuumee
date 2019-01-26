@@ -26,6 +26,12 @@ enum UserDefaultKeys: String {
     
     case lastDateEventSelected
     case lastFoodSelectedEvent
+    case lastCategorySelectedEvent
+    case lastSubCategorySelectedEvent
+    case comienzaEvent
+    case terminaEvent
+    case lastImageSelected
+    case lastTitle
     
 }
 
@@ -104,6 +110,70 @@ extension UserDefaults {
         return string(forKey: UserDefaultKeys.lastFoodSelectedEvent.rawValue)!
     }
     
+    
+    // Ultima categoria seleccionada del evento
+    //
+    func setLastCategorySelectedEvent(tipo: String) {
+        set(tipo, forKey: UserDefaultKeys.lastCategorySelectedEvent.rawValue)
+    }
+    func getLastCategorySelectedEvent() -> String {
+        return string(forKey: UserDefaultKeys.lastCategorySelectedEvent.rawValue)!
+    }
+    
+    
+    // Ultima SUB-Categoria seleccionada del evento
+    //
+    func setLastSubCategorySelectedEvent(tipo: String) {
+        set(tipo, forKey: UserDefaultKeys.lastSubCategorySelectedEvent.rawValue)
+    }
+    func getLastSubCategorySelectedEvent() -> String {
+        return string(forKey: UserDefaultKeys.lastSubCategorySelectedEvent.rawValue)!
+    }
+    
+    
+    
+    // Hora de inicio del evento
+    //
+    func setComienzaEvent(hora: String) {
+        set(hora, forKey: UserDefaultKeys.comienzaEvent.rawValue)
+    }
+    func getComienzaEvent() -> String {
+        return string(forKey: UserDefaultKeys.comienzaEvent.rawValue)!
+    }
+    
+    
+    
+    
+    // Hora que termina del evento
+    //
+    func setTerminaEvent(hora: String) {
+        set(hora, forKey: UserDefaultKeys.terminaEvent.rawValue)
+    }
+    func getTerminaEvent() -> String {
+        return string(forKey: UserDefaultKeys.terminaEvent.rawValue)!
+    }
+    
+    
+    
+    // Imagen selccionada
+    //
+    func setImagenEvent(hora: String) {
+        set(hora, forKey: UserDefaultKeys.lastImageSelected.rawValue)
+    }
+    func getImagenEvent() -> String {
+        return string(forKey: UserDefaultKeys.lastImageSelected.rawValue)!
+    }
+    
+    
+    
+    // Titulo ingresado
+    //
+    func setLastTitle(title: String) {
+        set(title, forKey: UserDefaultKeys.lastTitle.rawValue)
+    }
+    func getLastTitle() -> String {
+        return string(forKey: UserDefaultKeys.lastTitle.rawValue)!
+    }
     
     
     

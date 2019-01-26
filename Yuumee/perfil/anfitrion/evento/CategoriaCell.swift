@@ -16,7 +16,7 @@ class CategoriaCell: UITableViewCell {
         fatalError(" Error to init ")
     }
     
-    
+    let dataStorage = UserDefaults.standard
     
     var reference: UIViewController!
     
@@ -85,7 +85,7 @@ class CategoriaCell: UITableViewCell {
         addSubview(subCategoriaLbl)
         addConstraintsWithFormat(format: "H:|-[v0(170)]-[v1]-|", views: categoriaLbl, categoria)
         addConstraintsWithFormat(format: "H:|-[v0(170)]-[v1]-|", views: subCategoriaLbl, subCategoria)
-        addConstraintsWithFormat(format: "V:|-[v0(30)]-16-[v1(30)]", views: categoria, subCategoria)
+        addConstraintsWithFormat(format: "V:|-[v0(30)]-32-[v1(30)]", views: categoria, subCategoria)
         addConstraintsWithFormat(format: "V:|-[v0(30)]-16-[v1(60)]", views: categoriaLbl, subCategoriaLbl)
     }
     
@@ -153,6 +153,7 @@ extension CategoriaCell: FoodSelected {
     func getFoodSelected(food: Categoria) {
         self.categoria.text = food.titulo
         idCategoriaSelected = food.id
+        dataStorage.setLastCategorySelectedEvent(tipo: food.id)
     }
 }
 
@@ -160,6 +161,8 @@ extension CategoriaCell : SubCategoriaFoodSelected {
     
     func getSubFoodSelected(food: Categoria) {
         self.subCategoria.text = food.titulo
+        
+        dataStorage.setLastSubCategorySelectedEvent(tipo: food.id)
     }
     
     

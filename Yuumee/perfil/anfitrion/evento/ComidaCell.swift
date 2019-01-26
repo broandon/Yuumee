@@ -64,14 +64,16 @@ class ComidaCell: UITableViewCell {
         addSubview(checkBoxComida)
         addSubview(checkBoxCena)
         
-        addConstraintsWithFormat(format: "H:|-[v0(12)]-[v1(v5)]-[v2(12)]-[v3(v5)]-[v4(12)]-[v5(v5)]-|",
+        let sizeCheckBox: CGFloat = 18.0
+        
+        addConstraintsWithFormat(format: "H:|-[v0(\(sizeCheckBox))]-[v1(v5)]-[v2(\(sizeCheckBox))]-[v3(v5)]-[v4(\(sizeCheckBox))]-[v5(v5)]-|",
                                  views: checkBoxDesayuno, desayuno, checkBoxComida, comida, checkBoxCena, cena)
-        addConstraintsWithFormat(format: "V:|-4-[v0(12)]", views: checkBoxDesayuno)
-        addConstraintsWithFormat(format: "V:|[v0]", views: desayuno)
-        addConstraintsWithFormat(format: "V:|-4-[v0(12)]", views: checkBoxComida)
-        addConstraintsWithFormat(format: "V:|[v0]", views: comida)
-        addConstraintsWithFormat(format: "V:|-4-[v0(12)]", views: checkBoxCena)
-        addConstraintsWithFormat(format: "V:|[v0]", views: cena)
+        addConstraintsWithFormat(format: "V:|-[v0(\(sizeCheckBox))]", views: checkBoxDesayuno)
+        addConstraintsWithFormat(format: "V:|-[v0]", views: desayuno)
+        addConstraintsWithFormat(format: "V:|-[v0(\(sizeCheckBox))]", views: checkBoxComida)
+        addConstraintsWithFormat(format: "V:|-[v0]", views: comida)
+        addConstraintsWithFormat(format: "V:|-[v0(\(sizeCheckBox))]", views: checkBoxCena)
+        addConstraintsWithFormat(format: "V:|-[v0]", views: cena)
         let tapCheckDesayuno = UITapGestureRecognizer(target: self,
                                                       action: #selector(checkDesayuno))
         tapCheckDesayuno.numberOfTapsRequired = 1

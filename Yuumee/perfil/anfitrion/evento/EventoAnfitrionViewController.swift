@@ -7,30 +7,25 @@
 //
 
 import UIKit
+import Alamofire
+import AlamofireImage
+import Photos
 
-class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UITableViewDataSource, UIPickerViewDelegate, UIPickerViewDataSource, UITextFieldDelegate {
+class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UITableViewDataSource, UIPickerViewDelegate, UIPickerViewDataSource, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    let backgroundImageId = "backgroundImageId"
-    
-    let productoExtraCell = "productoExtraCell"
-    
-    let fechasCell = "FechasCell"
-    
+    let backgroundImageId  = "backgroundImageId"
+    let productoExtraCell  = "productoExtraCell"
+    let fechasCell         = "FechasCell"
     let detallesEventoCell = "DetallesEventoCell"
-    
-    let horarioCell = "HorarioCell"
-    
-    let comidaCell = "ComidaCell"
-    
-    let categoriaCell = "CategoriaCell"
-    
-    let defaultReuseId = "cell"
+    let horarioCell        = "HorarioCell"
+    let comidaCell         = "ComidaCell"
+    let categoriaCell      = "CategoriaCell"
+    let defaultReuseId     = "cell"
     
     lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.delegate   = self
         tableView.dataSource = self
-        tableView.showsVerticalScrollIndicator = false
         tableView.register(UITableViewCell.classForCoder(), forCellReuseIdentifier: defaultReuseId)
         tableView.register(CategoriaCell.self, forCellReuseIdentifier: categoriaCell)
         tableView.register(ComidaCell.self,    forCellReuseIdentifier: comidaCell)
@@ -39,6 +34,7 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
         tableView.register(DetallesEventoCell.self, forCellReuseIdentifier: detallesEventoCell)
         tableView.register(ProductoExtraCell.self, forCellReuseIdentifier: productoExtraCell)
         tableView.register(BackgroundImageHeader.self, forCellReuseIdentifier: backgroundImageId)
+        tableView.showsVerticalScrollIndicator = false
         tableView.separatorStyle  = .none
         tableView.backgroundColor = UIColor.gris
         return tableView
@@ -53,13 +49,162 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
         // Reemplaza el titulo del back qu eviene por Default
         self.navigationController?.navigationBar.topItem?.title = "Evento"
         //self.hideKeyboardWhenTappedAround()
+        
+        let notifier = NotificationCenter.default
+        notifier.addObserver(self, selector: #selector(keyboardWillAppear),
+                             name: UIWindow.keyboardWillShowNotification,
+                             object: nil)
+        notifier.addObserver(self, selector: #selector(keyboardWillDisappear),
+                             name: UIWindow.keyboardWillHideNotification,
+                             object: nil)
+        
+        
+        
         mainView.backgroundColor = .white
         mainView.addSubview(tableView)
         mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: tableView)
         mainView.addConstraintsWithFormat(format: "V:|-[v0]|", views: tableView)
     }
     
+    @objc func keyboardWillAppear(notification: NSNotification) {
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UIViewController.dismissKeyboard))
+        mainView.addGestureRecognizer(tap)
+    }
+    
+    @objc func keyboardWillDisappear(notification: NSNotification){
+        view.endEditing(true)
+        mainView.gestureRecognizers?.removeAll()
+    }
+    
     // MARK: Data Table
+    var imageBackground: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleToFill
+        imageView.addBorder(borderColor: UIColor.gray, widthBorder: 1)
+        imageView.isUserInteractionEnabled = true
+        imageView.backgroundColor = .white
+        return imageView
+    }()
+    var addCamera: UIButton = {
+        let button = UIButton(type: .system)
+        button.setImage(UIImage(named: "camera"), for: .normal)
+        button.tintColor = UIColor.rosa.withAlphaComponent(0.5)
+        return button
+    }()
+    var addBackground: UIButton = {
+        let button = UIButton(type: .system)
+        button.setImage(UIImage(named: "add"), for: .normal)
+        button.tintColor = UIColor.rosa.withAlphaComponent(0.5)
+        return button
+    }()
+    // UIPicker
+    lazy var imagePicker: UIImagePickerController = {
+        let imagePicker = UIImagePickerController()
+        imagePicker.delegate = self
+        return imagePicker
+    }()
+    /**
+     * Metodo para abrir el album de fotos, despues de haber solicitado los permisos necesarios
+     *
+     */
+    @objc func pickPhotoByAlbum() {
+        imagePicker.allowsEditing = false
+        imagePicker.sourceType = .photoLibrary
+        present(imagePicker, animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        self.imagePicker.dismiss(animated: true, completion: nil)
+        
+        if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
+            
+            for v in self.imageBackground.subviews {
+                v.removeFromSuperview()
+            }
+            self.imageBackground.image = image
+            self.imageBackground.contentMode = .scaleToFill
+            
+            
+            let headers: HTTPHeaders = [
+                "Content-type": "multipart/form-data"
+            ]
+            Alamofire.upload(
+                multipartFormData: { MultipartFormData in
+                    
+                    MultipartFormData.append("uploadImage_event".data(using: String.Encoding.utf8)!, withName: "funcion")
+                    let imgString = self.convertImageToBase64(image: image)
+                    MultipartFormData.append(imgString.data(using: String.Encoding.utf8)!, withName: "image")
+            }, to: BaseURL.baseUrl(), method: .post, headers: headers) { (result) in
+                switch result {
+                case .success(let upload, _, _):
+                    upload.responseJSON { response in
+                        //print(response)
+                        //print(response.result)
+                        //print(response.result.value)
+                        if let resultUpload = response.result.value as! Dictionary<String, Any>? {
+                            if let state = resultUpload["state"] as! String? {
+                                if state == "200" {
+                                    if let imageInfo = resultUpload["data"] as! Dictionary<String, Any>? {
+                                        let nombreImagen = imageInfo["image_name"]
+                                        
+                                        self.dataStorage.setImagenEvent(hora: nombreImagen as! String)
+                                    }
+                                }
+                            }
+                        }
+                        else {
+                            /*let atributtes = [NSAttributedString.Key.foregroundColor: .gray,
+                             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)]
+                             self.adjuntarImagen.attributedPlaceholder = NSAttributedString(string: StringConstants.adjuntarImagen, attributes: atributtes)*/
+                            print("Ocurrio un error al procesar la imagen.")
+                            Utils.showSimpleAlert(message: "Ocurrio un error al procesar la imagen.",
+                                                  context: self, success: nil)
+                            return
+                        }
+                        }.uploadProgress { progress in // main queue by default
+                            //self.img1Progress.alpha = 1.0
+                            //self.img1Progress.progress = Float(progress.fractionCompleted)
+                            // print("Upload Progress: \(progress.fractionCompleted)")
+                            /*
+                             let atributtes = [NSAttributedString.Key.foregroundColor: .gray ,
+                             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)]
+                             self.adjuntarImagen.attributedPlaceholder = NSAttributedString(string: "Subiendo...", attributes: atributtes)
+                             */
+                    }
+                case .failure(let encodingError):
+                    //print(encodingError)
+                    Utils.showSimpleAlert(message: encodingError as! String,
+                                          context: self, success: nil)
+                    break
+                }
+            }
+        }
+    }
+    
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated:  true, completion: nil)
+    }
+    
+    
+    //
+    // Convert String to base64
+    //
+    func convertImageToBase64(image: UIImage) -> String {
+        let imageData = image.jpegData(compressionQuality: 0.0)
+        let base64String = imageData?.base64EncodedString(options: .lineLength64Characters)
+        return base64String!
+    }
+    
+    @objc func addNewBackgroundImageFromCamera() {
+        self.pickPhotoByAlbum()
+    }
+    
+    
+    
+    
+    
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return secciones.count
@@ -68,14 +213,37 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let seccion = secciones[indexPath.row]
         
+        
+        
         if seccion == "background_image" {
-            let cell = tableView.dequeueReusableCell(withIdentifier: backgroundImageId, for: indexPath)
+            
+            let cell = tableView.dequeueReusableCell(withIdentifier: defaultReuseId, for: indexPath)
+            cell.selectionStyle = .none
+            
+            cell.addSubview(imageBackground)
+            cell.addConstraintsWithFormat(format: "H:|-[v0]-|", views: imageBackground)
+            cell.addConstraintsWithFormat(format: "V:|-[v0]-|", views: imageBackground)
+            imageBackground.addSubview(addCamera)
+            imageBackground.addSubview(addBackground)
+            imageBackground.addConstraintsWithFormat(format: "H:|-[v0]-|", views: addCamera)
+            imageBackground.addConstraintsWithFormat(format: "V:|-[v0]-|", views: addCamera)
+            imageBackground.addConstraintsWithFormat(format: "H:[v0]-|", views: addBackground)
+            imageBackground.addConstraintsWithFormat(format: "V:[v0]-|", views: addBackground)
+            
+            addCamera.addTarget(self, action: #selector(addNewBackgroundImageFromCamera), for: .touchUpInside)
+            addBackground.addTarget(self, action: #selector(pickPhotoByAlbum), for: .touchUpInside)
+            
+            return cell
+            
+            /*let cell = tableView.dequeueReusableCell(withIdentifier: backgroundImageId, for: indexPath)
             if let cell = cell as? BackgroundImageHeader {
                 cell.selectionStyle = .none
                 cell.setUpView(info: [:])
                 return cell
-            }
+            }*/
         }
+        
+        
         
         if seccion == "categoria" {
             let cell = tableView.dequeueReusableCell(withIdentifier: categoriaCell, for: indexPath)
@@ -117,7 +285,6 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
         if seccion == "fechas_evento" {
             let cell = tableView.dequeueReusableCell(withIdentifier: fechasCell, for: indexPath)
             if let cell = cell as? FechasCell {
-                cell.releaseView()
                 cell.selectionStyle = .none
                 cell.setUpView()
                 return cell
@@ -127,7 +294,6 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
         if seccion == "producto_extra" {
             let cell = tableView.dequeueReusableCell(withIdentifier: productoExtraCell, for: indexPath)
             if let cell = cell as? ProductoExtraCell {
-                cell.releaseView()
                 cell.selectionStyle = .none
                 cell.setUpView()
                 return cell
@@ -277,100 +443,228 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
     
     
     @objc func guardarEvento() {
-        print(" guardarEvento ")
-        print(" personasRecibirInput.text: \(personasRecibirInput.text) ")
         
+        let idUsuario = dataStorage.getUserId()
+        
+        var bebidasOpcion1: String = ""
+        var bebidasCosto1: String = ""
+        var bebidasOpcion2: String = ""
+        var bebidasCosto2: String = ""
+        var bebidasOpcion3: String = ""
+        var bebidasCosto3: String = ""
+        var bebidasOpcion4: String = ""
+        var bebidasCosto4: String = ""
+        var bebidasOpcion5: String = ""
+        var bebidasCosto5: String = ""
+        var arrayBebidas: [Dictionary<String, Any>] = []
         if let view = mainView.viewWithTag( ProductoExtraCell.TAG_BEBIDAS_VIEW ) as? ProductosExtraView {
-            
-            print(view.opcion1Input.text)
-            print(view.costo1Input.text)
-            
-            print(view.opcion2Input.text)
-            print(view.costo2Input.text)
-            
-            print(view.opcion3Input.text)
-            print(view.costo3Input.text)
-            
-            print(view.opcion4Input.text)
-            print(view.costo4Input.text)
-            
-            print(view.opcion5Input.text)
-            print(view.costo5Input.text)
+            bebidasOpcion1 = view.opcion1Input.text!
+            bebidasCosto1 = view.costo1Input.text!
+            bebidasOpcion2 = view.opcion2Input.text!
+            bebidasCosto2 = view.costo2Input.text!
+            bebidasOpcion3 = view.opcion3Input.text!
+            bebidasCosto3 = view.costo3Input.text!
+            bebidasOpcion4 = view.opcion4Input.text!
+            bebidasCosto4 = view.costo4Input.text!
+            bebidasOpcion5 = view.opcion5Input.text!
+            bebidasCosto5 = view.costo5Input.text!
+            arrayBebidas = [
+                [
+                    "nombre": bebidasOpcion1,
+                    "precio" : bebidasCosto1,
+                    "tipo" : "1"
+                ],
+                [
+                    "nombre": bebidasOpcion2,
+                    "precio" : bebidasCosto2,
+                    "tipo" : "1"
+                ],
+                [
+                    "nombre": bebidasOpcion2,
+                    "precio" : bebidasCosto2,
+                    "tipo" : "1"
+                ],
+                [
+                    "nombre": bebidasOpcion3,
+                    "precio" : bebidasCosto3,
+                    "tipo" : "1"
+                ],
+                [
+                    "nombre": bebidasOpcion4,
+                    "precio" : bebidasCosto4,
+                    "tipo" : "1"
+                ],
+                [
+                    "nomybre": bebidasOpcion5,
+                    "precio" : bebidasCosto5,
+                    "tipo" : "1"
+                ]
+            ]
         }
         
         
         
+        
+        var postresOpcion1: String = ""
+        var postresCosto1: String = ""
+        var postresOpcion2: String = ""
+        var postresCosto2: String = ""
+        var postresOpcion3: String = ""
+        var postresCosto3: String = ""
+        var postresOpcion4: String = ""
+        var postresCosto4: String = ""
+        var postresOpcion5: String = ""
+        var postresCosto5: String = ""
+        var arrayPostres: [Dictionary<String, Any>] = []
         
         if let view = mainView.viewWithTag( ProductoExtraCell.TAG_POSTRES_VIEW ) as? ProductosExtraView {
-            
-            print(view.opcion1Input.text)
-            print(view.costo1Input.text)
-            
-            print(view.opcion2Input.text)
-            print(view.costo2Input.text)
-            
-            print(view.opcion3Input.text)
-            print(view.costo3Input.text)
-            
-            print(view.opcion4Input.text)
-            print(view.costo4Input.text)
-            
-            print(view.opcion5Input.text)
-            print(view.costo5Input.text)
-            
+            postresOpcion1 = view.opcion1Input.text!
+            postresCosto1 = view.costo1Input.text!
+            postresOpcion2 = view.opcion2Input.text!
+            postresCosto2 = view.costo2Input.text!
+            postresOpcion3 = view.opcion3Input.text!
+            postresCosto3 = view.costo3Input.text!
+            postresOpcion4 = view.opcion4Input.text!
+            postresCosto4  = view.costo4Input.text!
+            postresOpcion5 = view.opcion5Input.text!
+            postresCosto5 = view.costo5Input.text!
+            arrayPostres = [
+                [
+                    "nombre": postresOpcion1,
+                    "precio" : postresCosto1,
+                    "tipo" : "2"
+                ],
+                [
+                    "nombre": postresOpcion2,
+                    "precio" : postresCosto2,
+                    "tipo" : "2"
+                ],
+                [
+                    "nombre": postresOpcion2,
+                    "precio" : postresCosto2,
+                    "tipo" : "2"
+                ],
+                [
+                    "nombre": postresOpcion3,
+                    "precio" : postresCosto3,
+                    "tipo" : "2"
+                ],
+                [
+                    "nombre": postresOpcion4,
+                    "precio" : postresCosto4,
+                    "tipo" : "2"
+                ],
+                [
+                    "nombre": postresOpcion5,
+                    "precio" : postresCosto5,
+                    "tipo" : "2"
+                ]
+            ]
         }
         
-        print(" Ultima fecha seleccionada: \(dataStorage.getDate()) ")
         
+        
+        let productsExtra = arrayBebidas + arrayPostres
+        
+        var descripcion: String = ""
         if let textView = mainView.viewWithTag(TAG_DESCRIPCION_EVENT) as? UITextView {
-            print(" textView.text: \(textView.text) ")
+            descripcion = textView.text!
         }
-        
+        var menu: String = ""
         if let textView = mainView.viewWithTag(TAG_MENU_EVENT) as? UITextView {
-            print(" textView.text: \(textView.text) ")
+            menu = textView.text!
         }
-        
+        var bebidas: String = ""
         if let textView = mainView.viewWithTag(TAG_BEBIDAS_EVENT) as? UITextView {
-            print(" textView.text: \(textView.text) ")
+            bebidas = textView.text!
         }
-        
+        var postres: String = ""
         if let textView = mainView.viewWithTag(TAG_POSTRES_EVENT) as? UITextView {
-            print(" textView.text: \(textView.text) ")
+            postres = textView.text!
         }
-        
-        
+        var costoMenu: String = "0"
         if let textView = mainView.viewWithTag(TAG_COSTO_MENU_EVENT) as? UITextView {
-            print(" textView.text: \(textView.text) ")
+            costoMenu = textView.text!
         }
-        
+        var costoBebidas: String = "0"
         if let textView = mainView.viewWithTag(TAG_COSTO_BEBIDAS_EVENT) as? UITextView {
-            print(" textView.text: \(textView.text) ")
+            costoBebidas = textView.text!
         }
-        
+        var costoPostres: String = "0"
         if let textView = mainView.viewWithTag(TAG_COSTO_POSTRES_EVENT) as? UITextView {
-            print(" textView.text: \(textView.text) ")
+            costoPostres = textView.text!
         }
         
+        let tituloEvento = dataStorage.getLastTitle()
         
-        if let textView = mainView.viewWithTag(TAG_TITULO_EVENT) as? UITextView {
-            print(" titulo evento: \(textView.text) ")
+        let costoMenuInt: Int    = Int(costoMenu)!
+        let costoBebidasInt: Int = Int(costoMenu)!
+        let costoPostresInt: Int = Int(costoMenu)!
+        let costoTotal = costoMenuInt + costoBebidasInt + costoPostresInt
+        
+        let parameters: Parameters=["funcion"    : "saveEvent",
+                                    "id_user"    : idUsuario,
+                                    "name"       : tituloEvento,
+                                    "description": descripcion,
+                                    "menu"       : menu,
+                                    "menu_cost"  : costoMenu,
+                                    "drinks"     : bebidas,
+                                    "drinks_cost": costoBebidas,
+                                    "dessert"    : postres,
+                                    "dessert_cost" : costoPostres,
+                                    "date_event" : dataStorage.getDate(),
+                                    "start_time" : dataStorage.getComienzaEvent(),
+                                    "end_time"   : dataStorage.getTerminaEvent(),
+                                    "capacity"   : personasRecibirInput.text!,
+                                    "costo"      : costoTotal,
+                                    "type"       : dataStorage.getLastFoodSelectedEvent(),
+                                    "id_cat"     : dataStorage.getLastCategorySelectedEvent(),
+                                    "id_sub_cat" : dataStorage.getLastSubCategorySelectedEvent(),
+                                    "image"      : dataStorage.getImagenEvent(),
+                                    "extra_products" : productsExtra] as [String: Any]
+        
+        let headers: HTTPHeaders = ["Accept": "application/json",
+                                    "Content-Type" : "application/x-www-form-urlencoded"]
+        Alamofire.request(BaseURL.baseUrl(), method: .post, parameters: parameters, encoding: ParameterQueryEncoding(), headers: headers).responseJSON
+            { (response: DataResponse) in
+                switch(response.result) {
+                case .success(let value):
+                    if let result = value as? Dictionary<String, Any> {
+                        let statusMsg = result["status_msg"] as? String
+                        let state     = result["state"] as? String
+                        if statusMsg == "OK" && state == "200" {
+                            
+                            
+                            let alert = UIAlertController(title: "Evento Creado.",
+                                                          message: "",
+                                                          preferredStyle: UIAlertController.Style.alert)
+                            alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default,
+                                                          handler: self.closeVC))
+                            self.present(alert, animated: true, completion: nil)
+                            
+                            
+                            return;
+                        }
+                        else{
+                            let alert = UIAlertController(title: "Ocurrió un error al realizar la petición.", message: "\(statusMsg!)", preferredStyle: UIAlertController.Style.alert)
+                            alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+                            self.present(alert, animated: true, completion: nil)
+                            return;
+                        }
+                    }
+                    //completionHandler(value as? NSDictionary, nil)
+                    break
+                case .failure(let error):
+                    //completionHandler(nil, error as NSError?)
+                    //print(" error:  ")
+                    //print(error)
+                    break
+                }
         }
-        
-        if let textView = mainView.viewWithTag(TAG_COMIENZA_EVENT) as? UITextView {
-            print(" TAG_COMIENZA_EVENT: \(textView.text) ")
-        }
-        
-        
-        if let textView = mainView.viewWithTag(TAG_TERMINA_EVENT) as? UITextView {
-            print(" TAG_TERMINA_EVENT: \(textView.text) ")
-        }
-        
-        
-        print(" Ultima comida seleccionada: \(dataStorage.getLastFoodSelectedEvent()) ")
-        
-        
-        
-        
+    }
+    
+    @objc func closeVC(alert: UIAlertAction!) {
+        _ = self.navigationController?.popViewController(animated: true)
     }
     
     

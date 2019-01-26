@@ -113,6 +113,7 @@ class HorarioCell: UITableViewCell {
         addSubview(terminaInput)
         comienzaInput.delegate = self
         terminaInput.delegate  = self
+        tituloInput.delegate = self
         addSubview(comienza)
         addSubview(termina)
         addSubview(hora)
@@ -121,7 +122,7 @@ class HorarioCell: UITableViewCell {
         
         addConstraintsWithFormat(format: "H:|-[v0(50)]-16-[v1(100)]-32-[v2(100)]", views: auxPadding, comienza, termina)
         addConstraintsWithFormat(format: "H:|-[v0(50)]-16-[v1(110)]-32-[v2(110)]", views: hora, comienzaInput, terminaInput)
-        addConstraintsWithFormat(format: "H:|-[v0(50)]-[v1]-|", views: titulo, tituloInput)
+        addConstraintsWithFormat(format: "H:|-[v0(50)]-16-[v1]-|", views: titulo, tituloInput)
         addConstraintsWithFormat(format: "V:|[v0(v1)]-[v1(v1)]-20-[v2(30)]", views: auxPadding, hora, titulo)
         addConstraintsWithFormat(format: "V:|[v0]-[v1(30)]-16-[v2(30)]", views: comienza, comienzaInput, tituloInput)
         addConstraintsWithFormat(format: "V:|[v0]-[v1(30)]", views: termina, terminaInput)
@@ -131,7 +132,6 @@ class HorarioCell: UITableViewCell {
         //terminaInput.addTarget(self, action: #selector(terminaSeleccionado), for: .touchUpInside)
         terminaInput.inputAccessoryView = toolbar_Picker
         terminaInput.inputView = pickerView
-        
     }
     
     
@@ -144,15 +144,13 @@ class HorarioCell: UITableViewCell {
     }()
     
     private lazy var toolbar_Picker: UIToolbar = {
-        let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0,
-                                              width: ScreenSize.screenWidth,
-                                              height: 40) )
+        let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: ScreenSize.screenWidth, height: 40))
         self.embedButtons(toolbar)
         return toolbar
     }()
     private func embedButtons(_ toolbar: UIToolbar) {
         let cancelButton = UIBarButtonItem(title: "Cancelar", style: .plain, target: self, action: #selector(cancelPressed) )
-        let doneButton = UIBarButtonItem(title: "Ok", style: .done, target: self, action: #selector(donePressed))
+        let doneButton = UIBarButtonItem(title: "Seleccionar", style: .done, target: self, action: #selector(donePressed))
         let flexButton = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
         toolbar.setItems([cancelButton, flexButton, doneButton], animated: true)
     }
@@ -165,6 +163,7 @@ class HorarioCell: UITableViewCell {
     
     var comienzaIsSelected: Bool = false
     
+    let dataStorage = UserDefaults.standard
     
     @objc func donePressed() {
         let timeFormatter = DateFormatter()
@@ -173,9 +172,11 @@ class HorarioCell: UITableViewCell {
         let strDate = timeFormatter.string(from: pickerView.date)
         if comienzaIsSelected {
             comienzaInput.text = strDate
+            dataStorage.setComienzaEvent(hora: strDate)
             comienzaInput.resignFirstResponder();
         }else{
             terminaInput.text = strDate
+            dataStorage.setTerminaEvent(hora: strDate)
             terminaInput.resignFirstResponder();
         }
     }
@@ -188,25 +189,25 @@ class HorarioCell: UITableViewCell {
 extension HorarioCell: UITextFieldDelegate {
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        
         //textField.resignFirstResponder();
-        
         if textField == comienzaInput {
             comienzaIsSelected = true
         }
-        
         if textField == terminaInput {
             comienzaIsSelected = false
         }
-        
     }
     
-    /*func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-     //textField.resignFirstResponder();
-     // ToDo
-     return false
-     }*/
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        //
+        // Run code here for when user ends editing text view
+        if textField == tituloInput {
+            self.dataStorage.setLastTitle(title: tituloInput.text!)
+        }
+    }
+    
 }
+
 
 /*
  extension HorarioCell: UIPickerViewDelegate,UIPickerViewDataSource {

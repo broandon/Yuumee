@@ -268,9 +268,9 @@ class InformacionAnfitrionCell: UITableViewCell {
         
         let imagen = (info["imagen"] as? String) ?? ""
         if !(imagen.isEmpty) {
-            for v in avatar.subviews {
+            /*for v in avatar.subviews {
                 v.removeFromSuperview()
-            }
+            }*/
             urlAvatar = URL(string: imagen)
             avatar.af_setImage(withURL: urlAvatar!)
         }
@@ -291,7 +291,6 @@ class InformacionAnfitrionCell: UITableViewCell {
     var imagenPortada: URL!
     
     var urlAvatar: URL!
-    
     
     @objc func guardarPerfilEvent() {
         let userId = dataStorage.getUserId()
@@ -318,7 +317,9 @@ class InformacionAnfitrionCell: UITableViewCell {
                         let statusMsg = result["status_msg"] as? String
                         let state     = result["state"] as? String
                         if statusMsg == "OK" && state == "200" {
-                            let alert = UIAlertController(title: "Información actualizada.", message: "", preferredStyle: UIAlertController.Style.alert)
+                            let alert = UIAlertController(title: "Información actualizada.",
+                                                          message: "",
+                                                          preferredStyle: UIAlertController.Style.alert)
                             alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
                             self.reference.present(alert, animated: true, completion: nil)
                             return;
@@ -399,9 +400,9 @@ extension InformacionAnfitrionCell: UIImagePickerControllerDelegate, UINavigatio
         
         if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
             
-            for v in self.avatar.subviews {
+            /*for v in self.avatar.subviews {
                 v.removeFromSuperview()
-            }
+            }*/
             self.avatar.image = image
             self.avatar.contentMode = .scaleToFill
             
@@ -469,10 +470,6 @@ extension InformacionAnfitrionCell: UIImagePickerControllerDelegate, UINavigatio
             return;
         }
         
-        print(" urlAvatar ")
-        print(urlAvatar)
-        print(" \n\n ")
-        
         let userId = dataStorage.getUserId()
         
         let headers: HTTPHeaders = ["Accept": "application/json",
@@ -482,7 +479,7 @@ extension InformacionAnfitrionCell: UIImagePickerControllerDelegate, UINavigatio
                                     "id_user"    : userId,
                                     "first_name" : nombre.text!,
                                     "last_name"  : apellidos.text!,
-                                    "image"      : urlAvatar.lastPathComponent,
+                                    "image"      : newImage,
                                     "image_page" : imagenPortada.lastPathComponent,
                                     "age"        : edad.text!,
                                     "address"    : direccion.text!,
@@ -491,13 +488,6 @@ extension InformacionAnfitrionCell: UIImagePickerControllerDelegate, UINavigatio
                                     "languages"  : idiomas.text!,
                                     "services"   : serviciosExtra.text!,
                                     "description": descripcion.text!] as [String: Any]
-        
-        print(" \n\n ")
-        print(" parameters ")
-        print(parameters)
-        print(" \n\n ")
-        
-        return;
         
         Alamofire.request(BaseURL.baseUrl(), method: .post, parameters: parameters, encoding: ParameterQueryEncoding(), headers: headers).responseJSON
             { (response: DataResponse) in
@@ -513,8 +503,12 @@ extension InformacionAnfitrionCell: UIImagePickerControllerDelegate, UINavigatio
                             return;
                         }
                         else{
-                            let alert = UIAlertController(title: "Ocurrió un error al realizar la petición.", message: "\(statusMsg!)", preferredStyle: UIAlertController.Style.alert)
-                            alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+                            let alert = UIAlertController(title: "Ocurrió un error al realizar la petición.",
+                                                          message: "\(statusMsg!)",
+                                preferredStyle: UIAlertController.Style.alert)
+                            alert.addAction(UIAlertAction(title: "OK",
+                                                          style: UIAlertAction.Style.default,
+                                                          handler: nil))
                             self.reference.present(alert, animated: true, completion: nil)
                             return;
                         }

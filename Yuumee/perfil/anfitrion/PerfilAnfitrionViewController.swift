@@ -29,7 +29,7 @@ class PerfilAnfitrionViewController: BaseViewController {
     }()
     
     
-    let secciones = ["background_image", "info"]
+    var secciones = [String]()
     
     var eventos = [EventoAnfitrion]()
     
@@ -52,10 +52,7 @@ class PerfilAnfitrionViewController: BaseViewController {
         mainView.addSubview(tableView)
         mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: tableView)
         mainView.addConstraintsWithFormat(format: "V:|-[v0]|", views: tableView)
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+        
         
         // ---------------------------------------------------------------------
         let headers: HTTPHeaders = [
@@ -76,8 +73,10 @@ class PerfilAnfitrionViewController: BaseViewController {
                                     if statusMsg == "OK" && state == "200" {
                                         if let data = result["data"] as? Dictionary<String, AnyObject> {
                                             if let info = data["info"] as? Dictionary<String, AnyObject> {
+                                                
                                                 self.imagenPortada = (info["imagen_portada"] as? String)!
                                                 self.infoAnfitrion = info
+                                                self.secciones = ["background_image", "info"]
                                             }
                                             if let eventos = data["events"] as? [Dictionary<String, AnyObject>] {
                                                 for e in eventos {
@@ -100,8 +99,9 @@ class PerfilAnfitrionViewController: BaseViewController {
                             }
         }
         // ---------------------------------------------------------------------
-        
     }
+    
+    
     
     @objc func keyboardWillAppear(notification: NSNotification) {
         self.view.frame.origin.y -= 200
@@ -147,9 +147,9 @@ extension PerfilAnfitrionViewController: UITableViewDelegate, UITableViewDataSou
             if section == "background_image" {
                 let cell = tableView.dequeueReusableCell(withIdentifier: backgroundImageId, for: indexPath)
                 if let cell = cell as? BackgroundImageHeader {
-                    cell.reference = self
                     cell.selectionStyle = .none
-                    cell.setUpView(urlImage: self.imagenPortada, info: infoAnfitrion)
+                    cell.reference = self
+                    cell.setUpView(info: self.infoAnfitrion)
                     return cell
                 }
             }
@@ -186,16 +186,22 @@ extension PerfilAnfitrionViewController: UITableViewDelegate, UITableViewDataSou
             capacidad.text = "Capacidad: \(evento.capacidad)"
             let costo = ArchiaRegularLabel()
             costo.text = evento.costo
+            
             let button = UIButton(type: .system)
             button.titleLabel?.font   = UIFont(name: "ArchiaRegular", size: (button.titleLabel?.font.pointSize)!)
             button.titleLabel?.font   = UIFont.boldSystemFont(ofSize: (button.titleLabel?.font.pointSize)!)
             button.backgroundColor    = UIColor.white
             button.layer.cornerRadius = 5
+            button.imageEdgeInsets    = UIEdgeInsets(top: 0, left: -10, bottom: 0, right: 10)
+            button.tintColor          = UIColor.rosa
             button.setTitle("Cancelar", for: .normal)
             button.addBorder(borderColor: .azul, widthBorder: 2)
             button.setTitleColor(UIColor.rosa, for: .normal)
-            button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -10, bottom: 0, right: 10)
-            button.tintColor = UIColor.rosa
+            let tap = CancelarEventoTapGestur(target: self, action: #selector(cancelarEvento))
+            tap.idEvento = evento.id
+            tap.indexEvent = indexPath
+            tap.numberOfTapsRequired = 1
+            button.addGestureRecognizer(tap)
             
             let sep = UIView()
             sep.backgroundColor = .black
@@ -218,8 +224,7 @@ extension PerfilAnfitrionViewController: UITableViewDelegate, UITableViewDataSou
             cell.addConstraintsWithFormat(format: "H:|-[v0]-|", views: costo)
             cell.addConstraintsWithFormat(format: "H:[v0(120)]-|", views: button)
             cell.addConstraintsWithFormat(format: "H:|-[v0]-|", views: sep)
-            cell.addConstraintsWithFormat(format: "V:|[v0(30)]-[v1(30)]-[v2(30)]-[v3(30)]-[v4(30)]-[v5(30)]-[v6(40)]-[v7(30)]-[v8(1)]",
-                                          views: titulo, descripcion, tipoMenu, fecha, horario, capacidad, costo, button, sep)
+            cell.addConstraintsWithFormat(format: "V:|[v0(30)]-[v1(30)]-[v2(30)]-[v3(30)]-[v4(30)]-[v5(30)]-[v6(40)]-[v7(30)]-[v8(1)]", views: titulo, descripcion, tipoMenu, fecha, horario, capacidad, costo, button, sep)
             return cell
         }
         
@@ -247,6 +252,58 @@ extension PerfilAnfitrionViewController: UITableViewDelegate, UITableViewDataSou
         return UITableView.automaticDimension
     }
     
+    
+    @objc func cancelarEvento(sender: CancelarEventoTapGestur) {
+        if let idEvento = sender.idEvento as? String {
+            let parameters: Parameters = ["funcion" : "cancelEvent",
+                                          "id_user": dataStorage.getUserId(),
+                                          "id_event" : idEvento] as [String: Any]
+            let headers: HTTPHeaders = ["Accept": "application/json",
+                                        "Content-Type" : "application/x-www-form-urlencoded"]
+            Alamofire.request(BaseURL.baseUrl(), method: .post, parameters: parameters, encoding: ParameterQueryEncoding(), headers: headers).responseJSON
+                { (response: DataResponse) in
+                    switch(response.result) {
+                    case .success(let value):
+                        if let result = value as? Dictionary<String, Any> {
+                            let statusMsg = result["status_msg"] as? String
+                            let state     = result["state"] as? String
+                            if statusMsg == "OK" && state == "200" {
+                                let alert = UIAlertController(title: "Evento eliminado.",
+                                                              message: "",
+                                                              preferredStyle: UIAlertController.Style.alert)
+                                alert.addAction(UIAlertAction(title: "OK",
+                                                              style: UIAlertAction.Style.default,
+                                                              handler: nil))
+                                self.present(alert, animated: true, completion: nil)
+                                DispatchQueue.main.async {
+                                    self.eventos.remove(at: sender.indexEvent.row)
+                                    self.tableView.beginUpdates()
+                                    self.tableView.deleteRows(at: [sender.indexEvent], with: .automatic)
+                                    self.tableView.endUpdates()
+                                }
+                            }
+                            else{
+                                let alert = UIAlertController(title: "Ocurrió un error al realizar la petición.",
+                                                              message: "\(statusMsg!)",
+                                    preferredStyle: UIAlertController.Style.alert)
+                                alert.addAction(UIAlertAction(title: "OK",
+                                                              style: UIAlertAction.Style.default,
+                                                              handler: nil))
+                                self.present(alert, animated: true, completion: nil)
+                                return;
+                            }
+                        }
+                        //completionHandler(value as? NSDictionary, nil)
+                        break
+                    case .failure(let error):
+                        //completionHandler(nil, error as NSError?)
+                        //print(" error:  ")
+                        //print(error)
+                        break
+                    }
+            }
+        }
+    }
     
     
 }
@@ -278,5 +335,10 @@ struct EventoAnfitrion {
     
 }
 
+
+class CancelarEventoTapGestur: UITapGestureRecognizer {
+    var idEvento: String = ""
+    var indexEvent: IndexPath!
+}
 
 

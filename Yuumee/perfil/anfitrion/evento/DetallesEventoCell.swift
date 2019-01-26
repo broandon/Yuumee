@@ -131,6 +131,7 @@ class DetallesEventoCell: UITableViewCell {
         costoMenuTextView.textAlignment = .center
         costoMenuTextView.font = UIFont.boldSystemFont(ofSize: 14)
         costoMenuTextView.addBorder(borderColor: .black, widthBorder: 1)
+        costoMenuTextView.keyboardType = .numberPad
         pesosMenu = getRegularLabel(text: "$")
         pesosMenu.textColor = UIColor.lightGray
         mxMenu = getRegularLabel(text: ".00 mx")
@@ -153,6 +154,7 @@ class DetallesEventoCell: UITableViewCell {
         costoBebidasTextView.textAlignment = .center
         costoBebidasTextView.font = UIFont.boldSystemFont(ofSize: 14)
         costoBebidasTextView.addBorder(borderColor: .black, widthBorder: 1)
+        costoBebidasTextView.keyboardType = .numberPad
         pesosBebidas = getRegularLabel(text: "$")
         pesosBebidas.textColor = UIColor.lightGray
         mxBebidas = getRegularLabel(text: ".00 mx")
@@ -175,6 +177,7 @@ class DetallesEventoCell: UITableViewCell {
         costoPostreTextView.textAlignment = .center
         costoPostreTextView.font = UIFont.boldSystemFont(ofSize: 14)
         costoPostreTextView.addBorder(borderColor: .black, widthBorder: 1)
+        costoPostreTextView.keyboardType = .numberPad
         pesosPostres = getRegularLabel(text: "$")
         pesosPostres.textColor = UIColor.lightGray
         mxPostres = getRegularLabel(text: ".00 mx")

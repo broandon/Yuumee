@@ -437,8 +437,8 @@ extension UIView {
         backgroundView.backgroundColor = .gray
         backgroundView.addBorder(borderColor: .white, widthBorder: 2)
         self.addSubview(backgroundView)
-        self.addConstraintsWithFormat(format: "H:|-1-[v0]-1-|", views: backgroundView)
-        self.addConstraintsWithFormat(format: "V:|-1-[v0]-1-|", views: backgroundView)
+        self.addConstraintsWithFormat(format: "H:|-2-[v0]-2-|", views: backgroundView)
+        self.addConstraintsWithFormat(format: "V:|-2-[v0]-2-|", views: backgroundView)
     }
     
     func unCheck() {

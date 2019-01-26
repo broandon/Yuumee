@@ -54,7 +54,7 @@ class BackgroundImageHeader: UITableViewCell, UIImagePickerControllerDelegate, U
     }()
     
     
-    func setUpView(urlImage: String = "", info: Dictionary<String, AnyObject>) {
+    func setUpView(info: Dictionary<String, AnyObject> = [:]) {
         self.info = info
         backgroundColor = UIColor.gris
         addSubview(imageBackground)
@@ -67,17 +67,17 @@ class BackgroundImageHeader: UITableViewCell, UIImagePickerControllerDelegate, U
         imageBackground.addConstraintsWithFormat(format: "H:[v0]-|", views: addBackground)
         imageBackground.addConstraintsWithFormat(format: "V:[v0]-|", views: addBackground)
         
-        if !urlImage.isEmpty {
-            for v in imageBackground.subviews {
-                v.removeFromSuperview()
+        if let urlImagePortada = info["imagen_portada"] as? String {
+            if !urlImagePortada.isEmpty {
+                /*for v in imageBackground.subviews {
+                 v.removeFromSuperview()
+                 }*/
+                let url = URL(string: urlImagePortada)
+                imageBackground.af_setImage(withURL: url!)
             }
-            let url = URL(string: urlImage)
-            imageBackground.af_setImage(withURL: url!)
         }
-        
         addCamera.addTarget(self, action: #selector(addNewBackgroundImageFromCamera), for: .touchUpInside)
         addBackground.addTarget(self, action: #selector(pickPhotoByAlbum), for: .touchUpInside)
-        
     }
     
     
@@ -99,12 +99,11 @@ class BackgroundImageHeader: UITableViewCell, UIImagePickerControllerDelegate, U
         
         if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
             
-            for v in self.imageBackground.subviews {
+            /*for v in self.imageBackground.subviews {
                 v.removeFromSuperview()
-            }
+            }*/
             self.imageBackground.image = image
             self.imageBackground.contentMode = .scaleToFill
-            
             
             let headers: HTTPHeaders = [
                 "Content-type": "multipart/form-data"
@@ -127,6 +126,10 @@ class BackgroundImageHeader: UITableViewCell, UIImagePickerControllerDelegate, U
                                 if state == "200" {
                                     if let imageInfo = resultUpload["data"] as! Dictionary<String, Any>? {
                                         let nombreImagen = imageInfo["image_name"]
+                                        
+                                        print(" nombreImagen ")
+                                        print(nombreImagen)
+                                        
                                         DispatchQueue.main.async {
                                             self.actualizarDatos(newImage: nombreImagen as! String)
                                         }
@@ -181,36 +184,32 @@ class BackgroundImageHeader: UITableViewCell, UIImagePickerControllerDelegate, U
         self.pickPhotoByAlbum()
     }
     
+    let dataStorage = UserDefaults.standard
+    
     var info: Dictionary<String, AnyObject> = [:]
     
     @objc func actualizarDatos(newImage: String = "") {
         
-        print(" \n\n ")
-        print(" newImage ")
-        print(newImage)
-        print(" \n\n ")
-        print(" info ")
-        print(info)
-        print(" \n\n ")
+        let urlPortada = URL(string: info["imagen_portada"] as! String)
         
-        return;
+        let userId = dataStorage.getUserId()
         
         let headers: HTTPHeaders = ["Accept": "application/json",
                                     "Content-Type" : "application/x-www-form-urlencoded"]
         
         let parameters: Parameters = ["funcion"    : "updateUserAmphitryon",
-                                      "id_user"    : "",
-                                      "first_name" : "",
-                                      "last_name"  : "",
-                                      "image"      : "",
-                                      "image_page" : "",
-                                      "age"        : "",
-                                      "address"    : "",
-                                      "phone"      : "",
-                                      "profession" : "",
-                                      "languages"  : "",
-                                      "services"   : "",
-                                      "description" : ""] as [String: Any]
+                                      "id_user"    : userId,
+                                      "first_name" : (info["nombre"] as! String),
+                                      "last_name"  : (info["apellidos"] as! String),
+                                      "image"      : (urlPortada?.lastPathComponent as! String),
+                                      "image_page" : newImage,
+                                      "age"        : (info["fecha_nacimiento"] as! String),
+                                      "address"    : (info["direccion"] as! String),
+                                      "phone"      : (info["telefono"] as! String),
+                                      "profession" : (info["profesion"] as! String),
+                                      "languages"  : (info["idiomas"] as! String),
+                                      "services"   : (info["servicios_extra"] as! String),
+                                      "description" : (info["descripcion"] as! String) ] as [String: Any]
         
         Alamofire.request(BaseURL.baseUrl(), method: .post, parameters: parameters, encoding: ParameterQueryEncoding(), headers: headers).responseJSON
             { (response: DataResponse) in

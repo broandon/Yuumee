@@ -39,6 +39,7 @@ class ProductosExtraView: UIView {
     private func getCostoTextField() -> UITextField {
         let textField = UITextField()
         textField.addBorder(borderColor: .gris, widthBorder: 1)
+        textField.keyboardType = .numberPad
         return textField
     }
     
