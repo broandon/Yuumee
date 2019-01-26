@@ -300,6 +300,8 @@ class FechasCell: UITableViewCell {
         }
     }
     
+    let dataStorage = UserDefaults.standard
+    
 }
 
 
@@ -350,6 +352,7 @@ extension FechasCell:JTAppleCalendarViewDelegate {
         let todaysDate = formatter.string(from: date)
         dateStringSelected = todaysDate
         dateSelected = date
+        dataStorage.setDate(tipo: todaysDate) // Fecha seleccionada
         cell?.bounce()
     }
     

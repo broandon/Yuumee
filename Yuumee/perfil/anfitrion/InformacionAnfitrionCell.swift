@@ -8,7 +8,7 @@
 
 import UIKit
 import Alamofire
-
+import Photos
 
 class InformacionAnfitrionCell: UITableViewCell {
     
@@ -283,18 +283,18 @@ class InformacionAnfitrionCell: UITableViewCell {
         addCamera.addTarget(self, action: #selector(adNewImage) , for: .touchUpInside)
         agregarEvento.addTarget(self, action: #selector(addEvento) , for: .touchUpInside)
         guardarPerfil.addTarget(self, action: #selector(guardarPerfilEvent), for: .touchUpInside)
-        
     }
+    
     
     let dataStorage = UserDefaults.standard
     
     var imagenPortada: URL!
+    
     var urlAvatar: URL!
     
+    
     @objc func guardarPerfilEvent() {
-        
         let userId = dataStorage.getUserId()
-        
         let headers: HTTPHeaders = ["Accept": "application/json",
                                     "Content-Type" : "application/x-www-form-urlencoded"]
         let parameters: Parameters=["funcion"    : "updateUserAmphitryon",
@@ -310,7 +310,6 @@ class InformacionAnfitrionCell: UITableViewCell {
                                     "languages"  : idiomas.text!,
                                     "services"   : serviciosExtra.text!,
                                     "description": descripcion.text!] as [String: Any]
-        
         Alamofire.request(BaseURL.baseUrl(), method: .post, parameters: parameters, encoding: ParameterQueryEncoding(), headers: headers).responseJSON
             { (response: DataResponse) in
                 switch(response.result) {
@@ -318,14 +317,11 @@ class InformacionAnfitrionCell: UITableViewCell {
                     if let result = value as? Dictionary<String, Any> {
                         let statusMsg = result["status_msg"] as? String
                         let state     = result["state"] as? String
-                        
                         if statusMsg == "OK" && state == "200" {
-                            
                             let alert = UIAlertController(title: "Información actualizada.", message: "", preferredStyle: UIAlertController.Style.alert)
                             alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
                             self.reference.present(alert, animated: true, completion: nil)
                             return;
-                            
                         }
                         else{
                             let alert = UIAlertController(title: "Ocurrió un error al realizar la petición.", message: "\(statusMsg!)", preferredStyle: UIAlertController.Style.alert)
@@ -343,14 +339,21 @@ class InformacionAnfitrionCell: UITableViewCell {
                     break
                 }
         }
-        
-        
     }
     
     
     
+    // UIPicker
+    lazy var imagePicker: UIImagePickerController = {
+        let imagePicker = UIImagePickerController()
+        imagePicker.delegate = self
+        return imagePicker
+    }()
+    
     @objc func adNewImage() {
-        print(" adNewImage ")
+        imagePicker.allowsEditing = false
+        imagePicker.sourceType = .photoLibrary
+        reference.present(imagePicker, animated: true, completion: nil)
     }
     
     @objc func addEvento() {
@@ -384,5 +387,168 @@ extension InformacionAnfitrionCell: UITextFieldDelegate {
 extension InformacionAnfitrionCell: UITextViewDelegate {
     //
 }
+
+
+
+extension InformacionAnfitrionCell: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        self.imagePicker.dismiss(animated: true, completion: nil)
+        
+        if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
+            
+            for v in self.avatar.subviews {
+                v.removeFromSuperview()
+            }
+            self.avatar.image = image
+            self.avatar.contentMode = .scaleToFill
+            
+            let headers: HTTPHeaders = [
+                "Content-type": "multipart/form-data"
+            ]
+            Alamofire.upload(
+                multipartFormData: { MultipartFormData in
+                    
+                    MultipartFormData.append("uploadImage".data(using: String.Encoding.utf8)!, withName: "funcion")
+                    let imgString = self.convertImageToBase64(image: image)
+                    MultipartFormData.append(imgString.data(using: String.Encoding.utf8)!, withName: "image")
+            }, to: BaseURL.baseUrl(), method: .post, headers: headers) { (result) in
+                switch result {
+                case .success(let upload, _, _):
+                    upload.responseJSON { response in
+                        //print(response)
+                        //print(response.result)
+                        //print(response.result.value)
+                        if let resultUpload = response.result.value as! Dictionary<String, Any>? {
+                            if let state = resultUpload["state"] as! String? {
+                                if state == "200" {
+                                    if let imageInfo = resultUpload["data"] as! Dictionary<String, Any>? {
+                                        let nombreImagen = imageInfo["image_name"]
+                                        
+                                        DispatchQueue.main.async {
+                                            self.actualizarDatos(newImage: nombreImagen as! String)
+                                        }
+                                        
+                                    }
+                                }
+                            }
+                        }
+                        else {
+                            /*let atributtes = [NSAttributedString.Key.foregroundColor: .gray,
+                             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)]
+                             self.adjuntarImagen.attributedPlaceholder = NSAttributedString(string: StringConstants.adjuntarImagen, attributes: atributtes)*/
+                            print("Ocurrio un error al procesar la imagen.")
+                            Utils.showSimpleAlert(message: "Ocurrio un error al procesar la imagen.", context: self.reference, success: nil)
+                            return
+                        }
+                        }.uploadProgress { progress in // main queue by default
+                            //self.img1Progress.alpha = 1.0
+                            //self.img1Progress.progress = Float(progress.fractionCompleted)
+                            // print("Upload Progress: \(progress.fractionCompleted)")
+                            /*
+                             let atributtes = [NSAttributedString.Key.foregroundColor: .gray ,
+                             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)]
+                             self.adjuntarImagen.attributedPlaceholder = NSAttributedString(string: "Subiendo...", attributes: atributtes)
+                             */
+                    }
+                case .failure(let encodingError):
+                    //print(encodingError)
+                    Utils.showSimpleAlert(message: encodingError as! String, context: self.reference, success: nil)
+                    break
+                }
+            }
+        }
+    }
+    
+    
+    @objc func actualizarDatos(newImage: String = "") {
+        
+        if urlAvatar == nil {
+            return;
+        }
+        
+        print(" urlAvatar ")
+        print(urlAvatar)
+        print(" \n\n ")
+        
+        let userId = dataStorage.getUserId()
+        
+        let headers: HTTPHeaders = ["Accept": "application/json",
+                                    "Content-Type" : "application/x-www-form-urlencoded"]
+        
+        let parameters: Parameters=["funcion"    : "updateUserAmphitryon",
+                                    "id_user"    : userId,
+                                    "first_name" : nombre.text!,
+                                    "last_name"  : apellidos.text!,
+                                    "image"      : urlAvatar.lastPathComponent,
+                                    "image_page" : imagenPortada.lastPathComponent,
+                                    "age"        : edad.text!,
+                                    "address"    : direccion.text!,
+                                    "phone"      : telefono.text!,
+                                    "profession" : profesion.text!,
+                                    "languages"  : idiomas.text!,
+                                    "services"   : serviciosExtra.text!,
+                                    "description": descripcion.text!] as [String: Any]
+        
+        print(" \n\n ")
+        print(" parameters ")
+        print(parameters)
+        print(" \n\n ")
+        
+        return;
+        
+        Alamofire.request(BaseURL.baseUrl(), method: .post, parameters: parameters, encoding: ParameterQueryEncoding(), headers: headers).responseJSON
+            { (response: DataResponse) in
+                switch(response.result) {
+                case .success(let value):
+                    if let result = value as? Dictionary<String, Any> {
+                        let statusMsg = result["status_msg"] as? String
+                        let state     = result["state"] as? String
+                        if statusMsg == "OK" && state == "200" {
+                            let alert = UIAlertController(title: "Información actualizada.", message: "", preferredStyle: UIAlertController.Style.alert)
+                            alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+                            self.reference.present(alert, animated: true, completion: nil)
+                            return;
+                        }
+                        else{
+                            let alert = UIAlertController(title: "Ocurrió un error al realizar la petición.", message: "\(statusMsg!)", preferredStyle: UIAlertController.Style.alert)
+                            alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+                            self.reference.present(alert, animated: true, completion: nil)
+                            return;
+                        }
+                    }
+                    //completionHandler(value as? NSDictionary, nil)
+                    break
+                case .failure(let error):
+                    //completionHandler(nil, error as NSError?)
+                    //print(" error:  ")
+                    //print(error)
+                    break
+                }
+        }
+    }
+    
+    
+    
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated:  true, completion: nil)
+    }
+    
+    
+    //
+    // Convert String to base64
+    //
+    func convertImageToBase64(image: UIImage) -> String {
+        let imageData = image.jpegData(compressionQuality: 0.0)
+        let base64String = imageData?.base64EncodedString(options: .lineLength64Characters)
+        return base64String!
+    }
+    
+}
+
+
 
 

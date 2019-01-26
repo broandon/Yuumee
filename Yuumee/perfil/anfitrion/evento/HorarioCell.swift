@@ -59,6 +59,7 @@ class HorarioCell: UITableViewCell {
         textField.leftView = paddingView
         // textField.clearButtonMode = UITextField.ViewMode.whileEditing -> Muestra el auto.corrector
         textField.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
+        textField.tag = TAG_COMIENZA_EVENT
         return textField
     }()
     
@@ -82,6 +83,7 @@ class HorarioCell: UITableViewCell {
         textField.leftView = paddingView
         // textField.clearButtonMode = UITextField.ViewMode.whileEditing -> Muestra el auto.corrector
         textField.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
+        textField.tag = TAG_TERMINA_EVENT
         return textField
     }()
     
@@ -101,6 +103,7 @@ class HorarioCell: UITableViewCell {
     let tituloInput: UITextField = {
         let textField = UITextField()
         textField.addBorder(borderColor: .gris, widthBorder: 1)
+        textField.tag = TAG_TITULO_EVENT
         return textField
     }()
     

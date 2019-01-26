@@ -9,8 +9,9 @@
 import UIKit
 import Alamofire
 import AlamofireImage
+import Photos
 
-class BackgroundImageHeader: UITableViewCell {
+class BackgroundImageHeader: UITableViewCell, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -18,6 +19,8 @@ class BackgroundImageHeader: UITableViewCell {
     required init?(coder aDecoder: NSCoder) {
         fatalError(" Error to init ")
     }
+    
+    var reference: UIViewController!
     
     var imageBackground: UIImageView = {
         let imageView = UIImageView()
@@ -35,7 +38,6 @@ class BackgroundImageHeader: UITableViewCell {
         button.tintColor = UIColor.rosa.withAlphaComponent(0.5)
         return button
     }()
-    
     var addBackground: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(UIImage(named: "add"), for: .normal)
@@ -43,7 +45,17 @@ class BackgroundImageHeader: UITableViewCell {
         return button
     }()
     
-    func setUpView(urlImage: String = "") {
+    
+    // UIPicker
+    lazy var imagePicker: UIImagePickerController = {
+        let imagePicker = UIImagePickerController()
+        imagePicker.delegate = self
+        return imagePicker
+    }()
+    
+    
+    func setUpView(urlImage: String = "", info: Dictionary<String, AnyObject>) {
+        self.info = info
         backgroundColor = UIColor.gris
         addSubview(imageBackground)
         addConstraintsWithFormat(format: "H:|-[v0]-|", views: imageBackground)
@@ -63,17 +75,195 @@ class BackgroundImageHeader: UITableViewCell {
             imageBackground.af_setImage(withURL: url!)
         }
         
-        addCamera.addTarget(self, action: #selector(addNewBackgroundImageFromCamera) , for: .touchUpInside)
-        addBackground.addTarget(self, action: #selector(addNewBackgroundImage) , for: .touchUpInside)
+        addCamera.addTarget(self, action: #selector(addNewBackgroundImageFromCamera), for: .touchUpInside)
+        addBackground.addTarget(self, action: #selector(pickPhotoByAlbum), for: .touchUpInside)
         
     }
     
-    @objc func addNewBackgroundImageFromCamera() {
-        print(" addNewBackgroundImageFromCamera ")
+    
+    // MARK: UITextFieldDelegate
+    
+    /**
+     * Metodo para abrir el album de fotos, despues de haber solicitado los permisos necesarios
+     *
+     */
+    @objc func pickPhotoByAlbum() {
+        imagePicker.allowsEditing = false
+        imagePicker.sourceType = .photoLibrary
+        reference.present(imagePicker, animated: true, completion: nil)
     }
     
-    @objc func addNewBackgroundImage() {
-        print(" addNewBackgroundImage ")
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        self.imagePicker.dismiss(animated: true, completion: nil)
+        
+        if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
+            
+            for v in self.imageBackground.subviews {
+                v.removeFromSuperview()
+            }
+            self.imageBackground.image = image
+            self.imageBackground.contentMode = .scaleToFill
+            
+            
+            let headers: HTTPHeaders = [
+                "Content-type": "multipart/form-data"
+            ]
+            Alamofire.upload(
+                multipartFormData: { MultipartFormData in
+                    
+                    MultipartFormData.append("uploadImage".data(using: String.Encoding.utf8)!, withName: "funcion")
+                    let imgString = self.convertImageToBase64(image: image)
+                    MultipartFormData.append(imgString.data(using: String.Encoding.utf8)!, withName: "image")
+            }, to: BaseURL.baseUrl(), method: .post, headers: headers) { (result) in
+                switch result {
+                case .success(let upload, _, _):
+                    upload.responseJSON { response in
+                        //print(response)
+                        //print(response.result)
+                        //print(response.result.value)
+                        if let resultUpload = response.result.value as! Dictionary<String, Any>? {
+                            if let state = resultUpload["state"] as! String? {
+                                if state == "200" {
+                                    if let imageInfo = resultUpload["data"] as! Dictionary<String, Any>? {
+                                        let nombreImagen = imageInfo["image_name"]
+                                        DispatchQueue.main.async {
+                                            self.actualizarDatos(newImage: nombreImagen as! String)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else {
+                            /*let atributtes = [NSAttributedString.Key.foregroundColor: .gray,
+                             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)]
+                             self.adjuntarImagen.attributedPlaceholder = NSAttributedString(string: StringConstants.adjuntarImagen, attributes: atributtes)*/
+                            print("Ocurrio un error al procesar la imagen.")
+                            Utils.showSimpleAlert(message: "Ocurrio un error al procesar la imagen.", context: self.reference, success: nil)
+                            return
+                        }
+                        }.uploadProgress { progress in // main queue by default
+                            //self.img1Progress.alpha = 1.0
+                            //self.img1Progress.progress = Float(progress.fractionCompleted)
+                            // print("Upload Progress: \(progress.fractionCompleted)")
+                            /*
+                             let atributtes = [NSAttributedString.Key.foregroundColor: .gray ,
+                             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)]
+                             self.adjuntarImagen.attributedPlaceholder = NSAttributedString(string: "Subiendo...", attributes: atributtes)
+                             */
+                    }
+                case .failure(let encodingError):
+                    //print(encodingError)
+                    Utils.showSimpleAlert(message: encodingError as! String, context: self.reference, success: nil)
+                    break
+                }
+            }
+        }
     }
+    
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated:  true, completion: nil)
+    }
+    
+    
+    //
+    // Convert String to base64
+    //
+    func convertImageToBase64(image: UIImage) -> String {
+        let imageData = image.jpegData(compressionQuality: 0.0)
+        let base64String = imageData?.base64EncodedString(options: .lineLength64Characters)
+        return base64String!
+    }
+    
+    
+    @objc func addNewBackgroundImageFromCamera() {
+        self.pickPhotoByAlbum()
+    }
+    
+    var info: Dictionary<String, AnyObject> = [:]
+    
+    @objc func actualizarDatos(newImage: String = "") {
+        
+        print(" \n\n ")
+        print(" newImage ")
+        print(newImage)
+        print(" \n\n ")
+        print(" info ")
+        print(info)
+        print(" \n\n ")
+        
+        return;
+        
+        let headers: HTTPHeaders = ["Accept": "application/json",
+                                    "Content-Type" : "application/x-www-form-urlencoded"]
+        
+        let parameters: Parameters = ["funcion"    : "updateUserAmphitryon",
+                                      "id_user"    : "",
+                                      "first_name" : "",
+                                      "last_name"  : "",
+                                      "image"      : "",
+                                      "image_page" : "",
+                                      "age"        : "",
+                                      "address"    : "",
+                                      "phone"      : "",
+                                      "profession" : "",
+                                      "languages"  : "",
+                                      "services"   : "",
+                                      "description" : ""] as [String: Any]
+        
+        Alamofire.request(BaseURL.baseUrl(), method: .post, parameters: parameters, encoding: ParameterQueryEncoding(), headers: headers).responseJSON
+            { (response: DataResponse) in
+                switch(response.result) {
+                case .success(let value):
+                    if let result = value as? Dictionary<String, Any> {
+                        let statusMsg = result["status_msg"] as? String
+                        let state     = result["state"] as? String
+                        if statusMsg == "OK" && state == "200" {
+                            let alert = UIAlertController(title: "Información actualizada.", message: "", preferredStyle: UIAlertController.Style.alert)
+                            alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+                            self.reference.present(alert, animated: true, completion: nil)
+                            return;
+                        }
+                        else{
+                            let alert = UIAlertController(title: "Ocurrió un error al realizar la petición.", message: "\(statusMsg!)", preferredStyle: UIAlertController.Style.alert)
+                            alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+                            self.reference.present(alert, animated: true, completion: nil)
+                            return;
+                        }
+                    }
+                    //completionHandler(value as? NSDictionary, nil)
+                    break
+                case .failure(let error):
+                    //completionHandler(nil, error as NSError?)
+                    //print(" error:  ")
+                    //print(error)
+                    break
+                }
+        }
+    }
+    
+    
     
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
