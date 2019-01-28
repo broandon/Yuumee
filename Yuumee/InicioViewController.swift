@@ -92,7 +92,7 @@ class InicioViewController: BaseViewController {
         mainView.addConstraintsWithFormat(format: "H:|-[v0]-|", views: iniciaSesionAqui)
         mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: containerBottom)
         let topMargin = mainView.bounds.height/4
-        mainView.addConstraintsWithFormat(format: "V:|-\(topMargin)-[v0(40)]-[v1(40)]-20-[v2]-(>=8)-[v3(45)]|",
+        mainView.addConstraintsWithFormat(format: "V:|-\(topMargin)-[v0(40)]-[v1(40)]-20-[v2]-(>=8)-[v3(45)]-|",
             views: buttonFacebook, registrate, iniciaSesionAqui, containerBottom)
         containerBottom.addSubview(omitir)
         containerBottom.addSubview(imageArrow)

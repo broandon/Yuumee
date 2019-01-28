@@ -115,6 +115,10 @@ class UbicacionViewController: BaseViewController, UITextFieldDelegate {
     
     let standarSize: CGSize = CGSize(width: 24, height: 24)
     
+    
+    let tabBar = UITabBarController()
+    
+    
     @objc func buscarLugares() {
         let timeLineVC = TimeLineViewController()
         timeLineVC.title = "TIMELINE"
@@ -122,24 +126,37 @@ class UbicacionViewController: BaseViewController, UITextFieldDelegate {
         let categoriasVC = CategoriasViewController()
         categoriasVC.title = "CATEGORIAS"
         let navCategorias = UINavigationController(rootViewController: categoriasVC)
-        let mensajesVC = MensajesViewController()
+        // Mensajes
+        var mensajesVC: BaseViewController!
+        if dataStorage.getTipo() == "" {
+            mensajesVC = InicioViewController()
+        }else{
+            mensajesVC = MensajesViewController()
+        }
         mensajesVC.title = "MENSAJES"
         let navMensajes = UINavigationController(rootViewController: mensajesVC)
         
-        var perfilVC: UIViewController!
+        
+        // Perfil
+        var perfilVC: UIViewController = UIViewController()
+        // Usuario Invitado
+        if dataStorage.getTipo() == "" {
+            perfilVC = InicioViewController()
+            perfilVC.title = "PERFIL"
+        }
+        // Anfitrion
         if dataStorage.getTipo() == String(TipoUsuario.anfitrion.rawValue) {
-            print(" Anfitrion ")
             perfilVC = PerfilViewController() // PerfilAnfitrionViewController()
             perfilVC.title = "PERFIL"
         }
+        // Cliente
         if dataStorage.getTipo() == String(TipoUsuario.cliente.rawValue) {
-            print(" Cliente ")
             perfilVC = PerfilClienteViewController()
             perfilVC.title = "PERFIL"
         }
-        
         let navPerfil = UINavigationController(rootViewController: perfilVC)
-        let tabBar = UITabBarController()
+        
+        
         tabBar.viewControllers = [navTimeLine, navCategorias, navMensajes, navPerfil]
         let timeLine = tabBar.tabBar.items![0]
         timeLine.image = UIImage(named: "timeline")?.withRenderingMode(.alwaysTemplate)
@@ -148,16 +165,27 @@ class UbicacionViewController: BaseViewController, UITextFieldDelegate {
         let mensajes = tabBar.tabBar.items![2]
         mensajes.image = UIImage(named: "mensajes")?.withRenderingMode(.alwaysTemplate)
         let perfil = tabBar.tabBar.items![3]
+        
+        
         var imagePerfil: UIImage?
+        // Usuario invitado
+        if dataStorage.getTipo() == "" {
+            imagePerfil = UIImage(named: "chef_rosa")?.withRenderingMode(.alwaysTemplate)
+        }
+        // Anfitrion
         if dataStorage.getTipo() == String(TipoUsuario.anfitrion.rawValue) {
             imagePerfil = UIImage(named: "chef_rosa")?.withRenderingMode(.alwaysTemplate)
         }
+        // Cliente
         if dataStorage.getTipo() == String(TipoUsuario.cliente.rawValue) {
             imagePerfil = UIImage(named: "perfil")?.withRenderingMode(.alwaysTemplate)
         }
+        
+        
         perfil.image = imagePerfil?.imageResize(sizeChange: standarSize)
         UITabBar.appearance().tintColor = UIColor.rosa
         UITabBar.appearance().unselectedItemTintColor = UIColor.azul
+        
         self.present(tabBar, animated: true, completion: nil)
         return
     }

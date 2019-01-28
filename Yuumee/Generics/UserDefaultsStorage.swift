@@ -55,7 +55,7 @@ extension UserDefaults {
     }
     
     func getUserId() -> String {
-        return string(forKey: UserDefaultKeys.userId.rawValue) ?? ""
+        return string(forKey: UserDefaultKeys.userId.rawValue) ?? "0"
     }
     
     func setFirstName(firstName: String) {
@@ -86,8 +86,8 @@ extension UserDefaults {
         set(tipo, forKey: UserDefaultKeys.tipo.rawValue)
     }
     
-    func getTipo() -> String {
-        return string(forKey: UserDefaultKeys.tipo.rawValue)!
+    func getTipo() -> String? {
+        return string(forKey: UserDefaultKeys.tipo.rawValue) ?? ""
     }
     
     

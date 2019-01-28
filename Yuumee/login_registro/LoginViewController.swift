@@ -73,7 +73,7 @@ class LoginViewController: BaseViewController {
         mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: tableView)
         mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: topContainer)
         mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: containerBottom)
-        mainView.addConstraintsWithFormat(format: "V:|-[v0(50)]-[v1]-[v2(45)]|",
+        mainView.addConstraintsWithFormat(format: "V:|-[v0(50)]-[v1]-[v2(45)]-|",
                                           views: topContainer, tableView, containerBottom)
     }
     
