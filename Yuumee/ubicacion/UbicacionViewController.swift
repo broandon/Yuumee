@@ -170,7 +170,7 @@ class UbicacionViewController: BaseViewController, UITextFieldDelegate {
         var imagePerfil: UIImage?
         // Usuario invitado
         if dataStorage.getTipo() == "" {
-            imagePerfil = UIImage(named: "chef_rosa")?.withRenderingMode(.alwaysTemplate)
+            imagePerfil = UIImage(named: "perfil")?.withRenderingMode(.alwaysTemplate)
         }
         // Anfitrion
         if dataStorage.getTipo() == String(TipoUsuario.anfitrion.rawValue) {
