@@ -21,12 +21,12 @@ class CategoriasViewController: BaseViewController {
     
     lazy var tableView: UITableView = {
         let tableView = UITableView()
-        tableView.delegate = self
+        tableView.delegate   = self
         tableView.dataSource = self
+        tableView.separatorStyle  = .none
+        tableView.backgroundColor = UIColor.white
         tableView.showsVerticalScrollIndicator = false
         tableView.register(UITableViewCell.classForCoder(), forCellReuseIdentifier: defaultReuseId)
-        tableView.separatorStyle = .none
-        tableView.backgroundColor = UIColor.white
         return tableView
     }()
     
@@ -43,9 +43,8 @@ class CategoriasViewController: BaseViewController {
         let random = UIButton(type: .custom)
         random.setImage( randomImage.image, for: .normal)
         random.tintColor = UIColor.rojo
-        random.layer.cornerRadius = 15
-        let insetsPadding = edgeInsets
-        random.imageEdgeInsets = insetsPadding
+        random.layer.cornerRadius = 15.0
+        random.imageEdgeInsets = edgeInsets
         random.addTarget(self, action: #selector(filtersEvent), for: .touchUpInside)
         return random
     }()
@@ -53,6 +52,14 @@ class CategoriasViewController: BaseViewController {
     @objc func filtersEvent(sender: UIButton) {
         self.navigationController?.dismiss(animated: true, completion: nil)
     }
+    
+    let date: UILabel = {
+        let date  = UILabel()
+        date.text = FormattedCurrentDate.getFormattedCurrentDate(date: Date(), format: "E, d MMM yyyy")
+        date.font = UIFont.boldSystemFont(ofSize: date.font.pointSize)
+        date.textAlignment = .center
+        return date
+    }()
     
     override func viewDidLoad() {
         
@@ -71,51 +78,18 @@ class CategoriasViewController: BaseViewController {
         // ---------------------------------------------------------------------
         mainView.addSubview(headerContent)
         mainView.addSubview(tableView)
-        
         mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: tableView)
         mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: headerContent)
         mainView.addConstraintsWithFormat(format: "V:|-[v0(44)][v1]|", views: headerContent, tableView)
         
-        /* Muestra modal de comidas extranjeras
-        let settingsImage = UIImageView(image: UIImage(named: "settings"))
-        settingsImage.contentMode = .scaleAspectFit
-        settingsImage.image = settingsImage.image?.withRenderingMode(.alwaysTemplate)
-        settingsImage.tintColor = .white
-        settings.setImage( settingsImage.image , for: .normal)
-        settings.backgroundColor = .rojo
-        settings.tintColor = .white
-        settings.layer.cornerRadius = 15
-        settings.addTarget(self, action: #selector(showFiltersCategories) , for: .touchUpInside)*/
         
-        /*
-        let randomImage = UIImageView(image: UIImage(named: "random"))
-        randomImage.contentMode = .scaleAspectFit
-        randomImage.image = randomImage.image?.withRenderingMode(.alwaysTemplate)
-        randomImage.tintColor = .white
-        let random = UIButton(type: .custom)
-        random.setImage( randomImage.image, for: .normal)
-        random.backgroundColor = .rojo
-        random.tintColor = .white
-        random.layer.cornerRadius = 15
-        */
-        
-        let date = UILabel()
-        date.textAlignment = .center
-        date.text = FormattedCurrentDate.getFormattedCurrentDate(date: Date(), format: "E, d MMM yyyy")
-        date.font = UIFont.boldSystemFont(ofSize: date.font.pointSize)
-        
-        //
         //headerContent.addSubview(settings)
+        //
         headerContent.addSubview(date)
         headerContent.addSubview(ubicacion)
-        //headerContent.addSubview(random)
         headerContent.addConstraintsWithFormat(format: "H:|-[v0(30)]-[v1]-|", views: ubicacion, date)
         headerContent.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: ubicacion)
         headerContent.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: date)
-        //headerContent.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: settings)
-        // ---------------------------------------------------------------------
-        
-        
         
         // ---------------------------------------------------------------------
         let headers: HTTPHeaders = [
@@ -123,10 +97,8 @@ class CategoriasViewController: BaseViewController {
             "Accept" : "application/json",
             "Content-Type" : "application/x-www-form-urlencoded"
         ]
-        
         let parameters: Parameters = ["funcion" : "getCategories",
                                       "id_user" : dataStorage.getUserId()] as [String: Any]
-        
         Alamofire.request(BaseURL.baseUrl() , method: .post, parameters: parameters,
                           encoding: ParameterQueryEncoding(),
                           headers: headers).responseJSON{ (response: DataResponse) in
@@ -244,9 +216,18 @@ extension CategoriasViewController: UITableViewDelegate, UITableViewDataSource {
         cell.centerView(superView: cell, container: categoriaNameLabel)
         
         if !categoria.imagen.isEmpty {
-            let url = URL(string: categoria.imagen)
-            backgroundImage.af_setImage(withURL: url!)
+            let urlImage = URL(string: categoria.imagen)
+            backgroundImage.af_setImage(withURL: urlImage!,
+                                        placeholderImage: UIImage(named: "placeholder"),
+                                        filter: nil,
+                                        progress: nil,
+                                        progressQueue: DispatchQueue.main,
+                                        imageTransition: .noTransition,
+                                        runImageTransitionIfCached: false) { (response) in }
         }
+        
+        
+        
         
         return cell
     }
@@ -278,13 +259,14 @@ extension CategoriasViewController: UITableViewDelegate, UITableViewDataSource {
     
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        /*
         let categoria = categorias[indexPath.section]
         let vc = DetalleListadoCategoriaViewController()
         vc.idCategoria = categoria.id
         let nav = UINavigationController(rootViewController: vc)
         self.present(nav, animated: true, completion: nil)
+        */
         //self.navigationController?.pushViewController(vc, animated: true)
-        
     }
     
     

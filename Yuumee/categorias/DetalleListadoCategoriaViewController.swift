@@ -33,9 +33,13 @@ class DetalleListadoCategoriaViewController: BaseViewController {
     
     var idCategoria: String = ""
     
+    
+    
     lazy var settings: UIButton = {
-        let button = UIButton(type: .system)
-        button.setImage(UIImage(named: "settings"), for: .normal)
+        let sizeStandarIcon: CGSize = CGSize(width: 24, height: 24)
+        let image: UIImage = (UIImage(named: "settings")?.imageResize(sizeChange: sizeStandarIcon))!
+        let button = UIButton(type: .custom)
+        button.setImage(image, for: .normal)
         button.addTarget(self, action: #selector(settingsTap), for: .touchUpInside)
         return button
     }()
@@ -45,13 +49,15 @@ class DetalleListadoCategoriaViewController: BaseViewController {
         // -------------------------------- Nav --------------------------------
         self.navigationController?.isNavigationBarHidden = false
         self.navigationController?.navigationBar.backItem?.title = "Regresar"
-        let backButton = UIBarButtonItem(title: "Regresar", style: .plain,
-                                         target: self, action: #selector(back))
-        //self.navigationItem.backBarButtonItem = backButton
+        let backButton = UIBarButtonItem(title: "Regresar", style: .plain, target: self, action: #selector(back))
+        
+        //
+        // Settings
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: settings)
         self.navigationItem.leftBarButtonItem = backButton
-        // ------------------------------- Datos -------------------------------
         
+        //
+        // ------------------------------- Datos -------------------------------
         mainView.addSubview(tableView)
         mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: tableView)
         mainView.addConstraintsWithFormat(format: "V:|-[v0]|", views: tableView)
@@ -59,26 +65,25 @@ class DetalleListadoCategoriaViewController: BaseViewController {
     }
     
     @objc func back() {
-        //self.navigationController?.popViewController(animated: true)
         self.dismiss(animated: true, completion: nil)
     }
     
     @objc func settingsTap(sender: UIButton) {
         let vc = SubCategoriasViewController()
         vc.idCategoria = self.idCategoria
-        let popVC = UINavigationController(rootViewController: vc)
+        let popVC      = UINavigationController(rootViewController: vc)
         popVC.modalPresentationStyle = .popover
-        let popOverVC = popVC.popoverPresentationController
-        popOverVC?.delegate = self
+        let popOverVC  = popVC.popoverPresentationController
+        popOverVC?.delegate   = self
         popOverVC?.sourceView = self.settings // self.button
-        popOverVC?.sourceRect = CGRect(x: self.settings.bounds.midX,
-                                       y: self.settings.bounds.minY,
-                                       width: 0, height: 0)
-        let widthModal = ScreenSize.screenWidth - 16
+        let midX: CGFloat = self.settings.bounds.midX
+        let midY: CGFloat = self.settings.bounds.minY
+        let sourceRect: CGRect = CGRect(x: midX, y: midY, width: 0, height: 0)
+        popOverVC?.sourceRect = sourceRect
+        let widthModal  = ScreenSize.screenWidth - 16
         let heightModal = ScreenSize.screenWidth
         popVC.preferredContentSize = CGSize(width: widthModal, height: heightModal)
         self.present(popVC, animated: true)
-        
     }
     
     
@@ -107,7 +112,6 @@ extension DetalleListadoCategoriaViewController: UITableViewDelegate, UITableVie
         let r = Restaurant(restaurant: [:])
         cell.setUpView(restaurant: r)
         cell.descripcion.textColor = UIColor.darkGray
-        cell.distanciaAprox.textColor = UIColor.darkGray
         cell.kms.textColor = UIColor.darkGray
         return cell
     }

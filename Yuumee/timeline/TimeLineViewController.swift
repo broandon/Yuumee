@@ -34,35 +34,33 @@ class TimeLineViewController: BaseViewController {
     }()
     
     
+    static private let insetsPadding: UIEdgeInsets = UIEdgeInsets(top: -44, left: -44, bottom: -44, right: -44)
+    
+    static private let sizeStandarIcon: CGSize = CGSize(width: 24, height: 24)
+    
+    static private let standarCornerRadius: CGFloat = 15.0
+    
     let settings: UIButton = {
-        let newSizeForSettings = CGSize(width: 24, height: 24)
-        let imageResized = UIImage(named: "settings")?.imageResize(sizeChange: newSizeForSettings)
+        let imageResized = UIImage(named: "settings")?.imageResize(sizeChange: sizeStandarIcon)
         let settingsImage = UIImageView(image: imageResized)
         settingsImage.contentMode = .scaleAspectFit
-        //settingsImage.image = settingsImage.image?.withRenderingMode(.alwaysTemplate)
-        //settingsImage.tintColor = .white
         let settings = UIButton(type: .custom)
         settings.setImage( settingsImage.image , for: .normal)
         settings.backgroundColor = .rosa
-        //settings.tintColor = .white
-        settings.layer.cornerRadius = 15
-        let insetsPadding = UIEdgeInsets(top: -44, left: -44, bottom: -44, right: -44)
+        settings.layer.cornerRadius = standarCornerRadius
         settings.imageEdgeInsets = insetsPadding
         settings.addTarget(self, action: #selector(settingsEvent), for: .touchUpInside)
         return settings
     }()
     
     let filters: UIButton = {
-        let edgeInsets = UIEdgeInsets(top: -44, left: -44, bottom: -44, right: -44)
-        let size = CGSize(width: 24, height: 24)
-        let image = UIImage(named: "ubicacion")?.imageResize(sizeChange: size)
+        let image = UIImage(named: "ubicacion")?.imageResize(sizeChange: sizeStandarIcon)
         let randomImage = UIImageView(image: image)
         randomImage.contentMode = .scaleAspectFit
         let random = UIButton(type: .custom)
-        random.setImage( randomImage.image, for: .normal)
+        random.setImage(randomImage.image, for: .normal)
         random.tintColor = UIColor.rojo
-        random.layer.cornerRadius = 15
-        let insetsPadding = edgeInsets
+        random.layer.cornerRadius = standarCornerRadius
         random.imageEdgeInsets = insetsPadding
         random.addTarget(self, action: #selector(filtersEvent), for: .touchUpInside)
         return random
@@ -71,8 +69,7 @@ class TimeLineViewController: BaseViewController {
     let currentDate: UILabel = {
         let date = UILabel()
         date.textAlignment = .center
-        date.text = FormattedCurrentDate.getFormattedCurrentDate(date: Date(),
-                                                                 format: "E, d MMM yyyy")
+        date.text = FormattedCurrentDate.getFormattedCurrentDate(date: Date(), format: "E, d MMM yyyy")
         date.font = UIFont.boldSystemFont(ofSize: date.font.pointSize)
         return date
     }()
@@ -112,7 +109,6 @@ class TimeLineViewController: BaseViewController {
         
         // ---------------------------------------------------------------------
         let headers: HTTPHeaders = [
-            // "Authorization": "Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==",
             "Accept" : "application/json",
             "Content-Type" : "application/x-www-form-urlencoded"
         ]
@@ -189,17 +185,17 @@ class TimeLineViewController: BaseViewController {
         let popVC = UINavigationController(rootViewController: vc)
         popVC.modalPresentationStyle = .popover
         let popOverVC = popVC.popoverPresentationController
-        popOverVC?.delegate = self
+        popOverVC?.delegate   = self
         popOverVC?.sourceView = sender // self.button
-        popOverVC?.sourceRect = CGRect(x: self.filters.bounds.midX,
-                                       y: self.filters.bounds.minY,
-                                       width: 0, height: 0)
-        let widthModal = ScreenSize.screenWidth - 16
+        let midX: CGFloat = self.filters.bounds.midX
+        let midY: CGFloat = self.filters.bounds.minY
+        let sourceRect: CGRect = CGRect(x: midX, y: midY, width: 0, height: 0)
+        popOverVC?.sourceRect  = sourceRect
+        let widthModal  = ScreenSize.screenWidth - 16
         let heightModal = ScreenSize.screenHeight - (ScreenSize.screenWidth * 0.6)
         popVC.preferredContentSize = CGSize(width: widthModal, height: heightModal)
         self.present(popVC, animated: true)
     }
-    
     
     
 }
@@ -231,27 +227,22 @@ extension TimeLineViewController: UITableViewDelegate, UITableViewDataSource {
         
     }
     
-    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         //let currentSection = indexPath.section
         //let currentRow = indexPath.row
         return 300.0 // UITableViewAutomaticDimension
     }
     
-    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         //let currentSection = indexPath.section
         //let currentRow = indexPath.row
         // let r = restaurants[currentRow]
-        
         let vc = PerfilUsuarioViewController()
         let nav = UINavigationController(rootViewController: vc)
         self.present(nav, animated: true, completion: nil)
         //self.navigationController?.pushViewController(vc, animated: true)
-        
     }
-    
     
     /*
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -268,65 +259,59 @@ class RestaurantCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
     }
-    
     required init?(coder aDecoder: NSCoder) {
         self.init()
     }
     
+    
     let restaurantImage: UIImageView = {
         let imageView = UIImageView()
-        //imageView.image = UIImage(named: "hamburger")
-        //imageView.contentMode = .scaleAspectFit
         return imageView
     }()
     
     let nombreRestaurant: UILabel = {
         let label = UILabel()
-        label.font = UIFont(name: label.font.fontName, size: 24)
         label.numberOfLines = 2
-        label.text = "FloriArte"
-        //label.textAlignment = .center
+        label.font = UIFont(name: label.font.fontName, size: 24)
         return label
     }()
     
     let descripcion: UILabel = {
         let label = UILabel()
         label.textColor = .rosa
-        //label.text = "Comida regional"
         return label
     }()
     
-    let distanciaAprox: UILabel = {
-        let label = UILabel()
-        label.textColor = .rosa
-        label.text = "Distancia proximada"
-        return label
+    
+    let distanciaAprox: UIImageView = {
+        let size: CGSize   = CGSize(width: 24.0, height: 24.0)
+        let image: UIImage = (UIImage(named: "ubicacion")?.imageResize(sizeChange: size))!
+        let imageView   = UIImageView()
+        imageView.image = image
+        imageView.contentMode = .scaleAspectFit
+        return imageView
     }()
     
     let costo: UILabel = {
         let label = UILabel()
         label.textColor = .rosa
-        label.text = "$ 200"
         return label
     }()
     
     let kms: UILabel = {
         let label = UILabel()
         label.textColor = .rosa
-        label.text = "15 Km"
         return label
     }()
     
     
     func setUpView(restaurant: Restaurant) {
-        
         addSubview(restaurantImage)
         addSubview(nombreRestaurant)
         addSubview(descripcion)
         addSubview(distanciaAprox)
         addSubview(costo)
         addSubview(kms)
-        
         addConstraintsWithFormat(format: "H:|-[v0]-|", views: restaurantImage)
         addConstraintsWithFormat(format: "H:|-[v0]-|", views: nombreRestaurant)
         addConstraintsWithFormat(format: "H:|-[v0]", views: descripcion)
@@ -337,19 +322,21 @@ class RestaurantCell: UITableViewCell {
                                  views: restaurantImage, nombreRestaurant, descripcion, costo)
         addConstraintsWithFormat(format: "V:|[v0(200)]-[v1]-[v2]-[v3]",
                                  views: restaurantImage, nombreRestaurant, distanciaAprox, kms)
-        
-        
         nombreRestaurant.text = restaurant.titulo
+        descripcion.text      = restaurant.anfitrion
+        costo.text            = restaurant.costo
+        kms.text              = restaurant.distancia
         
-        kms.text = restaurant.distancia
-        
-        costo.text = restaurant.costo
-        
-        descripcion.text = restaurant.anfitrion
         
         if !restaurant.imagen.isEmpty {
             let urlImage = URL(string: restaurant.imagen)
-            restaurantImage.af_setImage(withURL: urlImage!)
+            restaurantImage.af_setImage(withURL: urlImage!,
+                                        placeholderImage: UIImage(named: "placeholder"),
+                                        filter: nil,
+                                        progress: nil,
+                                        progressQueue: DispatchQueue.main,
+                                        imageTransition: .noTransition,
+                                        runImageTransitionIfCached: false) { (response) in }
         }
     }
     

@@ -119,6 +119,57 @@ class MisDatosViewController: BaseViewController, UITableViewDelegate, UITableVi
     }
     
     
+    @objc func updateDatos() {
+        let nameImage         = lastImagedownloaded.lastPathComponent
+        let nameToUpdate      = nombre.text!
+        let telephoneToUpdate = telefono.text!
+        let apellidosToUpdate = apellidos.text!
+        let headers: HTTPHeaders = ["Accept": "application/json",
+                                    "Content-Type" : "application/x-www-form-urlencoded"]
+        let parameters: Parameters = ["funcion"    : "updateUser",
+                                      "id_user"    : idDownloaded,
+                                      "first_name" : nameToUpdate,
+                                      "last_name"  : apellidosToUpdate,
+                                      "phone"      : telephoneToUpdate,
+                                      "image"      : nameImage] as [String: Any]
+        Alamofire.request(BaseURL.baseUrl(), method: .post, parameters: parameters, encoding: ParameterQueryEncoding(), headers: headers).responseJSON
+            { (response: DataResponse) in
+                switch(response.result) {
+                case .success(let value):
+                    if let result = value as? Dictionary<String, Any> {
+                        
+                        let statusMsg = result["status_msg"] as? String
+                        let state     = result["state"] as? String
+                        
+                        if statusMsg == "OK" && state == "200" {
+                            let alert = UIAlertController(title: "Información actualizada.", message: "",
+                                                          preferredStyle: UIAlertController.Style.alert)
+                            alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default,
+                                                          handler: nil))
+                            self.present(alert, animated: true, completion: nil)
+                            return;
+                        }
+                        else{
+                            let alert = UIAlertController(title: "Ocurrió un error al realizar la petición.",
+                                                          message: "\(statusMsg!)",
+                                                          preferredStyle: UIAlertController.Style.alert)
+                            alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+                            self.present(alert, animated: true, completion: nil)
+                            return;
+                        }
+                    }
+                    //completionHandler(value as? NSDictionary, nil)
+                    break
+                case .failure(let error):
+                    //completionHandler(nil, error as NSError?)
+                    //print(" error:  ")
+                    //print(error)
+                    break
+                }
+        }
+        
+    }
+    
     @objc func actualizarDatos(newImage: String = "") {
         let nameImage         = newImage.isEmpty ? lastImagedownloaded.lastPathComponent : newImage
         let nameToUpdate      = nombre.text!
@@ -188,7 +239,7 @@ class MisDatosViewController: BaseViewController, UITableViewDelegate, UITableVi
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: defaultReuseID, for: indexPath)
-        cell.selectionStyle = .none
+        cell.selectionStyle  = .none
         cell.backgroundColor = .clear
         let seccion = secciones[indexPath.row]
         
@@ -201,12 +252,10 @@ class MisDatosViewController: BaseViewController, UITableViewDelegate, UITableVi
             imageViewAvatar.clipsToBounds = true
             cell.addSubview(imageViewAvatar)
             cell.centerInView(superView: cell, container: imageViewAvatar, sizeV: 70.0, sizeH: 70.0)
-            
             imageViewAvatar.isUserInteractionEnabled = true
-            let tapGest = UITapGestureRecognizer(target: self, action: #selector(pickPhotoByAlbum) )
+            let tapGest = UITapGestureRecognizer(target: self, action: #selector(pickPhotoByAlbum))
             tapGest.numberOfTapsRequired = 1
             imageViewAvatar.addGestureRecognizer(tapGest)
-            
             return cell
         }
         
@@ -215,7 +264,6 @@ class MisDatosViewController: BaseViewController, UITableViewDelegate, UITableVi
             nombre.addBottomBorder()
             nombre.font = UIFont.init(name: "MyriadPro-Bold", size: (nombre.font?.pointSize)!)
             nombre.textColor = UIColor.gray
-            //nombre.text = "Jose Gutierrez Gutierrez"
             nombre.returnKeyType = .done
             cell.addSubview(nombre)
             cell.centerInView(superView: cell, container: nombre, sizeV: 40, sizeH: 250)
@@ -226,7 +274,6 @@ class MisDatosViewController: BaseViewController, UITableViewDelegate, UITableVi
             apellidos.addBottomBorder()
             apellidos.font = UIFont.init(name: "MyriadPro-Bold", size: (apellidos.font?.pointSize)!)
             apellidos.textColor = UIColor.gray
-            //apellidos.text = "Jose Gutierrez Gutierrez"
             apellidos.returnKeyType = .done
             cell.addSubview(apellidos)
             cell.centerInView(superView: cell, container: apellidos, sizeV: 40, sizeH: 250)
@@ -237,7 +284,6 @@ class MisDatosViewController: BaseViewController, UITableViewDelegate, UITableVi
             telefono.addBottomBorder()
             telefono.font = UIFont.init(name: "MyriadPro-Bold", size: (telefono.font?.pointSize)!)
             telefono.textColor = UIColor.gray
-            //telefono.text = "222 222 22 22"
             telefono.returnKeyType = .done
             telefono.keyboardType = .numberPad
             cell.addSubview(telefono)
@@ -249,26 +295,12 @@ class MisDatosViewController: BaseViewController, UITableViewDelegate, UITableVi
             guardar.clipsToBounds = true
             guardar.setTitle("Guardar", for: .normal)
             guardar.backgroundColor = UIColor.lightGray
-            guardar.addTarget(self, action: #selector(actualizarDatos) , for: .touchUpInside)
+            guardar.addTarget(self, action: #selector(updateDatos) , for: .touchUpInside)
             guardar.setTitleColor(UIColor.white, for: .normal)
             guardar.layer.cornerRadius = 15
             cell.addSubview(guardar)
             cell.centerInView(superView: cell, container: guardar, sizeV: 40, sizeH: 100)
         }
-        
-        /*if seccion == "email" {
-            email.delegate = self
-            email.addBottomBorder()
-            email.font = UIFont.init(name: "MyriadPro-Bold", size: (email.font?.pointSize)!)
-            email.textColor = UIColor.gray
-            //email.text = "test@mail.com"
-            email.keyboardType = .emailAddress
-            email.autocapitalizationType = .none
-            email.returnKeyType = .done
-            cell.addSubview(email)
-            cell.centerInView(superView: cell, container: email, sizeV: 40, sizeH: 250)
-        }*/
-        
         
         return cell
     }
@@ -331,25 +363,22 @@ class MisDatosViewController: BaseViewController, UITableViewDelegate, UITableVi
     
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        
         self.imagePicker.dismiss(animated: true, completion: nil)
         
         if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
             
-            self.imageViewAvatar.image = image
+            self.imageViewAvatar.image       = image
             self.imageViewAvatar.contentMode = .scaleAspectFill
             
+            // -----------------------------------------------------------------
             let headers: HTTPHeaders = [
                 "Content-type": "multipart/form-data"
             ]
-            
             Alamofire.upload(
                 multipartFormData: { MultipartFormData in
-                    
                     MultipartFormData.append("uploadImage".data(using: String.Encoding.utf8)!, withName: "funcion")
                     let imgString = self.convertImageToBase64(image: image)
                     MultipartFormData.append(imgString.data(using: String.Encoding.utf8)!, withName: "image")
-                    
                     //MultipartFormData.append(UIImagePNGRepresentation(pickedImage)! , withName: "image", fileName: lastPathComponent, mimeType: "image/png")
                     //MultipartFormData.append(UIImageJPEGRepresentation(pickedImage, 1)!, withName: "image", fileName: lastPathComponent, mimeType: mime)
             }, to: BaseURL.baseUrl(), method: .post, headers: headers) { (result) in
@@ -361,61 +390,38 @@ class MisDatosViewController: BaseViewController, UITableViewDelegate, UITableVi
                         //print(response.result.value)
                         
                         if let resultUpload = response.result.value as! Dictionary<String, Any>? {
-                            
                             if let state = resultUpload["state"] as! String? {
                                 if state == "200" {
-                                    
                                     if let imageInfo = resultUpload["data"] as! Dictionary<String, Any>? {
-                                        
                                         let nombreImagen = imageInfo["image_name"]
-                                        
                                         DispatchQueue.main.async {
                                             self.actualizarDatos(newImage: nombreImagen as! String)
                                         }
-                                        
-                                        /*
-                                        self.params["image"] = nombreImagen!
-                                        let atributtes = [NSAttributedString.Key.foregroundColor: .gray,
-                                                          NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)]
-                                        self.adjuntarImagen.attributedPlaceholder = NSAttributedString(string: "Imagen lista!", attributes: atributtes)
-                                        */
-                                        
                                     }
-                                    
                                 }
                             }
                         }
                         else {
-                            
-                            /*let atributtes = [NSAttributedString.Key.foregroundColor: .gray,
-                                              NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)]
-                            self.adjuntarImagen.attributedPlaceholder = NSAttributedString(string: StringConstants.adjuntarImagen, attributes: atributtes)*/
-                            
-                            print("Ocurrio un error al procesar la imagen.")
-                            //Utils.showSimpleAlert(message: "Ocurrio un error al procesar la imagen.", context: self, success: nil)
+                            // print("Ocurrio un error al procesar la imagen.")
+                            Utils.showSimpleAlert(message: "Ocurrio un error al procesar la imagen.", context: self, success: nil)
                             return
-                        }
-                        
+                            }
                         }.uploadProgress { progress in // main queue by default
                             //self.img1Progress.alpha = 1.0
                             //self.img1Progress.progress = Float(progress.fractionCompleted)
                             // print("Upload Progress: \(progress.fractionCompleted)")
-                            
-                            /*
-                            let atributtes = [NSAttributedString.Key.foregroundColor: .gray ,
+                            /*let atributtes = [NSAttributedString.Key.foregroundColor: .gray ,
                                               NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)]
-                            self.adjuntarImagen.attributedPlaceholder = NSAttributedString(string: "Subiendo...", attributes: atributtes)
-                            */
-                            
+                            self.adjuntarImagen.attributedPlaceholder = NSAttributedString(string: "Subiendo...", attributes: atributtes)*/
                     }
                 case .failure(let encodingError):
-                    print(encodingError)
-                    //Utils.showSimpleAlert(message: encodingError as! String, context: self, success: nil)
+                    // print(encodingError)
+                    Utils.showSimpleAlert(message: encodingError as! String, context: self, success: nil)
                     break
                 }
                 
             }
-            
+            // -----------------------------------------------------------------
             
             
         }
@@ -424,16 +430,11 @@ class MisDatosViewController: BaseViewController, UITableViewDelegate, UITableVi
     
     //
     // Convert String to base64
-    //
     func convertImageToBase64(image: UIImage) -> String {
-        //let imageData = UIImage.jpegData(compressionQuality: image) // UIImageJPEGRepresentation(image, 1.0) // (image)!
-        //return imageData!.base64EncodedString(options: Data.Base64EncodingOptions.lineLength64Characters)
-        
-        let imageData = image.jpegData(compressionQuality: 0.0)
+        let imageData    = image.jpegData(compressionQuality: 0.0)
         let base64String = imageData?.base64EncodedString(options: .lineLength64Characters) //base64EncodedStringWithOptions(.allZeros
         return base64String!
     }
-    
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated:  true, completion: nil)
@@ -442,7 +443,7 @@ class MisDatosViewController: BaseViewController, UITableViewDelegate, UITableVi
     
 }
 
-
+/*
 extension UIImage {
     
     /// EZSE: Returns base64 string
@@ -450,5 +451,4 @@ extension UIImage {
         return self.jpegData(compressionQuality: 1.0)!.base64EncodedString()
     }
 }
-
-
+*/
