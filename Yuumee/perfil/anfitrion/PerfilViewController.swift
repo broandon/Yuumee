@@ -182,6 +182,7 @@ extension PerfilViewController: UITableViewDelegate, UITableViewDataSource {
             let refreshAlert = UIAlertController(title: "Cerrar Sesión",
                                                  message: "¿Realmete desea cerrarsu sesión?",
                                                  preferredStyle: UIAlertController.Style.alert)
+            
             refreshAlert.addAction(UIAlertAction(title: "Aceptar", style: .default,
                                                  handler: { (action: UIAlertAction!) in
                                                     

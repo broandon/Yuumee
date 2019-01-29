@@ -53,6 +53,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.dataStorage.setLoggedInFacebook(value: false)
         self.dataStorage.setAvatarFacebook(userId: "") */
         
+        print(" self.dataStorage.isLoggedIn() ")
+        print(self.dataStorage.isLoggedIn())
+        
         if self.dataStorage.isLoggedIn() {
             UINavigationBar.appearance().barTintColor = .rosa
             UINavigationBar.appearance().tintColor = .white

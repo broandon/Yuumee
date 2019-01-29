@@ -33,6 +33,9 @@ enum UserDefaultKeys: String {
     case lastImageSelected
     case lastTitle
     
+    case urlAvatar
+    case urlPortada
+    
 }
 
 // -----------------------------------------------------------------------------
@@ -176,6 +179,16 @@ extension UserDefaults {
     }
     
     
+    // IMAGEN DE PERFIL DEL ANFITRION
+    //           AVATAR
+    //
+    func setUrlAvatar(url: String) {
+        set(url, forKey: UserDefaultKeys.urlAvatar.rawValue)
+    }
+    func getUrlAvatar() -> String? {
+        return string(forKey: UserDefaultKeys.urlAvatar.rawValue) ?? ""
+    }
+    
     
     
     // Latitud
@@ -196,6 +209,7 @@ extension UserDefaults {
     
     
     
+    
     // -------------------------------------------------------------------------
     //                  F A C E B O O K
     // -------------------------------------------------------------------------
@@ -212,6 +226,7 @@ extension UserDefaults {
         return string(forKey: UserDefaultKeys.avatarFacebook.rawValue)!
     }
     // -------------------------------------------------------------------------
+    
     
     
     

@@ -21,19 +21,24 @@ class InformacionAnfitrionCell: UITableViewCell {
     
     var reference: UIViewController!
     
-    var avatar: UIImageView = {
+    lazy var avatar: UIImageView = {
+        let tapGesture = UITapGestureRecognizer(target: self,
+                                                action: #selector(adNewImageFromAvatar))
+        tapGesture.numberOfTapsRequired = 1
         let imageView = UIImageView()
-        imageView.addBorder(borderColor: UIColor.rosa, widthBorder: 1)
-        imageView.isUserInteractionEnabled = true
         imageView.clipsToBounds = true
+        imageView.isUserInteractionEnabled = true
+        imageView.addGestureRecognizer(tapGesture)
+        imageView.addBorder(borderColor: UIColor.rosa, widthBorder: 1)
         return imageView
     }()
     
-    var addCamera: UIButton = {
+    lazy var addCamera: UIButton = {
         let image        = UIImage(named: "camera")
         let button       = UIButton(type: .system)
         button.tintColor = UIColor.rosa.withAlphaComponent(0.5)
         button.setImage(image, for: .normal)
+        button.addTarget(self, action: #selector(adNewImageFromCamara) , for: .touchUpInside)
         return button
     }()
     
@@ -59,18 +64,36 @@ class InformacionAnfitrionCell: UITableViewCell {
     var profesion: UITextField!
     var idiomas: UITextField!
     var serviciosExtra: UITextField!
-    let descripcion = UITextView()
+    let descripcionInput = UITextView()
     
-     var edadLbl: ArchiaRegularLabel!
-     var direccionLbl: ArchiaRegularLabel!
-     var emailLbl: ArchiaRegularLabel!
-     var telefonoLbl: ArchiaRegularLabel!
-     var profesionLbl: ArchiaRegularLabel!
-     var idiomasLbl: ArchiaRegularLabel!
-     var serviciosExtraLbl: ArchiaRegularLabel!
+    var edadLbl: ArchiaRegularLabel!
+    var direccionLbl: ArchiaRegularLabel!
+    var emailLbl: ArchiaRegularLabel!
+    var telefonoLbl: ArchiaRegularLabel!
+    var profesionLbl: ArchiaRegularLabel!
+    var idiomasLbl: ArchiaRegularLabel!
+    var serviciosExtraLbl: ArchiaRegularLabel!
     
     
-    var espacioDegustarLbl: ArchiaRegularLabel!
+    lazy var espacioDegustarLbl: ArchiaRegularLabel = {
+        let tapGesture = UITapGestureRecognizer(target: self,
+                                                action: #selector(espacioParaDegustarEvent))
+        tapGesture.numberOfTapsRequired = 1
+        let label = ArchiaRegularLabel()
+        label.text = "Espacio para degustar"
+        label.textColor = UIColor.darkGray
+        label.font = UIFont.init(name: "ArchiaRegular", size: label.font.pointSize)
+        label.isUserInteractionEnabled = true
+        label.addGestureRecognizer(tapGesture)
+        return label
+    }()
+    
+    
+    let descripcionAnfitrion: ArchiaBoldLabel = {
+        let desc  = ArchiaBoldLabel()
+        desc.text = "Descripción:"
+        return desc
+    }()
     
     func getTextFieldForInfo(placeHolder: String = "") -> UITextField {
         let textField = UITextField()
@@ -81,7 +104,7 @@ class InformacionAnfitrionCell: UITableViewCell {
     }
     
     func getLabelForInfo(text: String = "") -> ArchiaRegularLabel {
-        let label = ArchiaRegularLabel()
+        let label  = ArchiaRegularLabel()
         label.text = text
         label.textColor = UIColor.darkGray
         label.font = UIFont.init(name: "ArchiaRegular",
@@ -89,35 +112,33 @@ class InformacionAnfitrionCell: UITableViewCell {
         return label
     }
     
-     /*func getContentRowForInfo() -> UIView {
-     let view = UIView()
-     return view
-     }*/
-    
-    let guardarPerfil: UIButton = {
+    lazy var guardarPerfil: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Guardar perfil", for: .normal)
         button.titleLabel?.font = UIFont(name: "ArchiaRegular", size: (button.titleLabel?.font.pointSize)!)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: (button.titleLabel?.font.pointSize)!)
         button.backgroundColor = UIColor.verde
         button.setTitleColor(UIColor.black.withAlphaComponent(0.7), for: .normal)
+        button.addTarget(self, action: #selector(guardarPerfilEvent), for: .touchUpInside)
         return button
     }()
     
-    let agregarEvento: UIButton = {
+    lazy var agregarEvento: UIButton = {
         let size   = CGSize(width: 15, height: 15)
         let image  = UIImage(named: "add")?.imageResize(sizeChange: size)
+        let insets = UIEdgeInsets(top: 0, left: -10, bottom: 0, right: 10)
         let button = UIButton(type: .system)
         button.titleLabel?.font   = UIFont(name: "ArchiaRegular", size: (button.titleLabel?.font.pointSize)!)
         button.titleLabel?.font   = UIFont.boldSystemFont(ofSize: (button.titleLabel?.font.pointSize)!)
         button.backgroundColor    = UIColor.gris
         button.layer.cornerRadius = 5
+        button.tintColor          = UIColor.rosa
+        button.imageEdgeInsets    = insets
         button.setTitle("Agregar evento", for: .normal)
         button.setImage(image, for: .normal)
         button.addBorder(borderColor: .gray, widthBorder: 1)
         button.setTitleColor(UIColor.rosa, for: .normal)
-        button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -10, bottom: 0, right: 10)
-        button.tintColor = UIColor.rosa
+        button.addTarget(self, action: #selector(addEvento) , for: .touchUpInside)
         return button
     }()
     
@@ -126,9 +147,15 @@ class InformacionAnfitrionCell: UITableViewCell {
         let button = UIButton(type: .system)
         button.tintColor = .darkGray
         button.setImage(image, for: .normal)
+        //button.addTarget(self, action: #selector(espacioParaDegustarEvent), for: .touchUpInside)
         return button
     }()
     
+    let dataStorage = UserDefaults.standard
+    
+    // var imagenPortada: URL!
+    var urlPortada: URL!
+    var urlAvatar: URL!
     
     func setUpView(info: Dictionary<String, AnyObject> = [:]) {
         backgroundColor = UIColor.gris
@@ -150,7 +177,6 @@ class InformacionAnfitrionCell: UITableViewCell {
         addConstraintsWithFormat(format: "V:|-[v0(270)]-[v1(100)]-16-[v2(30)]-16-[v3(30)]",
                                  views: contentInfo, contentDescription, guardarPerfil, agregarEvento)
         // ---------------------------------------------------------------------
-        /* let id              = info["id"] as? String */
         
         // Info
         //imagenPortada = (info["imagen_portada"] as? String)!
@@ -191,14 +217,14 @@ class InformacionAnfitrionCell: UITableViewCell {
         serviciosExtra.delegate = self
         serviciosExtra.text = info["servicios_extra"] as? String
         
-        serviciosExtraLbl  = getLabelForInfo(text: "Servicios extra:")
-        espacioDegustarLbl = getLabelForInfo(text: "Espacio para degustar")
+        
         edadLbl      = getLabelForInfo(text: "Edad:")
         direccionLbl = getLabelForInfo(text: "Dirección:")
         emailLbl     = getLabelForInfo(text: "E-mail:")
         telefonoLbl  = getLabelForInfo(text: "Télefono:")
         profesionLbl = getLabelForInfo(text: "Profesión:")
         idiomasLbl   = getLabelForInfo(text: "Idiomas:")
+        serviciosExtraLbl = getLabelForInfo(text: "Servicios extra:")
         
         // UITextField
         contentInfo.addSubview(nombre)
@@ -211,7 +237,6 @@ class InformacionAnfitrionCell: UITableViewCell {
         contentInfo.addSubview(idiomas)
         contentInfo.addSubview(serviciosExtra)
         contentInfo.addSubview(rightArrow)
-        
         // Labels
         contentInfo.addSubview(edadLbl)
         contentInfo.addSubview(direccionLbl)
@@ -236,62 +261,45 @@ class InformacionAnfitrionCell: UITableViewCell {
         contentInfo.addConstraintsWithFormat(format: "V:|[v0]-[v1]-[v2]-[v3]-[v4]-[v5]-[v6]-[v7]-[v8]",
                                              views: nombre, edadLbl, direccionLbl, emailLbl, telefonoLbl, profesionLbl, idiomasLbl, espacioDegustarLbl, serviciosExtraLbl)
         
-        // button.addTarget(self, action: #selector(espacioParaDegustarEvent), for: .touchUpInside)
+        descripcionInput.addBorder(borderColor: .gray, widthBorder: 1)
+        descripcionInput.delegate = self
+        descripcionInput.text = info["descripcion"] as? String
         
-        espacioDegustarLbl.isUserInteractionEnabled = true
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(espacioParaDegustarEvent))
-        tapGesture.numberOfTapsRequired = 1
-        espacioDegustarLbl.addGestureRecognizer(tapGesture)
+        contentDescription.addSubview(descripcionAnfitrion)
+        contentDescription.addSubview(descripcionInput)
+        contentDescription.addConstraintsWithFormat(format: "H:|-[v0]-|",
+                                                    views: descripcionAnfitrion)
+        contentDescription.addConstraintsWithFormat(format: "H:|-[v0]-|",
+                                                    views: descripcionInput)
+        contentDescription.addConstraintsWithFormat(format: "V:|-[v0(25)]-[v1]|",
+                                                    views: descripcionAnfitrion, descripcionInput)
         
-        
-        rightArrow.addTarget(self, action: #selector(espacioParaDegustarEvent), for: .touchUpInside)
-        
-        // Descripcion
-        let desc = ArchiaBoldLabel()
-        desc.text = "Descripción:"
-        
-        descripcion.addBorder(borderColor: .gray, widthBorder: 1)
-        descripcion.delegate = self
-        descripcion.text = info["descripcion"] as? String
-        
-        contentDescription.addSubview(desc)
-        contentDescription.addSubview(descripcion)
-        contentDescription.addConstraintsWithFormat(format: "H:|-[v0]-|", views: desc)
-        contentDescription.addConstraintsWithFormat(format: "H:|-[v0]-|", views: descripcion)
-        contentDescription.addConstraintsWithFormat(format: "V:|-[v0(25)]-[v1]|", views: desc, descripcion)
-        
-        // add Button - Avatar
+        // MARK: Avatar
         avatar.layer.cornerRadius = sizeAvatar * 0.5
-        avatar.addSubview(addCamera)
-        avatar.addConstraintsWithFormat(format: "H:|-[v0]-|", views: addCamera)
-        avatar.addConstraintsWithFormat(format: "V:|-[v0]-|", views: addCamera)
-        
         let imagen = (info["imagen"] as? String) ?? ""
         if !(imagen.isEmpty) {
-            /*for v in avatar.subviews {
-                v.removeFromSuperview()
-            }*/
             urlAvatar = URL(string: imagen)
             avatar.af_setImage(withURL: urlAvatar!)
         }
-        
-        let portada = (info["imagen_portada"] as? String) ?? ""
-        if !portada.isEmpty {
-            imagenPortada = URL(string: portada)
+        else{
+            avatar.centerInView(superView: avatar, container: addCamera,
+                                sizeV: 50, sizeH: 50)
         }
         
-        addCamera.addTarget(self, action: #selector(adNewImage) , for: .touchUpInside)
-        agregarEvento.addTarget(self, action: #selector(addEvento) , for: .touchUpInside)
-        guardarPerfil.addTarget(self, action: #selector(guardarPerfilEvent), for: .touchUpInside)
+        // MARK: Portada
+        let portada = (info["imagen_portada"] as? String) ?? ""
+        if !portada.isEmpty {
+            urlPortada = URL(string: portada)
+        }
+        
     }
     
     
-    let dataStorage = UserDefaults.standard
     
-    var imagenPortada: URL!
-    
-    var urlAvatar: URL!
-    
+    /**
+     * Guarda solo la informacion del usuario. No las Imagenes
+     *
+     */
     @objc func guardarPerfilEvent() {
         let userId = dataStorage.getUserId()
         let headers: HTTPHeaders = ["Accept": "application/json",
@@ -301,14 +309,14 @@ class InformacionAnfitrionCell: UITableViewCell {
                                     "first_name" : nombre.text!,
                                     "last_name"  : apellidos.text!,
                                     "image"      : urlAvatar.lastPathComponent,
-                                    "image_page" : imagenPortada.lastPathComponent,
+                                    "image_page" : urlPortada.lastPathComponent,
                                     "age"        : edad.text!,
                                     "address"    : direccion.text!,
                                     "phone"      : telefono.text!,
                                     "profession" : profesion.text!,
                                     "languages"  : idiomas.text!,
                                     "services"   : serviciosExtra.text!,
-                                    "description": descripcion.text!] as [String: Any]
+                                    "description": descripcionInput.text!] as [String: Any]
         Alamofire.request(BaseURL.baseUrl(), method: .post, parameters: parameters, encoding: ParameterQueryEncoding(), headers: headers).responseJSON
             { (response: DataResponse) in
                 switch(response.result) {
@@ -317,26 +325,23 @@ class InformacionAnfitrionCell: UITableViewCell {
                         let statusMsg = result["status_msg"] as? String
                         let state     = result["state"] as? String
                         if statusMsg == "OK" && state == "200" {
-                            let alert = UIAlertController(title: "Información actualizada.",
-                                                          message: "",
-                                                          preferredStyle: UIAlertController.Style.alert)
-                            alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
-                            self.reference.present(alert, animated: true, completion: nil)
+                            Utils.showSimpleAlert(message: "Información actualizada.",
+                                                  context: self.reference,success: nil)
                             return;
+                            
                         }
                         else{
-                            let alert = UIAlertController(title: "Ocurrió un error al realizar la petición.", message: "\(statusMsg!)", preferredStyle: UIAlertController.Style.alert)
-                            alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
-                            self.reference.present(alert, animated: true, completion: nil)
+                            Utils.showSimpleAlert(message: "Ocurrió un error al realizar la petición.",
+                                                  context: self.reference, success: nil)
                             return;
                         }
                     }
-                    //completionHandler(value as? NSDictionary, nil)
                     break
                 case .failure(let error):
                     //completionHandler(nil, error as NSError?)
                     //print(" error:  ")
                     //print(error)
+                    Utils.showSimpleAlert(message: "\(error.localizedDescription)", context: self.reference, success: nil)
                     break
                 }
         }
@@ -351,23 +356,31 @@ class InformacionAnfitrionCell: UITableViewCell {
         return imagePicker
     }()
     
-    @objc func adNewImage() {
+    @objc func adNewImageFromCamara() {
+        openGallery()
+    }
+    
+    @objc func adNewImageFromAvatar() {
+        openGallery()
+    }
+    
+    func openGallery() {
         imagePicker.allowsEditing = false
         imagePicker.sourceType = .photoLibrary
         reference.present(imagePicker, animated: true, completion: nil)
     }
+    
+    
     
     @objc func addEvento() {
         let vc = EventoAnfitrionViewController()
         self.reference.navigationController?.pushViewController(vc, animated: true)
     }
     
-    
     @objc func espacioParaDegustarEvent() {
         let vc = EspaciosDegustarViewController()
         self.reference.navigationController?.pushViewController(vc, animated: true)
     }
-    
     
     
 } // InformacionAnfitrionCell
@@ -411,7 +424,6 @@ extension InformacionAnfitrionCell: UIImagePickerControllerDelegate, UINavigatio
             ]
             Alamofire.upload(
                 multipartFormData: { MultipartFormData in
-                    
                     MultipartFormData.append("uploadImage".data(using: String.Encoding.utf8)!, withName: "funcion")
                     let imgString = self.convertImageToBase64(image: image)
                     MultipartFormData.append(imgString.data(using: String.Encoding.utf8)!, withName: "image")
@@ -426,12 +438,10 @@ extension InformacionAnfitrionCell: UIImagePickerControllerDelegate, UINavigatio
                             if let state = resultUpload["state"] as! String? {
                                 if state == "200" {
                                     if let imageInfo = resultUpload["data"] as! Dictionary<String, Any>? {
-                                        let nombreImagen = imageInfo["image_name"]
-                                        
+                                        let nombreImagen = imageInfo["image_name"] as! String
                                         DispatchQueue.main.async {
-                                            self.actualizarDatos(newImage: nombreImagen as! String)
+                                            self.actualizarDatos(newImage: nombreImagen)
                                         }
-                                        
                                     }
                                 }
                             }
@@ -440,8 +450,8 @@ extension InformacionAnfitrionCell: UIImagePickerControllerDelegate, UINavigatio
                             /*let atributtes = [NSAttributedString.Key.foregroundColor: .gray,
                              NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)]
                              self.adjuntarImagen.attributedPlaceholder = NSAttributedString(string: StringConstants.adjuntarImagen, attributes: atributtes)*/
-                            print("Ocurrio un error al procesar la imagen.")
-                            Utils.showSimpleAlert(message: "Ocurrio un error al procesar la imagen.", context: self.reference, success: nil)
+                            Utils.showSimpleAlert(message: "Ocurrio un error al procesar la imagen.",
+                                                  context: self.reference, success: nil)
                             return
                         }
                         }.uploadProgress { progress in // main queue by default
@@ -456,39 +466,45 @@ extension InformacionAnfitrionCell: UIImagePickerControllerDelegate, UINavigatio
                     }
                 case .failure(let encodingError):
                     //print(encodingError)
-                    Utils.showSimpleAlert(message: encodingError as! String, context: self.reference, success: nil)
+                    Utils.showSimpleAlert(message: "\(encodingError)", context: self.reference, success: nil)
                     break
                 }
             }
         }
-    }
+        
+    } // didFinishPickingMediaWithInfo
     
     
+    /**
+     *
+     *
+     */
     @objc func actualizarDatos(newImage: String = "") {
         
         if urlAvatar == nil {
             return;
         }
         
-        let userId = dataStorage.getUserId()
-        
-        let headers: HTTPHeaders = ["Accept": "application/json",
-                                    "Content-Type" : "application/x-www-form-urlencoded"]
+        if newImage.isEmpty {
+            return;
+        }
         
         let parameters: Parameters=["funcion"    : "updateUserAmphitryon",
-                                    "id_user"    : userId,
+                                    "id_user"    : dataStorage.getUserId(),
                                     "first_name" : nombre.text!,
                                     "last_name"  : apellidos.text!,
                                     "image"      : newImage,
-                                    "image_page" : imagenPortada.lastPathComponent,
+                                    "image_page" : urlPortada.lastPathComponent,
                                     "age"        : edad.text!,
                                     "address"    : direccion.text!,
                                     "phone"      : telefono.text!,
                                     "profession" : profesion.text!,
                                     "languages"  : idiomas.text!,
                                     "services"   : serviciosExtra.text!,
-                                    "description": descripcion.text!] as [String: Any]
+                                    "description": descripcionInput.text!] as [String: Any]
         
+        let headers: HTTPHeaders = ["Accept": "application/json",
+                                    "Content-Type" : "application/x-www-form-urlencoded"]
         Alamofire.request(BaseURL.baseUrl(), method: .post, parameters: parameters, encoding: ParameterQueryEncoding(), headers: headers).responseJSON
             { (response: DataResponse) in
                 switch(response.result) {
@@ -497,19 +513,13 @@ extension InformacionAnfitrionCell: UIImagePickerControllerDelegate, UINavigatio
                         let statusMsg = result["status_msg"] as? String
                         let state     = result["state"] as? String
                         if statusMsg == "OK" && state == "200" {
-                            let alert = UIAlertController(title: "Información actualizada.", message: "", preferredStyle: UIAlertController.Style.alert)
-                            alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
-                            self.reference.present(alert, animated: true, completion: nil)
+                            Utils.showSimpleAlert(message: "Información actualizada.",
+                                                  context: self.reference, success: nil)
                             return;
                         }
                         else{
-                            let alert = UIAlertController(title: "Ocurrió un error al realizar la petición.",
-                                                          message: "\(statusMsg!)",
-                                preferredStyle: UIAlertController.Style.alert)
-                            alert.addAction(UIAlertAction(title: "OK",
-                                                          style: UIAlertAction.Style.default,
-                                                          handler: nil))
-                            self.reference.present(alert, animated: true, completion: nil)
+                            Utils.showSimpleAlert(message: "Ocurrió un error al realizar la petición.",
+                                                  context: self.reference, success: nil)
                             return;
                         }
                     }

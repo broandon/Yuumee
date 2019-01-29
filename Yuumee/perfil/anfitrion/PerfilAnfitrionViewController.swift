@@ -224,7 +224,8 @@ extension PerfilAnfitrionViewController: UITableViewDelegate, UITableViewDataSou
             cell.addConstraintsWithFormat(format: "H:|-[v0]-|", views: costo)
             cell.addConstraintsWithFormat(format: "H:[v0(120)]-|", views: button)
             cell.addConstraintsWithFormat(format: "H:|-[v0]-|", views: sep)
-            cell.addConstraintsWithFormat(format: "V:|[v0(30)]-[v1(30)]-[v2(30)]-[v3(30)]-[v4(30)]-[v5(30)]-[v6(40)]-[v7(30)]-[v8(1)]", views: titulo, descripcion, tipoMenu, fecha, horario, capacidad, costo, button, sep)
+            cell.addConstraintsWithFormat(format: "V:|[v0(30)]-[v1(30)]-[v2(30)]-[v3(30)]-[v4(30)]-[v5(30)]-[v6(40)]-[v7(30)]-[v8(1)]",
+                                          views: titulo, descripcion, tipoMenu, fecha, horario, capacidad, costo, button, sep)
             return cell
         }
         
