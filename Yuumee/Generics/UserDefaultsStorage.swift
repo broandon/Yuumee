@@ -179,6 +179,7 @@ extension UserDefaults {
     }
     
     
+    
     // IMAGEN DE PERFIL DEL ANFITRION
     //           AVATAR
     //
@@ -188,6 +189,7 @@ extension UserDefaults {
     func getUrlAvatar() -> String? {
         return string(forKey: UserDefaultKeys.urlAvatar.rawValue) ?? ""
     }
+    
     
     
     
