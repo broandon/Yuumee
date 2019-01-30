@@ -237,6 +237,7 @@
 			isa = PBXGroup;
 			children = (
 				5E68D6AE21C8B01600DA00AB /* TimeLineViewController.swift */,
+				5E68D6BA21C8B05900DA00AB /* PerfilUsuarioViewController.swift */,
 				9C0CFC9F21CAC230006AA810 /* ModalFiltersViewController.swift */,
 				9C0CFCA121CAFF07006AA810 /* CustomSegmentedControl.swift */,
 				5E88E3B321F429DA0043889A /* CalendarioViewController.swift */,
@@ -269,7 +270,6 @@
 				5E99DA8221EED42C005BB6AC /* PerfilClienteViewController.swift */,
 				9CA8E88821E8073600266E99 /* HistorialEventosViewController.swift */,
 				5E68D6B921C8B05900DA00AB /* MetodoDePagoViewController.swift */,
-				5E68D6BA21C8B05900DA00AB /* PerfilUsuarioViewController.swift */,
 				9CA8E88321E7D24700266E99 /* TarjetasViewController.swift */,
 				9C3C8E5521F8EA6F007C2A77 /* MisDatosViewController.swift */,
 			);
