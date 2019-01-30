@@ -99,14 +99,13 @@ class UbicacionViewController: BaseViewController, UITextFieldDelegate {
         mainView.addConstraintsWithFormat(format: "V:|-16-[v0(45)]-16-[v1(45)]-16-[v2]|",
                                           views: resultsView, buscar, mapView)
         buscar.addTarget(self, action: #selector(buscarLugares) , for: .touchUpInside)
-        /*
-        if !dataStorage.getUserId().isEmpty {
-            // ---------------------------------------------------------------------
+        // ---------------------------------------------------------------------
+        if !dataStorage.getUserId().isEmpty && !dataStorage.getTokenSabedInDB()! {
             let headers: HTTPHeaders = ["Accept"       : "application/json",
                                         "Content-Type" : "application/x-www-form-urlencoded"]
             let parameters: Parameters = ["funcion"     : "sendToken",
                                           "id_user"     : dataStorage.getUserId(),
-                                          "token"       : dataStorage.getToken(),
+                                          "token"       : dataStorage.getToken()!,
                                           "type_device" : "1"] as [String: Any]
             Alamofire.request(BaseURL.baseUrl() , method: .post,
                               parameters: parameters, encoding: ParameterQueryEncoding(),
@@ -114,14 +113,11 @@ class UbicacionViewController: BaseViewController, UITextFieldDelegate {
                                 switch(response.result) {
                                 case .success(let value):
                                     if let result = value as? Dictionary<String, Any> {
-                                        print(" result ")
-                                        print(result)
+                                        self.dataStorage.tokenSavedInDB(save: true)
                                         let statusMsg = result["status_msg"] as? String
                                         let state     = result["state"] as? String
                                         if statusMsg == "OK" && state == "200" {
-                                            if let data = result["data"] as? Dictionary<String, AnyObject> {
-                                                print(" data ")
-                                                print(data)
+                                            if let _ = result["data"] as? Dictionary<String, AnyObject> {
                                             }
                                         }
                                     }
@@ -132,9 +128,8 @@ class UbicacionViewController: BaseViewController, UITextFieldDelegate {
                                     break
                                 }
             }
-            // ---------------------------------------------------------------------
-        }*/
-        
+        }
+        // ---------------------------------------------------------------------
     }
     
     

@@ -396,6 +396,34 @@ let TAG_COMIENZA_EVENT: Int     = 565678
 let TAG_TERMINA_EVENT: Int      = 324564
 
 
+
+
+struct BebidaPostre {
+    
+    var id: String     = ""
+    var costo: String  = ""
+    var tipo: String   = ""
+    var nombre: String = ""
+    
+    init(bebidapostre: Dictionary<String, Any>) {
+        if let id = bebidapostre["Id"] as? String {
+            self.id = id
+        }
+        if let costo = bebidapostre["costo"] as? String {
+            self.costo = costo
+        }
+        if let tipo = bebidapostre["tipo"] as? String {
+            self.tipo = tipo
+        }
+        if let nombre = bebidapostre["nombre"] as? String {
+            self.nombre = nombre
+        }
+    }
+    
+}
+
+
+
 /*
 class ComidasCategoriasPaisesViewController: BaseViewController, UITableViewDelegate, UITableViewDataSource {
     

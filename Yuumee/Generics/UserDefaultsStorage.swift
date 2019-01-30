@@ -36,6 +36,8 @@ enum UserDefaultKeys: String {
     case urlAvatar
     case urlPortada
     
+    case wasTokenSavedInDB
+    
 }
 
 // -----------------------------------------------------------------------------
@@ -250,14 +252,22 @@ extension UserDefaults {
     }
     
     
+    // ---------------- GUARDAR NOTIFICACIONES EN LA BASE ----------------------
+    func tokenSavedInDB(save: Bool = false) {
+        set(save, forKey: UserDefaultKeys.wasTokenSavedInDB.rawValue)
+    }
+    func getTokenSabedInDB() -> Bool? {
+        return bool(forKey: UserDefaultKeys.wasTokenSavedInDB.rawValue)
+    }
+    
+    
     // ---------------- ACTIVAR/DEASCTIVAR NOTIFICACIONES ----------------------
-    func activateNotifications(activate: Bool = false) {
+    /*func activateNotifications(activate: Bool = false) {
         set(activate, forKey: UserDefaultKeys.notificationsActive.rawValue)
     }
     func isNotificationActivated() -> Bool? {
         return bool(forKey: UserDefaultKeys.notificationsActive.rawValue)
-    }
-    
+    }*/
     
 }
 

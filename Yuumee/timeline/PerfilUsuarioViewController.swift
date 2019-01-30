@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Alamofire
 
 class PerfilUsuarioViewController: BaseViewController {
     
@@ -38,35 +39,106 @@ class PerfilUsuarioViewController: BaseViewController {
         return tableView
     }()
     
+    let dataStorage = UserDefaults.standard
     
     override func viewDidLoad() {
         mainView.backgroundColor = .white
         self.navigationController?.isNavigationBarHidden = false
-        
         mainView.addSubview(tableView)
         mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: tableView)
         mainView.addConstraintsWithFormat(format: "V:|-[v0]|", views: tableView)
-        
         let customFooter = UIView(frame: CGRect(x: 0, y: 0, width: ScreenSize.screenWidth, height: 50))
         customFooter.backgroundColor = UIColor.white
-        
-        let reservar = UIButton(frame: CGRect(x: 0, y: 0, width: customFooter.frame.width, height: 50))
+        let reservar = UIButton(frame: CGRect(x: 0, y: 0,
+                                              width: customFooter.frame.width,
+                                              height: 50))
         reservar.setTitle("Reservar", for: .normal)
         reservar.setTitleColor( UIColor.rosa , for: .normal)
         reservar.addTarget(self, action: #selector(reservarEvent), for: .touchUpInside)
         reservar.addBorder(borderColor: .gray, widthBorder: 1)
         reservar.layer.cornerRadius = 10
         reservar.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
-        
         customFooter.addSubview(reservar)
-        
         tableView.tableFooterView = customFooter
-        
-        let back = UIBarButtonItem(image: UIImage(named: "back"), style: .plain, target: self, action: #selector(regresar))
+        let image: UIImage = UIImage(named: "back")!
+        let back = UIBarButtonItem(image: image, style: .plain,
+                                   target: self, action: #selector(regresar))
         self.navigationItem.leftBarButtonItem = back
+        
+        // ---------------------------------------------------------------------
+        
+        let headers: HTTPHeaders = [
+            "Accept" : "application/json",
+            "Content-Type" : "application/x-www-form-urlencoded"
+        ]
+        let parameters: Parameters = ["funcion" : "getSaucersDetail",
+                                      "id_user" : dataStorage.getUserId(),
+                                      "id_saucer" : "1"] as [String: Any]
+        Alamofire.request(BaseURL.baseUrl() , method: .post, parameters: parameters,
+                          encoding: ParameterQueryEncoding(),
+                          headers: headers).responseJSON{ (response: DataResponse) in
+                            switch(response.result) {
+                            case .success(let value):
+                                
+                                if let result = value as? Dictionary<String, Any> {
+                                    let statusMsg = result["status_msg"] as? String
+                                    let state     = result["state"] as? String
+                                    if statusMsg == "OK" && state == "200" {
+                                        
+                                        if let data = result["data"] as? Dictionary<String, AnyObject> {
+                                            
+                                            
+                                            self.infoUsuario = (data["info"] as? Dictionary<String, AnyObject>)!
+                                            
+                                            self.platillo = (data["saucer"] as? Dictionary<String, AnyObject>)!
+                                            
+                                            
+                                            if let bebidasPostres = data["extra_saucer"] as? [Dictionary<String, AnyObject>] {
+                                                
+                                                for bp in bebidasPostres {
+                                                    
+                                                    let tipo = bp["tipo"] as! String
+                                                    
+                                                    if tipo == "1" {
+                                                        let newbp = BebidaPostre(bebidapostre: bp)
+                                                        self.bebidas.append(newbp)
+                                                    }
+                                                    
+                                                    if tipo == "2" {
+                                                        let newbp = BebidaPostre(bebidapostre: bp)
+                                                        self.postres.append(newbp)
+                                                    }
+                                                    
+                                                }
+                                                
+                                            }
+                                            
+                                            
+                                            self.tableView.reloadData()
+                                            
+                                        }
+                                    }
+                                }
+                                //completionHandler(value as? NSDictionary, nil)
+                                break
+                            case .failure(let error):
+                                //completionHandler(nil, error as NSError?)
+                                print(error)
+                                print(error.localizedDescription)
+                                break
+                            }
+        }
+        
+        // ---------------------------------------------------------------------
         
     }
     
+    var infoUsuario: Dictionary<String, AnyObject> = [:]
+    
+    var platillo: Dictionary<String, AnyObject> = [:]
+    
+    var bebidas: [BebidaPostre] = [BebidaPostre]()
+    var postres: [BebidaPostre] = [BebidaPostre]()
     
     @objc func reservarEvent() {
         print(" reservarEvent ")
@@ -109,20 +181,18 @@ extension PerfilUsuarioViewController: UITableViewDelegate, UITableViewDataSourc
         let currentSection = indexPath.section
         
         if currentSection == 0 { // DATOS PERSONALES
-            
             let currentRow = indexPath.row
-            
             if currentRow == 0 {
                 let cell = tableView.dequeueReusableCell(withIdentifier: defaultReuseId, for: indexPath)
+                cell.releaseView()
                 cell.selectionStyle = .none
                 let header = HeaderPerfilUsuario()
                 cell.addSubview(header)
-                header.setUpView()
+                header.setUpView(info: self.infoUsuario)
                 cell.addConstraintsWithFormat(format: "H:|[v0]|", views: header)
                 cell.addConstraintsWithFormat(format: "V:|[v0]|", views: header)
                 return cell
             }
-            
             if currentRow == 1 {
                 let cell = tableView.dequeueReusableCell(withIdentifier: defaultReuseId, for: indexPath)
                 cell.selectionStyle = .none
@@ -138,7 +208,7 @@ extension PerfilUsuarioViewController: UITableViewDelegate, UITableViewDataSourc
                 descripcion.numberOfLines = 0
                 descripcion.textColor = UIColor.darkGray
                 descripcion.font = UIFont.init(name: descripcion.font.familyName, size: 12)
-                descripcion.text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam porta malesuada mi, ut laoreet augue condimentum ut. Donec tincidunt ultricies mi ac consequat."
+                descripcion.text = self.infoUsuario["descripcion"] as? String ?? ""
                 
                 cell.addSubview(descripcionLabel)
                 cell.addSubview(descripcion)
@@ -149,7 +219,6 @@ extension PerfilUsuarioViewController: UITableViewDelegate, UITableViewDataSourc
                 cell.backgroundColor = UIColor.gray.withAlphaComponent(0.3)
                 return cell
             }
-            
         }
         
         if currentSection == 1 { // DESCRIPCION DEL MENU
@@ -165,59 +234,65 @@ extension PerfilUsuarioViewController: UITableViewDelegate, UITableViewDataSourc
                 nombrePlatillo.font = UIFont.boldSystemFont(ofSize: 20)
                 nombrePlatillo.sizeToFit()
                 nombrePlatillo.numberOfLines = 0
-                nombrePlatillo.text = "Comida Istmeña"
+                nombrePlatillo.text = platillo["titulo"] as? String ?? ""
                 
                 let descripcion = UILabel()
                 descripcion.sizeToFit()
                 descripcion.numberOfLines = 0
                 descripcion.textColor = UIColor.darkGray
                 descripcion.font = UIFont.init(name: descripcion.font.familyName, size: 12)
-                descripcion.text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam porta malesuada mi, ut laoreet augue condimentum ut. Donec tincidunt ultricies mi ac consequat."
+                descripcion.text = platillo["descripcion"] as? String ?? ""
                 
                 let menu = UILabel()
                 menu.sizeToFit()
                 menu.numberOfLines = 0
                 menu.textColor = UIColor.verde
                 menu.font = UIFont.boldSystemFont(ofSize: 13)
-                menu.text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam porta malesuada mi, ut laoreet augue condimentum ut. Donec tincidunt ultricies mi ac consequat."
+                menu.text = platillo["menu"] as? String ?? ""
                 
                 
+                let fechaMenu = platillo["fecha"] as? String ?? ""
                 let fecha = UILabel()
                 fecha.sizeToFit()
                 fecha.numberOfLines = 0
                 fecha.font = UIFont.boldSystemFont(ofSize: 15)
-                fecha.text = "Fecha: Domingo 12 de Agosto"
+                fecha.text = "Fecha: \(fechaMenu)"
                 
+                
+                let date = platillo["horario"] as? String ?? ""
                 let horario = UILabel()
                 horario.sizeToFit()
                 horario.numberOfLines = 0
                 horario.font = UIFont.boldSystemFont(ofSize: 15)
-                horario.text = "Fecha: 2:00 p.m. - 06-00 p.m."
+                horario.text = "Horario \(date)"
                 
-                let tipoHorario = UILabel()
+                
+                /*let tipoHorario = UILabel()
                 tipoHorario.sizeToFit()
                 tipoHorario.numberOfLines = 0
                 tipoHorario.font = UIFont.boldSystemFont(ofSize: 15)
-                tipoHorario.text = "Tipo de horario: Comida"
+                tipoHorario.text = "Tipo de horario: Comida"*/
                 
+                let cap = platillo["capacidad"] as? String ?? ""
                 let capacidad = UILabel()
                 capacidad.sizeToFit()
                 capacidad.numberOfLines = 0
                 capacidad.font = UIFont.boldSystemFont(ofSize: 15)
-                capacidad.text = "Capacidad: 7 personas max."
+                capacidad.text = "Capacidad: \(cap)"
                 
+                let costoPlatillo = platillo["costo"] as? String ?? ""
                 let costo = UILabel()
                 costo.sizeToFit()
                 costo.numberOfLines = 0
                 costo.font = UIFont.boldSystemFont(ofSize: 15)
-                costo.text = "Costo: $300"
+                costo.text = "Costo: \(costoPlatillo)"
                 
                 cell.addSubview(nombrePlatillo)
                 cell.addSubview(descripcion)
                 cell.addSubview(menu)
                 cell.addSubview(fecha)
                 cell.addSubview(horario)
-                cell.addSubview(tipoHorario)
+                //cell.addSubview(tipoHorario)
                 cell.addSubview(capacidad)
                 cell.addSubview(costo)
                 
@@ -226,11 +301,11 @@ extension PerfilUsuarioViewController: UITableViewDelegate, UITableViewDataSourc
                 cell.addConstraintsWithFormat(format: "H:|-[v0]-|", views: menu)
                 cell.addConstraintsWithFormat(format: "H:|-[v0]-|", views: fecha)
                 cell.addConstraintsWithFormat(format: "H:|-[v0]-|", views: horario)
-                cell.addConstraintsWithFormat(format: "H:|-[v0]-|", views: tipoHorario)
+                //cell.addConstraintsWithFormat(format: "H:|-[v0]-|", views: tipoHorario)
                 cell.addConstraintsWithFormat(format: "H:|-[v0]-|", views: capacidad)
                 cell.addConstraintsWithFormat(format: "H:|-[v0]-|", views: costo)
-                cell.addConstraintsWithFormat(format: "V:|[v0]-[v1]-[v2]-[v3]-[v4]-[v5]-[v6]-[v7]-|",
-                                              views: nombrePlatillo, descripcion, menu, fecha, horario, tipoHorario, capacidad, costo)
+                cell.addConstraintsWithFormat(format: "V:|[v0]-[v1]-[v2]-[v3]-[v4]-[v5]-[v6]-|",
+                                              views: nombrePlatillo, descripcion, menu, fecha, horario, capacidad, costo)
                 
                 return cell
             }
@@ -245,7 +320,7 @@ extension PerfilUsuarioViewController: UITableViewDelegate, UITableViewDataSourc
                 let cell = tableView.dequeueReusableCell(withIdentifier: bebidasCell, for: indexPath)
                 if let cell = cell as? BebidasCell {
                     cell.selectionStyle = .none
-                    cell.setUpView()
+                    cell.setUpView(bebidas: self.bebidas)
                     return cell
                 }
             }
@@ -254,10 +329,11 @@ extension PerfilUsuarioViewController: UITableViewDelegate, UITableViewDataSourc
                 let cell = tableView.dequeueReusableCell(withIdentifier: postresCell, for: indexPath)
                 if let cell = cell as? PostresCell {
                     cell.selectionStyle = .none
-                    cell.setUpView()
+                    cell.setUpView(postres: self.postres)
                     return cell
                 }
             }
+            
             
             if currentRow == 2 { // Otros Platillos
                 let cell = tableView.dequeueReusableCell(withIdentifier: otrosCell, for: indexPath)
@@ -281,15 +357,15 @@ extension PerfilUsuarioViewController: UITableViewDelegate, UITableViewDataSourc
                 }
             }
             
+            
             if currentRow == 3 { // Mapa
-                
                 let cell = tableView.dequeueReusableCell(withIdentifier: locationCell, for: indexPath)
                 if let cell = cell as? LocationCell {
                     cell.setUpView()
                     return cell
                 }
-                
             }
+            
             
             if currentRow == 4 { // Comentarios
                 let cell = tableView.dequeueReusableCell(withIdentifier: comentariosCell, for: indexPath)
@@ -298,6 +374,7 @@ extension PerfilUsuarioViewController: UITableViewDelegate, UITableViewDataSourc
                     return cell
                 }
             }
+            
             
         }
         
@@ -401,15 +478,17 @@ class HeaderPerfilUsuario: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    
     let imagenBackground: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "hamburger")
+        //imageView.image = UIImage(named: "hamburger")
         return imageView
     }()
     
     let avatar: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "avatar")
+        imageView.clipsToBounds = true
+        //imageView.image = UIImage(named: "avatar")
         return imageView
     }()
     
@@ -431,24 +510,39 @@ class HeaderPerfilUsuario: UIView {
         label.numberOfLines = 0
         return label
     }()
+    
     var edad: UILabel!
     var profesion: UILabel!
     var idiomas: UILabel!
-    var espacioDegustar: UILabel!
+    // var espacioDegustar: UILabel!
     var serviciosExtra: UILabel!
     let contLabelsDataUser: UIView = {
         let view = UIView()
         return view
     }()
     
-   
-    func setUpView() {
-        nombreUsuario.text = "Juan Rodriguez Garcia"
-        edad = getLabelForPersonalDataUser(text: "Edad: 26 años")
-        profesion = getLabelForPersonalDataUser(text: "Profesión: Ingeniero Électrico")
-        idiomas = getLabelForPersonalDataUser(text: "Idiomas: Español, Ingles")
-        espacioDegustar = getLabelForPersonalDataUser(text: "Espacio para degustar: Terraza y Jardin")
-        serviciosExtra = getLabelForPersonalDataUser(text: "Servicios extras: Wifi, baño, estacionamiento")
+   //var infoUsuario: Dictionary<String, AnyObject> = [:]
+    
+    func setUpView(info: Dictionary<String, AnyObject> = [:]) {
+        // info["servicios_extra"] as! String
+        let nombre = (info["nombre"] as? String ?? "")
+        let apellidos = (info["apellidos"] as? String ?? "")
+        nombreUsuario.text = "\(nombre) \(apellidos)"
+        
+        let fechaNacimiento = info["fecha_nacimiento"] as? String ?? ""
+        edad = getLabelForPersonalDataUser(text: "Fecha de nacimiento: \(fechaNacimiento)" )
+        
+        let profesionAnf = info["profesion"] as? String ?? ""
+        profesion = getLabelForPersonalDataUser(text: "Profesión: \(profesionAnf)")
+        
+        let idioma = info["idiomas"] as? String ?? ""
+        idiomas = getLabelForPersonalDataUser(text: "Idiomas: \(idioma)")
+        
+        // No viene en el servicio los 'espacios para degustar'.
+        //espacioDegustar = getLabelForPersonalDataUser(text: "Espacio para degustar: Terraza y Jardin")
+        
+        let servExtra = info["servicios_extra"] as? String ?? ""
+        serviciosExtra = getLabelForPersonalDataUser(text: "Servicios extra: \(servExtra)")
         
         addSubview(imagenBackground)
         addSubview(avatar)
@@ -465,17 +559,32 @@ class HeaderPerfilUsuario: UIView {
         contLabelsDataUser.addSubview(edad)
         contLabelsDataUser.addSubview(profesion)
         contLabelsDataUser.addSubview(idiomas)
-        contLabelsDataUser.addSubview(espacioDegustar)
+        //contLabelsDataUser.addSubview(espacioDegustar)
         contLabelsDataUser.addSubview(serviciosExtra)
         
         contLabelsDataUser.addConstraintsWithFormat(format: "H:|[v0]|", views: nombreUsuario)
         contLabelsDataUser.addConstraintsWithFormat(format: "H:|[v0]|", views: edad)
         contLabelsDataUser.addConstraintsWithFormat(format: "H:|[v0]|", views: profesion)
         contLabelsDataUser.addConstraintsWithFormat(format: "H:|[v0]|", views: idiomas)
-        contLabelsDataUser.addConstraintsWithFormat(format: "H:|[v0]|", views: espacioDegustar)
+        //contLabelsDataUser.addConstraintsWithFormat(format: "H:|[v0]|", views: espacioDegustar)
         contLabelsDataUser.addConstraintsWithFormat(format: "H:|[v0]|", views: serviciosExtra)
-        contLabelsDataUser.addConstraintsWithFormat(format: "V:|-[v0]-[v1][v2][v3][v4][v5]",
-                                                    views: nombreUsuario, edad, profesion, idiomas, espacioDegustar, serviciosExtra)
+        //contLabelsDataUser.addConstraintsWithFormat(format: "V:|-[v0]-[v1][v2][v3][v4(0)][v5]", views: nombreUsuario, edad, profesion, idiomas, espacioDegustar, serviciosExtra)
+        contLabelsDataUser.addConstraintsWithFormat(format: "V:|-[v0]-[v1][v2][v3][v4]",
+                                                    views: nombreUsuario, edad, profesion, idiomas, serviciosExtra)
+        
+        // MARK: Avatar
+        avatar.layer.cornerRadius = 35
+        let imagen = (info["imagen"] as? String) ?? ""
+        if !(imagen.isEmpty) {
+            let urlAvatar = URL(string: imagen)
+            avatar.af_setImage(withURL: urlAvatar!)
+        }
+        // MARK: Portada
+        let portada = (info["imagen_portada"] as? String) ?? ""
+        if !portada.isEmpty {
+            let urlPortada = URL(string: portada)
+            imagenBackground.af_setImage(withURL: urlPortada!)
+        }
         
     }
     
@@ -518,9 +627,15 @@ class BebidasCell: UITableViewCell, UICollectionViewDelegate, UICollectionViewDa
         return collectionView
     }()
     
-    var bebidas = ["Tisana", "Té helado", "Smoothie de mango", "Tejate"]
+    var bebidas: [BebidaPostre] = [BebidaPostre]()
     
-    func setUpView() {
+    func setUpView(bebidas: [BebidaPostre]) {
+        self.bebidas = bebidas
+        
+        if self.bebidas.count > 0 {
+            self.collectionViewBebidas.reloadData()
+        }
+        
         collectionViewBebidas.delegate = self
         collectionViewBebidas.dataSource = self
         
@@ -553,14 +668,14 @@ class BebidasCell: UITableViewCell, UICollectionViewDelegate, UICollectionViewDa
         nombre.numberOfLines = 0
         nombre.textColor = UIColor.darkGray
         nombre.font = UIFont.init(name: nombre.font.familyName, size: 12)
-        nombre.text = bebida
+        nombre.text = bebida.nombre
         
         let costo = UILabel()
         costo.sizeToFit()
         costo.numberOfLines = 0
         costo.textColor = UIColor.darkGray
         costo.font = UIFont.init(name: nombre.font.familyName, size: 12)
-        costo.text = "$35"
+        costo.text = bebida.costo
         
         cell.addSubview(butllet)
         cell.addSubview(nombre)
@@ -618,9 +733,18 @@ class PostresCell: UITableViewCell, UICollectionViewDelegate, UICollectionViewDa
     }()
     
     
-    var postres = ["Carlotta", "Nicuatole", "Cheesecake", "Gelatina"]
+    //var postres = ["Carlotta", "Nicuatole", "Cheesecake", "Gelatina"]
     
-    func setUpView() {
+    var postres: [BebidaPostre] = [BebidaPostre]()
+    
+    func setUpView(postres: [BebidaPostre]) {
+        
+        self.postres = postres
+        
+        if self.postres.count > 0 {
+            self.collectionViewPostres.reloadData()
+        }
+        
         collectionViewPostres.delegate = self
         collectionViewPostres.dataSource = self
         
@@ -640,7 +764,7 @@ class PostresCell: UITableViewCell, UICollectionViewDelegate, UICollectionViewDa
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let currentRow = indexPath.row
-        let bebida = postres[currentRow]
+        let postre = postres[currentRow]
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseId, for: indexPath)
         cell.releaseView()
@@ -653,14 +777,14 @@ class PostresCell: UITableViewCell, UICollectionViewDelegate, UICollectionViewDa
         nombre.numberOfLines = 0
         nombre.textColor = UIColor.darkGray
         nombre.font = UIFont.init(name: nombre.font.familyName, size: 12)
-        nombre.text = bebida
+        nombre.text = postre.nombre
         
         let costo = UILabel()
         costo.sizeToFit()
         costo.numberOfLines = 0
         costo.textColor = UIColor.darkGray
         costo.font = UIFont.init(name: nombre.font.familyName, size: 12)
-        costo.text = "$35"
+        costo.text = postre.costo
         
         cell.addSubview(butllet)
         cell.addSubview(nombre)
@@ -694,6 +818,7 @@ class OtrosCell: UITableViewCell, UICollectionViewDelegate, UICollectionViewData
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
     
     let platillosLbl: UILabel = {
         let nombrePlatillo = UILabel()
