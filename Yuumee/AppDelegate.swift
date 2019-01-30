@@ -181,16 +181,17 @@ extension AppDelegate : UNUserNotificationCenterDelegate {
 }
 
 
+
 extension AppDelegate : MessagingDelegate {
     
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
-        
-        print("Firebase registration token: \(fcmToken)")
+        // print("Firebase registration token: \(fcmToken)")
         
         if !fcmToken.isEmpty {
             let isTokenRegistered = dataStorage.getToken()
             if isTokenRegistered!.isEmpty {
                 dataStorage.setToken(token: fcmToken)
+                
             }
         }
     }

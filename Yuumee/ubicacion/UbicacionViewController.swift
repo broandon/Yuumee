@@ -9,6 +9,7 @@
 import UIKit
 import GooglePlaces
 import MapKit
+import Alamofire
 
 class UbicacionViewController: BaseViewController, UITextFieldDelegate {
     
@@ -98,6 +99,41 @@ class UbicacionViewController: BaseViewController, UITextFieldDelegate {
         mainView.addConstraintsWithFormat(format: "V:|-16-[v0(45)]-16-[v1(45)]-16-[v2]|",
                                           views: resultsView, buscar, mapView)
         buscar.addTarget(self, action: #selector(buscarLugares) , for: .touchUpInside)
+        /*
+        if !dataStorage.getUserId().isEmpty {
+            // ---------------------------------------------------------------------
+            let headers: HTTPHeaders = ["Accept"       : "application/json",
+                                        "Content-Type" : "application/x-www-form-urlencoded"]
+            let parameters: Parameters = ["funcion"     : "sendToken",
+                                          "id_user"     : dataStorage.getUserId(),
+                                          "token"       : dataStorage.getToken(),
+                                          "type_device" : "1"] as [String: Any]
+            Alamofire.request(BaseURL.baseUrl() , method: .post,
+                              parameters: parameters, encoding: ParameterQueryEncoding(),
+                              headers: headers).responseJSON{ (response: DataResponse) in
+                                switch(response.result) {
+                                case .success(let value):
+                                    if let result = value as? Dictionary<String, Any> {
+                                        print(" result ")
+                                        print(result)
+                                        let statusMsg = result["status_msg"] as? String
+                                        let state     = result["state"] as? String
+                                        if statusMsg == "OK" && state == "200" {
+                                            if let data = result["data"] as? Dictionary<String, AnyObject> {
+                                                print(" data ")
+                                                print(data)
+                                            }
+                                        }
+                                    }
+                                    break
+                                case .failure(let error):
+                                    print(error)
+                                    print(error.localizedDescription)
+                                    break
+                                }
+            }
+            // ---------------------------------------------------------------------
+        }*/
         
     }
     

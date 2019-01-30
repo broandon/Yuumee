@@ -188,20 +188,22 @@ class BackgroundImageHeader: UITableViewCell, UIImagePickerControllerDelegate, U
     
     var info: Dictionary<String, AnyObject> = [:]
     
+    
     @objc func actualizarDatos(newImage: String = "") {
         
-        let urlPortada = URL(string: info["imagen_portada"] as! String)
+        //let urlPortada = URL(string: info["imagen_portada"] as! String)
         
-        let userId = dataStorage.getUserId()
+        let oldUrl = URL(string: (info["imagen"] as! String))!
+        
         
         let headers: HTTPHeaders = ["Accept": "application/json",
                                     "Content-Type" : "application/x-www-form-urlencoded"]
         
         let parameters: Parameters = ["funcion"    : "updateUserAmphitryon",
-                                      "id_user"    : userId,
+                                      "id_user"    : dataStorage.getUserId(),
                                       "first_name" : (info["nombre"] as! String),
                                       "last_name"  : (info["apellidos"] as! String),
-                                      "image"      : (urlPortada?.lastPathComponent as! String),
+                                      "image"      : oldUrl.lastPathComponent,
                                       "image_page" : newImage,
                                       "age"        : (info["fecha_nacimiento"] as! String),
                                       "address"    : (info["direccion"] as! String),

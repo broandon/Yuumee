@@ -19,6 +19,7 @@ class InformacionAnfitrionCell: UITableViewCell {
         fatalError(" Error to init ")
     }
     
+    
     var reference: UIViewController!
     
     lazy var avatar: UIImageView = {
@@ -76,8 +77,7 @@ class InformacionAnfitrionCell: UITableViewCell {
     
     
     lazy var espacioDegustarLbl: ArchiaRegularLabel = {
-        let tapGesture = UITapGestureRecognizer(target: self,
-                                                action: #selector(espacioParaDegustarEvent))
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(espacioParaDegustarEvent))
         tapGesture.numberOfTapsRequired = 1
         let label = ArchiaRegularLabel()
         label.text = "Espacio para degustar"
@@ -152,10 +152,6 @@ class InformacionAnfitrionCell: UITableViewCell {
     }()
     
     let dataStorage = UserDefaults.standard
-    
-    // var imagenPortada: URL!
-    var urlPortada: URL!
-    var urlAvatar: URL!
     
     func setUpView(info: Dictionary<String, AnyObject> = [:]) {
         backgroundColor = UIColor.gris
@@ -294,6 +290,8 @@ class InformacionAnfitrionCell: UITableViewCell {
         
     }
     
+    var urlPortada: URL!
+    var urlAvatar:  URL!
     
     
     /**
@@ -513,6 +511,10 @@ extension InformacionAnfitrionCell: UIImagePickerControllerDelegate, UINavigatio
                         let statusMsg = result["status_msg"] as? String
                         let state     = result["state"] as? String
                         if statusMsg == "OK" && state == "200" {
+                            
+                            let newUrlUpdated = "http://easycode.mx/sistema_yuumee/assets/images/perfil_usuarios/\(newImage)"
+                            self.urlAvatar = URL(string: newUrlUpdated)
+                            
                             Utils.showSimpleAlert(message: "Información actualizada.",
                                                   context: self.reference, success: nil)
                             return;
@@ -549,6 +551,19 @@ extension InformacionAnfitrionCell: UIImagePickerControllerDelegate, UINavigatio
         let imageData = image.jpegData(compressionQuality: 0.0)
         let base64String = imageData?.base64EncodedString(options: .lineLength64Characters)
         return base64String!
+    }
+    
+    
+    func isUrlValidate(urlString: String?) -> Bool {
+        //Check for nil
+        if let urlString = urlString {
+            // create NSURL instance
+            if let url = NSURL(string: urlString) {
+                // check if your application can open the NSURL instance
+                return UIApplication.shared.canOpenURL(url as URL)
+            }
+        }
+        return false
     }
     
 }

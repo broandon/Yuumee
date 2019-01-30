@@ -179,7 +179,7 @@ extension UserDefaults {
     }
     
     
-    
+    /*
     // IMAGEN DE PERFIL DEL ANFITRION
     //           AVATAR
     //
@@ -189,8 +189,16 @@ extension UserDefaults {
     func getUrlAvatar() -> String? {
         return string(forKey: UserDefaultKeys.urlAvatar.rawValue) ?? ""
     }
-    
-    
+    // IMAGEN DE PERFIL DEL ANFITRION
+    //           PORTADA
+    //
+    func setUrlPortada(url: String) {
+        set(url, forKey: UserDefaultKeys.urlPortada.rawValue)
+    }
+    func getUrlPortada() -> String? {
+        return string(forKey: UserDefaultKeys.urlPortada.rawValue) ?? ""
+    }
+    */
     
     
     // Latitud
