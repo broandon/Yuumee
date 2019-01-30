@@ -473,3 +473,21 @@ extension UIView {
 
 
 
+/**
+ 
+ Tint Color
+ 
+ theImageView.image = theImageView.image!.withRenderingMode(.alwaysTemplate)
+ theImageView.tintColor = UIColor.red
+ 
+ */
+extension UIImageView {
+    func changeImageColor(color: UIColor) -> UIImage {
+        image = image!.withRenderingMode(.alwaysTemplate)
+        tintColor = color
+        return image!
+    }
+}
+
+
+

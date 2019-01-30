@@ -87,32 +87,42 @@ class PerfilUsuarioViewController: BaseViewController {
                                         
                                         if let data = result["data"] as? Dictionary<String, AnyObject> {
                                             
+                                            let info = (data["info"] as? Dictionary<String, AnyObject>)!
+                                            self.infoUsuario = info
                                             
-                                            self.infoUsuario = (data["info"] as? Dictionary<String, AnyObject>)!
+                                            self.latitud  = (info["latitud"] as? String)!
+                                            
+                                            self.longitud = (info["longitud"] as? String)!
                                             
                                             self.platillo = (data["saucer"] as? Dictionary<String, AnyObject>)!
                                             
-                                            
                                             if let bebidasPostres = data["extra_saucer"] as? [Dictionary<String, AnyObject>] {
-                                                
                                                 for bp in bebidasPostres {
-                                                    
                                                     let tipo = bp["tipo"] as! String
-                                                    
                                                     if tipo == "1" {
                                                         let newbp = BebidaPostre(bebidapostre: bp)
                                                         self.bebidas.append(newbp)
                                                     }
-                                                    
                                                     if tipo == "2" {
                                                         let newbp = BebidaPostre(bebidapostre: bp)
                                                         self.postres.append(newbp)
                                                     }
-                                                    
                                                 }
-                                                
                                             }
                                             
+                                            if let otrosPlatillos = data["events"] as? [Dictionary<String, AnyObject>] {
+                                                for p in otrosPlatillos {
+                                                    let newP = PlatilloEvento(platillo: p)
+                                                    self.otrosPlatillos.append(newP)
+                                                }
+                                            }
+                                            
+                                            if let comments = data["comments"] as? [Dictionary<String, AnyObject>] {
+                                                for c in comments {
+                                                    let newC = CommentPlatillo(comment: c)
+                                                    self.comentarios.append(newC)
+                                                }
+                                            }
                                             
                                             self.tableView.reloadData()
                                             
@@ -138,12 +148,21 @@ class PerfilUsuarioViewController: BaseViewController {
     var platillo: Dictionary<String, AnyObject> = [:]
     
     var bebidas: [BebidaPostre] = [BebidaPostre]()
+    
     var postres: [BebidaPostre] = [BebidaPostre]()
+    
+    var comentarios: [CommentPlatillo] = [CommentPlatillo]()
+    
     
     @objc func reservarEvent() {
         print(" reservarEvent ")
     }
     
+    var otrosPlatillos: [PlatilloEvento] = [PlatilloEvento]()
+    
+    var latitud = ""
+    
+    var longitud = ""
     
     @objc func regresar() {
         self.dismiss(animated: true, completion: nil)
@@ -250,14 +269,12 @@ extension PerfilUsuarioViewController: UITableViewDelegate, UITableViewDataSourc
                 menu.font = UIFont.boldSystemFont(ofSize: 13)
                 menu.text = platillo["menu"] as? String ?? ""
                 
-                
                 let fechaMenu = platillo["fecha"] as? String ?? ""
                 let fecha = UILabel()
                 fecha.sizeToFit()
                 fecha.numberOfLines = 0
                 fecha.font = UIFont.boldSystemFont(ofSize: 15)
                 fecha.text = "Fecha: \(fechaMenu)"
-                
                 
                 let date = platillo["horario"] as? String ?? ""
                 let horario = UILabel()
@@ -334,12 +351,11 @@ extension PerfilUsuarioViewController: UITableViewDelegate, UITableViewDataSourc
                 }
             }
             
-            
             if currentRow == 2 { // Otros Platillos
                 let cell = tableView.dequeueReusableCell(withIdentifier: otrosCell, for: indexPath)
                 if let cell = cell as? OtrosCell {
                     cell.selectionStyle = .none
-                    cell.setUpView()
+                    cell.setUpView(otrosPlatillos: self.otrosPlatillos)
                     let topSep = UIView()
                     topSep.backgroundColor = .black
                     let botSep = UIView()
@@ -361,7 +377,7 @@ extension PerfilUsuarioViewController: UITableViewDelegate, UITableViewDataSourc
             if currentRow == 3 { // Mapa
                 let cell = tableView.dequeueReusableCell(withIdentifier: locationCell, for: indexPath)
                 if let cell = cell as? LocationCell {
-                    cell.setUpView()
+                    cell.setUpView(latitud: self.latitud, longitud: self.longitud)
                     return cell
                 }
             }
@@ -370,7 +386,7 @@ extension PerfilUsuarioViewController: UITableViewDelegate, UITableViewDataSourc
             if currentRow == 4 { // Comentarios
                 let cell = tableView.dequeueReusableCell(withIdentifier: comentariosCell, for: indexPath)
                 if let cell = cell as? ComentariosCell {
-                    cell.setUpView()
+                    cell.setUpView(comentarios: self.comentarios)
                     return cell
                 }
             }
@@ -843,9 +859,15 @@ class OtrosCell: UITableViewCell, UICollectionViewDelegate, UICollectionViewData
     }()
     
     
-    var platilos = ["", "", "", ""]
+    var platilos: [PlatilloEvento] = [PlatilloEvento]()
     
-    func setUpView() {
+    func setUpView(otrosPlatillos: [PlatilloEvento]) {
+        
+        self.platilos = otrosPlatillos
+        if self.platilos.count > 0 {
+            self.collectionViewPlatilos.reloadData()
+        }
+        
         collectionViewPlatilos.delegate = self
         collectionViewPlatilos.dataSource = self
         
@@ -865,7 +887,7 @@ class OtrosCell: UITableViewCell, UICollectionViewDelegate, UICollectionViewData
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let currentRow = indexPath.row
-        let _ = platilos[currentRow]
+        let platillo = platilos[currentRow]
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseId, for: indexPath)
         cell.releaseView()
@@ -873,37 +895,79 @@ class OtrosCell: UITableViewCell, UICollectionViewDelegate, UICollectionViewData
         let nombre = UILabel()
         nombre.sizeToFit()
         nombre.numberOfLines = 0
-        nombre.textColor = UIColor.verde
+        nombre.textColor = UIColor.rosa
         //nombre.font = UIFont.init(name: nombre.font.familyName, size: 12)
         nombre.font = UIFont.boldSystemFont(ofSize: 12)
-        nombre.text = "Comida corrida"
+        nombre.text = platillo.titulo
         
         let descripcion = UILabel()
         descripcion.sizeToFit()
         descripcion.numberOfLines = 3
-        descripcion.textColor = UIColor.darkGray
+        descripcion.textColor = UIColor.black
         descripcion.font = UIFont.init(name: descripcion.font.familyName, size: 12)
-        descripcion.text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam porta malesuada mi, ut laoreet augue condimentum ut. Donec tincidunt ultricies mi ac consequat."
+        descripcion.text = platillo.descripcion
+        
+        
+        let tipoMenu = UILabel()
+        tipoMenu.sizeToFit()
+        tipoMenu.numberOfLines = 1
+        tipoMenu.textColor = UIColor.verde
+        tipoMenu.font = UIFont.init(name: descripcion.font.familyName, size: 12)
+        tipoMenu.text = platillo.menu
+        
+        let fecha = UILabel()
+        fecha.sizeToFit()
+        fecha.numberOfLines = 0
+        fecha.textColor = UIColor.black
+        fecha.font = UIFont.boldSystemFont(ofSize: 12)
+        fecha.text = "Fecha: \(platillo.fecha)"
+        
+        
+        let horario = UILabel()
+        horario.sizeToFit()
+        horario.numberOfLines = 0
+        horario.textColor = UIColor.black
+        horario.font = UIFont.boldSystemFont(ofSize: 12)
+        horario.text = "Horario: \(platillo.horario)"
+        
+        let capacidad = UILabel()
+        capacidad.sizeToFit()
+        capacidad.numberOfLines = 0
+        capacidad.textColor = UIColor.black
+        capacidad.font = UIFont.boldSystemFont(ofSize: 12)
+        capacidad.text = "Capacidad: \(platillo.capacidad)"
+        
         
         let costo = UILabel()
         costo.sizeToFit()
         costo.numberOfLines = 0
         costo.textColor = UIColor.black
         costo.font = UIFont.boldSystemFont(ofSize: 12)
-        costo.text = "$35"
+        costo.text = platillo.costo
         costo.textAlignment = .left
         
         cell.addSubview(nombre)
         cell.addSubview(descripcion)
+        cell.addSubview(tipoMenu)
+        cell.addSubview(fecha)
+        cell.addSubview(horario)
+        cell.addSubview(capacidad)
         cell.addSubview(costo)
         
-        cell.addConstraintsWithFormat(format: "H:|-16-[v0]-16-|", views: nombre)
-        cell.addConstraintsWithFormat(format: "H:|-16-[v0]-16-|", views: descripcion)
-        cell.addConstraintsWithFormat(format: "H:[v0]-16-|", views: costo)
-        cell.addConstraintsWithFormat(format: "V:|-[v0]-[v1]-[v2(25)]-|", views: nombre, descripcion, costo)
+        
+        cell.addConstraintsWithFormat(format: "H:|-16-[v0]", views: nombre)
+        cell.addConstraintsWithFormat(format: "H:|-16-[v0]", views: descripcion)
+        cell.addConstraintsWithFormat(format: "H:|-16-[v0]", views: tipoMenu)
+        cell.addConstraintsWithFormat(format: "H:|-16-[v0]", views: fecha)
+        cell.addConstraintsWithFormat(format: "H:|-16-[v0]", views: horario)
+        cell.addConstraintsWithFormat(format: "H:|-16-[v0]", views: capacidad)
+        cell.addConstraintsWithFormat(format: "H:|-16-[v0]", views: costo)
+        
+        cell.addConstraintsWithFormat(format: "V:|-[v0]-[v1]-[v2(25)]-[v3(25)]-[v4(25)]-[v5(25)]-[v6(25)]",
+                                      views: nombre, descripcion, tipoMenu, fecha, horario, capacidad, costo)
         
         let botSep = UIView()
-        botSep.backgroundColor = .lightGray
+        botSep.backgroundColor = .black
         cell.addSubview(botSep)
         cell.addConstraintsWithFormat(format: "H:|-16-[v0]-16-|", views: botSep)
         cell.addConstraintsWithFormat(format: "V:[v0(1)]|", views: botSep)
@@ -912,7 +976,7 @@ class OtrosCell: UITableViewCell, UICollectionViewDelegate, UICollectionViewData
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: ScreenSize.screenWidth, height: 110)
+        return CGSize(width: ScreenSize.screenWidth, height: 220)
     }
     
 }
@@ -958,9 +1022,15 @@ class ComentariosCell: UITableViewCell, UICollectionViewDelegate, UICollectionVi
     }()
     
     
-    var coemnatrios = ["", "", "", ""]
     
-    func setUpView() {
+    var comentarios: [CommentPlatillo] = [CommentPlatillo]()
+    
+    func setUpView(comentarios: [CommentPlatillo]) {
+        self.comentarios = comentarios
+        if self.comentarios.count > 0 {
+            self.collectionViewComentarios.reloadData()
+        }
+        
         collectionViewComentarios.delegate = self
         collectionViewComentarios.dataSource = self
         addSubview(collectionViewComentarios)
@@ -974,79 +1044,97 @@ class ComentariosCell: UITableViewCell, UICollectionViewDelegate, UICollectionVi
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return coemnatrios.count
+        if collectionView == collectionViewComentarios {
+            return comentarios.count
+        }
+        return 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let currentRow = indexPath.row
-        let _ = coemnatrios[currentRow]
+        if collectionView == collectionViewComentarios {
+            
+            let currentRow = indexPath.row
+            let comentario = comentarios[currentRow]
+            
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseId, for: indexPath)
+            cell.releaseView()
+            
+            let nombre = UILabel()
+            nombre.sizeToFit()
+            nombre.numberOfLines = 0
+            nombre.textColor = UIColor.verde
+            //nombre.font = UIFont.init(name: nombre.font.familyName, size: 12)
+            nombre.font = UIFont.boldSystemFont(ofSize: 15)
+            nombre.text = comentario.cliente
+            
+            let descripcion = UILabel()
+            descripcion.sizeToFit()
+            descripcion.numberOfLines = 2
+            descripcion.textColor = UIColor.verde
+            descripcion.font = UIFont.italicSystemFont(ofSize: 14)
+            descripcion.text = comentario.comentarios
+            
+           let rank = CollectionRank()
+            rank.setUpView(numberofStars: Int(comentario.valoracion)! )
+            
+            cell.addSubview(nombre)
+            cell.addSubview(descripcion)
+            cell.addSubview(rank)
+            
+            cell.addConstraintsWithFormat(format: "H:|-16-[v0]-[v1(100)]-|", views: nombre, rank)
+            cell.addConstraintsWithFormat(format: "H:|-16-[v0]-16-|", views: descripcion)
+            
+            //cell.addConstraintsWithFormat(format: "H:[v0(100)]-|", views: )
+            
+            //cell.addConstraintsWithFormat(format: "V:|-[v0(30)][v1]-[v2(20)]-|", views: , descripcion, )
+            cell.addConstraintsWithFormat(format: "V:|[v0(30)]-[v1]-|", views: nombre, descripcion)
+            cell.addConstraintsWithFormat(format: "V:|-10-[v0(20)]-[v1]-|", views: rank, descripcion)
+            
+            cell.backgroundColor = .gris
+            
+            return cell
         
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseId, for: indexPath)
-        cell.releaseView()
+        }
         
-        let nombre = UILabel()
-        nombre.sizeToFit()
-        nombre.numberOfLines = 0
-        nombre.textColor = UIColor.verde
-        //nombre.font = UIFont.init(name: nombre.font.familyName, size: 12)
-        nombre.font = UIFont.boldSystemFont(ofSize: 13)
-        nombre.text = "John Doe"
+        return UICollectionViewCell()
         
-        let descripcion = UILabel()
-        descripcion.sizeToFit()
-        descripcion.numberOfLines = 2
-        descripcion.textColor = UIColor.verde
-        descripcion.font = UIFont.italicSystemFont(ofSize: 12)
-        descripcion.text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam porta malesuada mi, ut laoreet augue condimentum ut. Donec tincidunt ultricies mi ac consequat."
-        
-        cell.addSubview(nombre)
-        cell.addSubview(descripcion)
-        
-        cell.addConstraintsWithFormat(format: "H:|-16-[v0]-16-|", views: nombre)
-        cell.addConstraintsWithFormat(format: "H:|-16-[v0]-16-|", views: descripcion)
-        cell.addConstraintsWithFormat(format: "V:|-[v0(30)][v1]-|", views: nombre, descripcion)
-        
-        cell.backgroundColor = .gris
-        
-        return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: ScreenSize.screenWidth, height: 110)
+        
+        if collectionView == collectionViewComentarios {
+            return CGSize(width: ScreenSize.screenWidth, height: 100)
+        }
+        
+        return CGSize(width: 0, height: 0)
+        
     }
     
     
-    
-    
-    
+    /*
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
-        return CGSize(width: 100.0, height: 50.0)
+        //return CGSize(width: 100.0, height: 50.0)
+        return CGSize(width: 0.0, height: 0.0)
     }
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         switch kind {
         /*case UICollectionView.elementKindSectionHeader:
-            
             let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: footerReuseIdentifier, for: indexPath as IndexPath)
             headerView.backgroundColor = UIColor.blue
             return headerView
             */
         case UICollectionView.elementKindSectionFooter:
             let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: footerReuseIdentifier, for: indexPath as IndexPath)
-            
-            
             let reservar = UIButton(type: .system)
             reservar.setTitle("Mostrar más", for: .normal)
             reservar.setTitleColor( UIColor.rosa , for: .normal)
             reservar.addTarget(self, action: #selector(mostrarMasComentarios), for: .touchUpInside)
             reservar.titleLabel?.font = UIFont.boldSystemFont(ofSize: 12)
-            
             footerView.addSubview(reservar)
             footerView.addConstraintsWithFormat(format: "H:|-[v0]-|", views: reservar)
             footerView.addConstraintsWithFormat(format: "V:|[v0]", views: reservar)
-            
-            return footerView
-            
+            return UICollectionReusableView()
             
         default:
             assert(false, "Unexpected element kind")
@@ -1054,7 +1142,7 @@ class ComentariosCell: UITableViewCell, UICollectionViewDelegate, UICollectionVi
         
         return UICollectionReusableView()
     }
-    
+    */
     
     
     
@@ -1093,10 +1181,16 @@ class LocationCell: UITableViewCell, MKMapViewDelegate, CLLocationManagerDelegat
     var latitude: CLLocationDegrees = 0.0
     var longitude: CLLocationDegrees = 0.0
     
-    func setUpView() {
+    func setUpView(latitud: String = "", longitud: String = "") {
+        
+        self.latitude = CLLocationDegrees(Double((latitud as NSString).doubleValue))
+        
+        self.longitude = CLLocationDegrees(Double((longitud as NSString).doubleValue))
+        
         addSubview(mapView)
         mapView.delegate = self
         mapView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
+        
         addConstraints( NSLayoutConstraint.constraints(withVisualFormat: "H:|[v0]|",
                                                        options: NSLayoutConstraint.FormatOptions(),
                                                        metrics: nil,

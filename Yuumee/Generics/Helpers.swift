@@ -424,6 +424,140 @@ struct BebidaPostre {
 
 
 
+struct PlatilloEvento {
+    
+    var id: String          = ""
+    var costo: String       = ""
+    var titulo: String      = ""
+    var descripcion: String = ""
+    var menu: String        = ""
+    var fecha: String       = ""
+    var horario: String     = ""
+    var capacidad: String   = ""
+    
+    init(platillo: Dictionary<String, Any>) {
+        if let id = platillo["id"] as? String {
+            self.id = id
+        }
+        if let costo = platillo["costo"] as? String {
+            self.costo = costo
+        }
+        if let titulo = platillo["titulo"] as? String {
+            self.titulo = titulo
+        }
+        if let descripcion = platillo["descripcion"] as? String {
+            self.descripcion = descripcion
+        }
+        if let menu = platillo["menu"] as? String {
+            self.menu = menu
+        }
+        if let fecha = platillo["fecha"] as? String {
+            self.fecha = fecha
+        }
+        if let horario = platillo["horario"] as? String {
+            self.horario = horario
+        }
+        if let capacidad = platillo["capacidad"] as? String {
+            self.capacidad = capacidad
+        }
+    }
+    
+}
+
+
+
+
+
+
+struct CommentPlatillo {
+    
+    var id_calificacion_anfitrion: String = ""
+    var valoracion: String = ""
+    var comentarios: String = ""
+    var cliente: String = ""
+    
+    init(comment: Dictionary<String, Any>) {
+        if let id_calificacion_anfitrion = comment["id_calificacion_anfitrion"] as? String {
+            self.id_calificacion_anfitrion = id_calificacion_anfitrion
+        }
+        if let valoracion = comment["valoracion"] as? String {
+            self.valoracion = valoracion
+        }
+        if let comentarios = comment["comentarios"] as? String {
+            self.comentarios = comentarios
+        }
+        if let cliente = comment["cliente"] as? String {
+            self.cliente = cliente
+        }
+    }
+    
+}
+
+
+
+
+class CollectionRank: UIView, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+    
+    var collectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.minimumLineSpacing = 0
+        layout.minimumInteritemSpacing = 0
+        layout.scrollDirection = .horizontal
+        let collectionView = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
+        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
+        collectionView.backgroundColor = .clear
+        collectionView.isScrollEnabled = false
+        return collectionView
+    }()
+    
+    let numberOfStars = 5
+    
+    var numberRank = 0
+    
+    func setUpView(numberofStars: Int = 0) {
+        backgroundColor = .clear
+        self.numberRank = numberofStars
+        collectionView.delegate   = self
+        collectionView.dataSource = self
+        addSubview(collectionView)
+        addConstraintsWithFormat(format: "H:|[v0]|", views: collectionView)
+        addConstraintsWithFormat(format: "V:|[v0]|", views: collectionView)
+        collectionView.reloadData()
+    }
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return numberOfStars
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
+        cell.releaseView()
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        if indexPath.row < numberRank {
+            imageView.image = UIImage(named: "star")
+        }
+        else {
+            imageView.image = UIImage()
+        }
+        imageView.image = imageView.changeImageColor(color: .rosa)
+        cell.addSubview(imageView)
+        cell.centerInView(superView: cell, container: imageView, sizeV: 16, sizeH: 16)
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: 20, height: 20)
+    }
+    
+}
+
+
+
 /*
 class ComidasCategoriasPaisesViewController: BaseViewController, UITableViewDelegate, UITableViewDataSource {
     
