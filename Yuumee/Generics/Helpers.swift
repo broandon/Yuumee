@@ -558,6 +558,384 @@ class CollectionRank: UIView, UICollectionViewDataSource, UICollectionViewDelega
 
 
 
+
+
+
+
+class HeaderClass: UICollectionReusableView {
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        // Customize here
+    }
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+}
+
+
+
+class ReservarViewController: BaseViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    
+    var dataStorage = UserDefaults.standard
+    
+    let bebidaPostreCell = "bebidaPostreCell"
+    let headerReuseId = "header"
+    let reuseId = "cell"
+    
+    lazy var collectionBebidas: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        let collectionView = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
+        collectionView.backgroundColor = .white
+        collectionView.delegate  = self
+        collectionView.dataSource = self
+        collectionView.alwaysBounceVertical = false
+        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseId)
+        collectionView.register(HeaderClass.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerReuseId)
+        collectionView.register(BebidaPostreCell.self, forCellWithReuseIdentifier: bebidaPostreCell)
+        
+        return collectionView
+    }()
+    
+    lazy var collectionPostres: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        let collectionView = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
+        collectionView.backgroundColor = .white
+        collectionView.delegate  = self
+        collectionView.dataSource = self
+        collectionView.alwaysBounceVertical = false
+        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseId)
+        collectionView.register(HeaderClass.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerReuseId)
+        collectionView.register(BebidaPostreCell.self, forCellWithReuseIdentifier: bebidaPostreCell)
+        return collectionView
+    }()
+    
+    let sep: UIView = {
+        let sep = UIView()
+        sep.backgroundColor = .darkGray
+        return sep
+    }()
+    
+    lazy var continuar: UIButton = {
+        let frame = CGRect(x: 0, y: 0, width: ScreenSize.screenWidth, height: 50)
+        let continuar = UIButton(frame: frame)
+        continuar.setTitle("CONTINUAR", for: .normal)
+        continuar.setTitleColor( UIColor.rosa , for: .normal)
+        continuar.addTarget(self, action: #selector(nextStep), for: .touchUpInside)
+        return continuar
+    }()
+    
+    var bebidas: [BebidaPostre] = [BebidaPostre]()
+    
+    var postres: [BebidaPostre] = [BebidaPostre]()
+    
+    let numeroPersonas: UILabel = {
+        let label = UILabel()
+        label.text = "No. de personas"
+        return label
+    }()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        mainView.backgroundColor = .white
+        self.title = "Reservar"
+        self.navigationController?.navigationBar.topItem?.backBarButtonItem = UIBarButtonItem()
+        mainView.addSubview(collectionBebidas)
+        mainView.addSubview(collectionPostres)
+        mainView.addSubview(continuar)
+        mainView.addSubview(sep)
+        mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: collectionBebidas)
+        mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: collectionPostres)
+        mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: sep)
+        mainView.addConstraintsWithFormat(format: "H:|-16-[v0]-16-|", views: continuar)
+        let height = ScreenSize.screenWidth/2
+        mainView.addConstraintsWithFormat(format: "V:|[v0(\(height))][v1(\(height))]-(>=8)-[v2(1)]-16-[v3(50)]-16-|",
+                                        views: collectionBebidas, collectionPostres, sep, continuar)
+        if let bebidasPostres = infoUsuario["extra_saucer"] as? [Dictionary<String, AnyObject>] {
+            for bp in bebidasPostres {
+                let tipo = bp["tipo"] as! String
+                if tipo == "1" {
+                    let newbp = BebidaPostre(bebidapostre: bp)
+                    self.bebidas.append(newbp)
+                }
+                if self.bebidas.count > 0 {
+                    self.collectionBebidas.reloadData()
+                }
+                if tipo == "2" {
+                    let newbp = BebidaPostre(bebidapostre: bp)
+                    self.postres.append(newbp)
+                }
+                if self.postres.count > 0 {
+                    self.collectionPostres.reloadData()
+                }
+            }
+        }
+    }
+    
+    var infoUsuario: Dictionary<String, AnyObject> = [:]
+    
+    @objc func nextStep() {
+        let vc = ReservarStep2ViewController()
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    // MARK: UICollectionView - Delegate & DataSource
+    
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        return CGSize(width: ScreenSize.screenWidth, height: 50.0)
+    }
+    
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        switch kind {
+            case UICollectionView.elementKindSectionHeader:
+                
+                let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerReuseId, for: indexPath as IndexPath)
+                headerView.backgroundColor = .white
+                let bebidas = ArchiaBoldLabel()
+                bebidas.text = collectionView == collectionBebidas ? "Bebidas" : "Postres"
+                bebidas.textColor = .rosa
+                bebidas.textAlignment = .center
+                bebidas.translatesAutoresizingMaskIntoConstraints = false
+                headerView.addSubview(bebidas)
+                headerView.centerInView(superView: headerView, container: bebidas, sizeV: 40.0, sizeH: 200.0)
+                
+                return headerView
+            
+        case UICollectionView.elementKindSectionFooter:
+            return UICollectionReusableView()
+            
+        default:
+            assert(false, "Unexpected element kind")
+        }
+        return UICollectionReusableView()
+    }
+    
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        if collectionView == collectionBebidas {
+            return bebidas.count
+        }
+        if collectionView == collectionPostres {
+            return postres.count
+        }
+        return 0
+    }
+    
+    let sizeForButtonAdd: CGFloat = 40.0
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        if collectionView == collectionBebidas {
+            let bebida = bebidas[indexPath.row]
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: bebidaPostreCell, for: indexPath)
+            if let cell = cell as? BebidaPostreCell {
+                cell.setUpView(bp: bebida)
+                return cell
+            }
+        }
+        if collectionView == collectionPostres {
+            let postre = postres[indexPath.row]
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: bebidaPostreCell, for: indexPath)
+            if let cell = cell as? BebidaPostreCell {
+                cell.setUpView(bp: postre)
+                return cell
+            }
+        }
+        return UICollectionViewCell()
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: ScreenSize.screenWidth, height: 50)
+    }
+    
+    
+}
+
+
+
+class BebidaPostreCell: UICollectionViewCell {
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+    }
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    let sizeForButtonAdd: CGFloat = 40.0
+    
+    lazy var add: UIButton = {
+        let add: UIButton  = UIButton(type: .system)
+        add.tintColor      = .rosa
+        add.setTitle("+", for: .normal)
+        add.addTarget(self, action: #selector(increment) , for: .touchUpInside)
+        return add
+    }()
+    
+    let numberSelected: UILabel = {
+        let numberSelected: UILabel  = UILabel()
+        numberSelected.textAlignment = .center
+        numberSelected.text = "0"
+        numberSelected.font = UIFont.init(name: numberSelected.font.familyName, size: 12)
+        return numberSelected
+    }()
+    
+    lazy var less: UIButton = {
+        let less: UIButton = UIButton(type: .system)
+        less.tintColor     = .rosa
+        less.setTitle("-", for: .normal)
+        less.addTarget(self, action: #selector(decrement) , for: .touchUpInside)
+        return less
+    }()
+    
+    let bebidaLbl: UILabel = {
+        let bebidaLbl  = UILabel()
+        bebidaLbl.font = UIFont.init(name: bebidaLbl.font.familyName, size: 12)
+        return bebidaLbl
+    }()
+    
+    let costoBebida: UILabel = {
+        let costoBebida  = UILabel()
+        costoBebida.font = UIFont.init(name: costoBebida.font.familyName, size: 12)
+        return costoBebida
+    }()
+    
+    var bebidaPostre: BebidaPostre!
+    
+    func setUpView(bp: BebidaPostre) {
+        self.bebidaPostre = bp
+        addSubview(add)
+        addSubview(numberSelected)
+        addSubview(less)
+        addSubview(bebidaLbl)
+        addSubview(costoBebida)
+        bebidaLbl.text   = bp.nombre
+        costoBebida.text = bp.costo
+        addConstraintsWithFormat(format: "H:|-[v0(\(sizeForButtonAdd))]-[v1(50)]-[v2(\(sizeForButtonAdd))]-[v3(90)]-[v4(90)]",
+            views: less, numberSelected, add, bebidaLbl, costoBebida)
+        addConstraintsWithFormat(format: "V:|[v0(\(sizeForButtonAdd))]", views: add)
+        addConstraintsWithFormat(format: "V:|[v0(\(sizeForButtonAdd))]", views: less)
+        addConstraintsWithFormat(format: "V:|-[v0(30)]", views: numberSelected)
+        addConstraintsWithFormat(format: "V:|-[v0(30)]", views: bebidaLbl)
+        addConstraintsWithFormat(format: "V:|-[v0(30)]", views: costoBebida)
+        borders(for: [.bottom], width: 1, color: .darkGray)
+    }
+    
+    @objc func increment(sender: Any) {
+        let toIncrement = Int(self.numberSelected.text!)!
+        let n = toIncrement + 1
+        self.numberSelected.text = "\(n)"
+    }
+    
+    @objc func decrement(sender: Any) {
+        let toIncrement = Int(self.numberSelected.text!)!
+        if toIncrement == 0 {
+            return
+        }
+        let n = toIncrement - 1
+        self.numberSelected.text = "\(n)"
+    }
+    
+}
+
+
+
+
+
+
+
+class ReservarStep2ViewController: BaseViewController {
+    
+    var dataStorage = UserDefaults.standard
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        mainView.backgroundColor = .white
+        self.title = "Reservar"
+        let backButton = UIBarButtonItem()
+        self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
+        let nextButton = UIBarButtonItem(title: "Next", style: .plain, target: self, action: #selector(nextStep))
+        self.navigationItem.rightBarButtonItem = nextButton
+        
+    }
+    
+    @objc func nextStep(){
+        let vc = CostosViewController()
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
+}
+
+
+
+
+
+
+class CostosViewController: BaseViewController {
+    
+    var dataStorage = UserDefaults.standard
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        mainView.backgroundColor = .white
+        self.title = "Costos"
+        let backButton = UIBarButtonItem()
+        self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
+        
+        
+        let nextButton = UIBarButtonItem(title: "Next", style: .plain, target: self, action: #selector(nextStep))
+        self.navigationItem.rightBarButtonItem = nextButton
+        
+    }
+    
+    
+    
+    @objc func nextStep(){
+        let vc = SeleccionarTarjetaViewController()
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
+}
+
+
+
+
+
+
+
+class SeleccionarTarjetaViewController: BaseViewController {
+    
+    var dataStorage = UserDefaults.standard
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        mainView.backgroundColor = .white
+        self.title = "Selecciona tarjeta"
+        let backButton = UIBarButtonItem()
+        self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
+        
+        let nextButton = UIBarButtonItem(title: "root", style: .plain, target: self, action: #selector(reservarEvent))
+        self.navigationItem.rightBarButtonItem = nextButton
+        
+    }
+    
+    
+    @objc func reservarEvent() {
+        self.navigationController?.popToRootViewController(animated: true)
+    }
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
 /*
 class ComidasCategoriasPaisesViewController: BaseViewController, UITableViewDelegate, UITableViewDataSource {
     

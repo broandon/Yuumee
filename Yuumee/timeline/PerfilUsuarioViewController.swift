@@ -41,25 +41,35 @@ class PerfilUsuarioViewController: BaseViewController {
     
     let dataStorage = UserDefaults.standard
     
-    override func viewDidLoad() {
-        mainView.backgroundColor = .white
-        self.navigationController?.isNavigationBarHidden = false
-        mainView.addSubview(tableView)
-        mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: tableView)
-        mainView.addConstraintsWithFormat(format: "V:|-[v0]|", views: tableView)
-        let customFooter = UIView(frame: CGRect(x: 0, y: 0, width: ScreenSize.screenWidth, height: 50))
-        customFooter.backgroundColor = UIColor.white
-        let reservar = UIButton(frame: CGRect(x: 0, y: 0,
-                                              width: customFooter.frame.width,
-                                              height: 50))
+    lazy var reservar: UIButton = {
+        let frame = CGRect(x: 0, y: 0, width: ScreenSize.screenWidth, height: 50)
+        let reservar = UIButton(frame: frame)
         reservar.setTitle("Reservar", for: .normal)
         reservar.setTitleColor( UIColor.rosa , for: .normal)
         reservar.addTarget(self, action: #selector(reservarEvent), for: .touchUpInside)
         reservar.addBorder(borderColor: .gray, widthBorder: 1)
         reservar.layer.cornerRadius = 10
         reservar.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+        return reservar
+    }()
+    
+    var idAnfittrion: String = ""
+    
+    var idSaucerSelected: String = ""
+    
+    override func viewDidLoad() {
+        mainView.backgroundColor = .white
+        self.navigationController?.isNavigationBarHidden = false
+        mainView.addSubview(tableView)
+        mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: tableView)
+        mainView.addConstraintsWithFormat(format: "V:|-[v0]|", views: tableView)
+        
+        let customFooter = UIView(frame: CGRect(x: 0, y: 0, width: ScreenSize.screenWidth, height: 50))
+        customFooter.backgroundColor = UIColor.white
         customFooter.addSubview(reservar)
         tableView.tableFooterView = customFooter
+        
+        
         let image: UIImage = UIImage(named: "back")!
         let back = UIBarButtonItem(image: image, style: .plain,
                                    target: self, action: #selector(regresar))
@@ -71,9 +81,9 @@ class PerfilUsuarioViewController: BaseViewController {
             "Accept" : "application/json",
             "Content-Type" : "application/x-www-form-urlencoded"
         ]
-        let parameters: Parameters = ["funcion" : "getSaucersDetail",
-                                      "id_user" : dataStorage.getUserId(),
-                                      "id_saucer" : "1"] as [String: Any]
+        let parameters: Parameters = ["funcion"   : "getSaucersDetail",
+                                      "id_user"   : idAnfittrion,
+                                      "id_saucer" : idSaucerSelected] as [String: Any]
         Alamofire.request(BaseURL.baseUrl() , method: .post, parameters: parameters,
                           encoding: ParameterQueryEncoding(),
                           headers: headers).responseJSON{ (response: DataResponse) in
@@ -86,16 +96,12 @@ class PerfilUsuarioViewController: BaseViewController {
                                     if statusMsg == "OK" && state == "200" {
                                         
                                         if let data = result["data"] as? Dictionary<String, AnyObject> {
-                                            
+                                            self.bebidasPostresReservar = data
                                             let info = (data["info"] as? Dictionary<String, AnyObject>)!
                                             self.infoUsuario = info
-                                            
                                             self.latitud  = (info["latitud"] as? String)!
-                                            
                                             self.longitud = (info["longitud"] as? String)!
-                                            
                                             self.platillo = (data["saucer"] as? Dictionary<String, AnyObject>)!
-                                            
                                             if let bebidasPostres = data["extra_saucer"] as? [Dictionary<String, AnyObject>] {
                                                 for bp in bebidasPostres {
                                                     let tipo = bp["tipo"] as! String
@@ -129,6 +135,7 @@ class PerfilUsuarioViewController: BaseViewController {
                                         }
                                     }
                                 }
+                                
                                 //completionHandler(value as? NSDictionary, nil)
                                 break
                             case .failure(let error):
@@ -153,23 +160,34 @@ class PerfilUsuarioViewController: BaseViewController {
     
     var comentarios: [CommentPlatillo] = [CommentPlatillo]()
     
-    
-    @objc func reservarEvent() {
-        print(" reservarEvent ")
-    }
-    
     var otrosPlatillos: [PlatilloEvento] = [PlatilloEvento]()
     
     var latitud = ""
     
     var longitud = ""
     
+    var bebidasPostresReservar: Dictionary<String, AnyObject> = [:]
+    
     @objc func regresar() {
         self.dismiss(animated: true, completion: nil)
     }
     
     
+    
+    @objc func reservarEvent() {
+        
+        let vc = ReservarViewController()
+        vc.infoUsuario = self.bebidasPostresReservar
+        self.navigationController?.pushViewController(vc, animated: true)
+        
+    }
+    
+    
+    
 }
+
+
+
 
 
 extension PerfilUsuarioViewController: UITableViewDelegate, UITableViewDataSource {

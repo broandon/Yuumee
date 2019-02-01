@@ -235,10 +235,13 @@ extension TimeLineViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        //let currentSection = indexPath.section
-        //let currentRow = indexPath.row
-        // let r = restaurants[currentRow]
+        
+        let currentRow = indexPath.row
+        let r = restaurants[currentRow]
+        
         let vc = PerfilUsuarioViewController()
+        vc.idAnfittrion = r.idAnfitrion
+        vc.idSaucerSelected = r.id
         let nav = UINavigationController(rootViewController: vc)
         self.present(nav, animated: true, completion: nil)
         //self.navigationController?.pushViewController(vc, animated: true)
@@ -350,12 +353,14 @@ class RestaurantCell: UITableViewCell {
 
 
 struct Restaurant {
+    var idAnfitrion: String = ""
     var id:        String = ""
     var imagen:    String = ""
     var distancia: String = ""
     var titulo:    String = ""
     var anfitrion: String = ""
     var costo:     String = ""
+    
     var dictionaryRestaurant: [String:Any]?
     init(restaurant: Dictionary<String, Any>) {
         dictionaryRestaurant = restaurant
@@ -377,6 +382,10 @@ struct Restaurant {
         if let costo = restaurant["costo"] as? String {
             self.costo = costo
         }
+        if let idAnfitrion = restaurant["id_anfitrion"] as? String {
+            self.idAnfitrion = idAnfitrion
+        }
+        
     }
     func toDictionary() -> [String:Any]? {
         return self.dictionaryRestaurant
