@@ -64,11 +64,13 @@ class PerfilUsuarioViewController: BaseViewController {
         mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: tableView)
         mainView.addConstraintsWithFormat(format: "V:|-[v0]|", views: tableView)
         
-        let customFooter = UIView(frame: CGRect(x: 0, y: 0, width: ScreenSize.screenWidth, height: 50))
-        customFooter.backgroundColor = UIColor.white
-        customFooter.addSubview(reservar)
-        tableView.tableFooterView = customFooter
         
+        if dataStorage.getTipo() == "\(TipoUsuario.cliente.rawValue)" {
+            let customFooter = UIView(frame: CGRect(x: 0, y: 0, width: ScreenSize.screenWidth, height: 50))
+            customFooter.backgroundColor = UIColor.white
+            customFooter.addSubview(reservar)
+            tableView.tableFooterView = customFooter
+        }
         
         let image: UIImage = UIImage(named: "back")!
         let back = UIBarButtonItem(image: image, style: .plain,
@@ -174,12 +176,14 @@ class PerfilUsuarioViewController: BaseViewController {
     
     
     
+    /**
+     * Evento del cliente para reservar una comida.
+     *
+     */
     @objc func reservarEvent() {
-        
         let vc = ReservarViewController()
         vc.infoUsuario = self.bebidasPostresReservar
         self.navigationController?.pushViewController(vc, animated: true)
-        
     }
     
     

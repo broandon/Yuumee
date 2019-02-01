@@ -202,7 +202,6 @@ class TimeLineViewController: BaseViewController {
 
 
 extension TimeLineViewController: UIPopoverPresentationControllerDelegate {
-    
     func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
         return .none
     }
@@ -224,7 +223,6 @@ extension TimeLineViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: restaurantCell, for: indexPath) as! RestaurantCell
         cell.setUpView(restaurant: r)
         return cell
-        
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -235,25 +233,15 @@ extension TimeLineViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        
         let currentRow = indexPath.row
         let r = restaurants[currentRow]
-        
         let vc = PerfilUsuarioViewController()
         vc.idAnfittrion = r.idAnfitrion
         vc.idSaucerSelected = r.id
         let nav = UINavigationController(rootViewController: vc)
         self.present(nav, animated: true, completion: nil)
-        //self.navigationController?.pushViewController(vc, animated: true)
     }
     
-    /*
-    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        let currentSection = indexPath.section
-        let currentRow = indexPath.row
-        return 550.0 // UITableViewAutomaticDimension
-    }
-    */
 }
 
 
@@ -265,7 +253,6 @@ class RestaurantCell: UITableViewCell {
     required init?(coder aDecoder: NSCoder) {
         self.init()
     }
-    
     
     let restaurantImage: UIImageView = {
         let imageView = UIImageView()
@@ -284,7 +271,6 @@ class RestaurantCell: UITableViewCell {
         label.textColor = .rosa
         return label
     }()
-    
     
     let distanciaAprox: UIImageView = {
         let size: CGSize   = CGSize(width: 24.0, height: 24.0)

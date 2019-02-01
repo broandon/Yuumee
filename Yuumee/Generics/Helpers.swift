@@ -472,9 +472,9 @@ struct PlatilloEvento {
 struct CommentPlatillo {
     
     var id_calificacion_anfitrion: String = ""
-    var valoracion: String = ""
+    var valoracion: String  = ""
     var comentarios: String = ""
-    var cliente: String = ""
+    var cliente: String     = ""
     
     init(comment: Dictionary<String, Any>) {
         if let id_calificacion_anfitrion = comment["id_calificacion_anfitrion"] as? String {
@@ -574,13 +574,15 @@ class HeaderClass: UICollectionReusableView {
 
 
 
-class ReservarViewController: BaseViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+class ReservarViewController: BaseViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UITextFieldDelegate, UIPopoverPresentationControllerDelegate, NumeroPersonasSeleccionadas {
+    
+    
     
     var dataStorage = UserDefaults.standard
     
     let bebidaPostreCell = "bebidaPostreCell"
-    let headerReuseId = "header"
-    let reuseId = "cell"
+    let headerReuseId    = "header"
+    let reuseId          = "cell"
     
     lazy var collectionBebidas: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -592,7 +594,6 @@ class ReservarViewController: BaseViewController, UICollectionViewDelegate, UICo
         collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseId)
         collectionView.register(HeaderClass.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerReuseId)
         collectionView.register(BebidaPostreCell.self, forCellWithReuseIdentifier: bebidaPostreCell)
-        
         return collectionView
     }()
     
@@ -628,28 +629,124 @@ class ReservarViewController: BaseViewController, UICollectionViewDelegate, UICo
     
     var postres: [BebidaPostre] = [BebidaPostre]()
     
+    // Elementos para seccion de numero depersonas
+    
     let numeroPersonas: UILabel = {
         let label = UILabel()
         label.text = "No. de personas"
         return label
     }()
+    lazy var numPersonas: UITextField = {
+        let textField = UITextField()
+        textField.delegate = self
+        textField.rightViewMode = .always
+        let frame: CGRect = CGRect(x: 0, y: 0, width: 20, height: 20)
+        let imageView = UIImageView(frame: frame)
+        imageView.contentMode = .scaleAspectFit
+        let image = UIImage(named: "down_arrow")
+        imageView.image = image
+        textField.rightView = imageView
+        textField.textAlignment = .center
+        textField.text = "1"
+        return textField
+    }()
+    let contenedorNumPersonas: UIView = {
+        let view = UIView()
+        view.isUserInteractionEnabled = true
+        return view
+    }()
+    
+    // Elementos para el Switch de de Alergia
+    let alergia: UILabel = {
+        let label = UILabel()
+        label.text = "¿Eres alérgico?"
+        return label
+    }()
+    lazy var switchAlergias: CustomSwitch = {
+        let switchP  = CustomSwitch(frame: CGRect.zero)
+        switchP.isOn = false
+        switchP.padding = 0
+        switchP.onTintColor  = UIColor.rosa
+        switchP.offTintColor = UIColor.darkGray
+        switchP.cornerRadius = 0.5
+        switchP.thumbCornerRadius = 0.5
+        switchP.thumbSize = CGSize(width: 30, height: 30)
+        switchP.thumbTintColor = UIColor.white
+        switchP.animationDuration = 0.25
+        switchP.addTarget(self, action: #selector(alergiaEvent), for: .valueChanged)
+        return switchP
+    }()
+    let contenedorAlergias: UIView = {
+        let view = UIView()
+        view.isUserInteractionEnabled = true
+        return view
+    }()
+    
+    // Elementos para descripcion de alergias
+    let especifica: UILabel = {
+        let label = UILabel()
+        label.text = "Especifica a qué"
+        return label
+    }()
+    let descEspecifica: UITextField = {
+        let textField = UITextField()
+        textField.backgroundColor = .gris
+        return textField
+    }()
+    let contenedorEspecifica: UIView = {
+        let view = UIView()
+        view.isUserInteractionEnabled = true
+        return view
+    }()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         mainView.backgroundColor = .white
         self.title = "Reservar"
         self.navigationController?.navigationBar.topItem?.backBarButtonItem = UIBarButtonItem()
+        self.hideKeyboardWhenTappedAround()
         mainView.addSubview(collectionBebidas)
         mainView.addSubview(collectionPostres)
         mainView.addSubview(continuar)
         mainView.addSubview(sep)
+        mainView.addSubview(contenedorNumPersonas)
+        mainView.addSubview(contenedorAlergias)
+        mainView.addSubview(contenedorEspecifica)
+        
+        let height = (ScreenSize.screenWidth/2) - 10
         mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: collectionBebidas)
         mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: collectionPostres)
         mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: sep)
         mainView.addConstraintsWithFormat(format: "H:|-16-[v0]-16-|", views: continuar)
-        let height = ScreenSize.screenWidth/2
-        mainView.addConstraintsWithFormat(format: "V:|[v0(\(height))][v1(\(height))]-(>=8)-[v2(1)]-16-[v3(50)]-16-|",
-                                        views: collectionBebidas, collectionPostres, sep, continuar)
+        mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: contenedorNumPersonas)
+        mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: contenedorAlergias)
+        mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: contenedorEspecifica)
+        
+        mainView.addConstraintsWithFormat(format: "V:|[v0(\(height))][v1(\(height))]-[v2(40)]-[v3(40)]-[v4(70)]-[v5(1)]-[v6(50)]",
+                                        views: collectionBebidas, collectionPostres, contenedorNumPersonas, contenedorAlergias, contenedorEspecifica, sep, continuar)
+        contenedorNumPersonas.addSubview(numeroPersonas)
+        contenedorNumPersonas.addSubview(numPersonas)
+        contenedorNumPersonas.addConstraintsWithFormat(format: "H:|-[v0(150)]", views: numeroPersonas)
+        contenedorNumPersonas.addConstraintsWithFormat(format: "H:[v0(150)]-|", views: numPersonas)
+        contenedorNumPersonas.addConstraintsWithFormat(format: "V:|-[v0]", views: numeroPersonas)
+        contenedorNumPersonas.addConstraintsWithFormat(format: "V:|-[v0]", views: numPersonas)
+        
+        contenedorAlergias.addSubview(alergia)
+        contenedorAlergias.addSubview(switchAlergias)
+        contenedorAlergias.addConstraintsWithFormat(format: "H:|-[v0(150)]", views: alergia)
+        contenedorAlergias.addConstraintsWithFormat(format: "H:[v0(70)]-|", views: switchAlergias)
+        contenedorAlergias.addConstraintsWithFormat(format: "V:|-[v0]", views: alergia)
+        contenedorAlergias.addConstraintsWithFormat(format: "V:|-[v0(35)]", views: switchAlergias)
+        
+        contenedorEspecifica.addSubview(especifica)
+        contenedorEspecifica.addSubview(descEspecifica)
+        contenedorEspecifica.addConstraintsWithFormat(format: "H:|-[v0(150)]", views: especifica)
+        contenedorEspecifica.addConstraintsWithFormat(format: "H:[v0(200)]-|", views: descEspecifica)
+        contenedorEspecifica.addConstraintsWithFormat(format: "V:|-[v0]", views: especifica)
+        contenedorEspecifica.addConstraintsWithFormat(format: "V:|-[v0(60)]", views: descEspecifica)
+        
+        
         if let bebidasPostres = infoUsuario["extra_saucer"] as? [Dictionary<String, AnyObject>] {
             for bp in bebidasPostres {
                 let tipo = bp["tipo"] as! String
@@ -674,9 +771,15 @@ class ReservarViewController: BaseViewController, UICollectionViewDelegate, UICo
     var infoUsuario: Dictionary<String, AnyObject> = [:]
     
     @objc func nextStep() {
-        let vc = ReservarStep2ViewController()
+        let vc = CostosViewController()
         self.navigationController?.pushViewController(vc, animated: true)
     }
+    
+    
+    @objc func alergiaEvent() {
+        print(" alergiaEvent ")
+    }
+    
     
     // MARK: UICollectionView - Delegate & DataSource
     
@@ -748,6 +851,36 @@ class ReservarViewController: BaseViewController, UICollectionViewDelegate, UICo
         return CGSize(width: ScreenSize.screenWidth, height: 50)
     }
     
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        numPersonas.resignFirstResponder()
+        // Modal
+        let vc = NumeroPersonasViewController()
+        vc.delegate = self
+        vc.currentPerson = numPersonas.text!
+        let popVC = UINavigationController(rootViewController: vc)
+        popVC.modalPresentationStyle = .popover
+        let popOverVC = popVC.popoverPresentationController
+        popOverVC?.permittedArrowDirections = .any
+        popOverVC?.delegate = self
+        popOverVC?.sourceView = numPersonas // self.button
+        let midX: CGFloat = self.numPersonas.bounds.midX
+        let midY: CGFloat = self.numPersonas.bounds.minY
+        let frame = CGRect(x: midX, y: midY, width: 0, height: 0)
+        popOverVC?.sourceRect = frame
+        let widthModal = ScreenSize.screenWidth - 16
+        let heightModal = (ScreenSize.screenWidth / 2)
+        popVC.preferredContentSize = CGSize(width: widthModal, height: heightModal)
+        self.present(popVC, animated: true)
+        return false
+    }
+    
+    func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+        return .none
+    }
+    
+    func getNumeroPersonas(numero: String) {
+        numPersonas.text = numero
+    }
     
 }
 
@@ -838,31 +971,76 @@ class BebidaPostreCell: UICollectionViewCell {
 }
 
 
-
-
-
-
-
-class ReservarStep2ViewController: BaseViewController {
+/**
+ *  VENTANA - MODAL
+ *
+ */
+class NumeroPersonasViewController: BaseViewController, UITableViewDelegate, UITableViewDataSource {
     
-    var dataStorage = UserDefaults.standard
+    let cerrarBtn: UIBarButtonItem = {
+        let sizeImg = CGSize(width: 24, height: 24)
+        let imgClose = UIImage(named: "close")?.imageResize(sizeChange: sizeImg)
+        let cerrarBtn = UIBarButtonItem(image: imgClose, style: .plain,
+                                        target: self, action: #selector(closeVC) )
+        cerrarBtn.tintColor = .white
+        return cerrarBtn
+    }()
+    
+    let defaultReuseId = "cell"
+    lazy var tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.showsVerticalScrollIndicator = false
+        tableView.register(UITableViewCell.classForCoder(), forCellReuseIdentifier: defaultReuseId)
+        tableView.separatorStyle = .none
+        return tableView
+    }()
+    
+    let personas = ["1", "2", "3", "4", "5"]
+    var delegate: NumeroPersonasSeleccionadas?
+    var currentPerson = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        mainView.backgroundColor = .white
-        self.title = "Reservar"
-        let backButton = UIBarButtonItem()
-        self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
-        let nextButton = UIBarButtonItem(title: "Next", style: .plain, target: self, action: #selector(nextStep))
-        self.navigationItem.rightBarButtonItem = nextButton
-        
+        mainView.backgroundColor = UIColor.gris
+        cerrarBtn.target = self
+        self.navigationItem.leftBarButtonItem = cerrarBtn
+        mainView.addSubview(tableView)
+        mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: tableView)
+        mainView.addConstraintsWithFormat(format: "V:|-[v0]|", views: tableView)
+    }
+    @objc func closeVC() {
+        self.dismiss(animated: true, completion: nil)
+    }
+    // MARK: Data Table
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return personas.count
+    }
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: defaultReuseId, for: indexPath)
+        // cell.releaseView()
+        let num = personas[indexPath.row]
+        if num == currentPerson {
+            cell.accessoryType = .checkmark
+        }
+        cell.textLabel?.text = num
+        return cell
+    }
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableView.automaticDimension
+    }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let currentIndex: Int = indexPath.row
+        let persona = personas[currentIndex]
+        self.dismiss(animated: true, completion: {
+            self.delegate?.getNumeroPersonas(numero: persona)
+        })
     }
     
-    @objc func nextStep(){
-        let vc = CostosViewController()
-        self.navigationController?.pushViewController(vc, animated: true)
-    }
-    
+}
+protocol NumeroPersonasSeleccionadas {
+    func getNumeroPersonas(numero: String)
 }
 
 
@@ -870,9 +1048,64 @@ class ReservarStep2ViewController: BaseViewController {
 
 
 
-class CostosViewController: BaseViewController {
+
+
+
+
+
+class CostosViewController: BaseViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource {
     
     var dataStorage = UserDefaults.standard
+    
+    private func getSimpleLabel(texto: String) -> UILabel {
+        let label  = UILabel()
+        label.text = texto
+        label.textAlignment = .center
+        return label
+    }
+    
+    private func getSimpleTextField() -> UITextField {
+        let textField = UITextField()
+        textField.delegate = self
+        textField.addBorder(borderColor: .gris, widthBorder: 1.0)
+        return textField
+    }
+    
+    lazy var continuar: UIButton = {
+        let frame = CGRect(x: 0, y: 0, width: ScreenSize.screenWidth, height: 50)
+        let continuar = UIButton(frame: frame)
+        continuar.setTitle("CONTINUAR", for: .normal)
+        continuar.setTitleColor( UIColor.rosa , for: .normal)
+        continuar.addTarget(self, action: #selector(nextStep), for: .touchUpInside)
+        return continuar
+    }()
+    
+    let defaultReuseId = "cell"
+    
+    lazy var tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.showsVerticalScrollIndicator = false
+        tableView.register(UITableViewCell.classForCoder(), forCellReuseIdentifier: defaultReuseId)
+        tableView.separatorStyle = .none
+        return tableView
+    }()
+    
+    let secciones = ["menu", "bebidas", "postres", "costo_total"]
+    
+    var menu: UILabel!
+    var bebidas: UILabel!
+    var postres: UILabel!
+    var menuMx: UILabel!
+    var bebidasMx: UILabel!
+    var postresMx: UILabel!
+    var menuInput: UITextField!
+    var bebidasInput: UITextField!
+    var postresInput: UITextField!
+    var totalInput: UITextField!
+    var costoTotal: UILabel!
+    var costoTotalMx: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -881,9 +1114,36 @@ class CostosViewController: BaseViewController {
         let backButton = UIBarButtonItem()
         self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
         
+        menu       = getSimpleLabel(texto: "Menú: $")
+        bebidas    = getSimpleLabel(texto: "Bebidas: $")
+        postres    = getSimpleLabel(texto: "Postres: $")
+        menuMx     = getSimpleLabel(texto: ".00 mxn")
+        bebidasMx  = getSimpleLabel(texto: ".00 mxn")
+        postresMx  = getSimpleLabel(texto: ".00 mxn")
+        menuInput    = getSimpleTextField()
+        bebidasInput = getSimpleTextField()
+        postresInput = getSimpleTextField()
+        totalInput   = getSimpleTextField()
+        costoTotal   = getSimpleLabel(texto: "Costo total: $")
+        costoTotalMx = getSimpleLabel(texto: ".00 mxn")
         
-        let nextButton = UIBarButtonItem(title: "Next", style: .plain, target: self, action: #selector(nextStep))
-        self.navigationItem.rightBarButtonItem = nextButton
+        
+        let customFooter = UIView(frame: CGRect(x: 0, y: 0, width: ScreenSize.screenWidth, height: 50))
+        customFooter.backgroundColor = UIColor.white
+        customFooter.addSubview(continuar)
+        tableView.tableFooterView = customFooter
+        
+        let sep = UIView()
+        sep.backgroundColor = .darkGray
+        mainView.addSubview(tableView)
+        mainView.addSubview(continuar)
+        mainView.addSubview(sep)
+        
+        mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: tableView)
+        mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: sep)
+        mainView.addConstraintsWithFormat(format: "H:|-16-[v0]-16-|", views: continuar)
+        mainView.addConstraintsWithFormat(format: "V:|-[v0]-[v1(1)]-[v2(40)]-|",
+                                          views: tableView, sep, continuar)
         
     }
     
@@ -894,7 +1154,86 @@ class CostosViewController: BaseViewController {
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
-}
+    
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return false
+    }
+    
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return secciones.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: defaultReuseId, for: indexPath)
+        
+        let seccion = secciones[indexPath.row]
+        
+        if seccion == "menu" {
+            cell.addSubview(menu)
+            cell.addSubview(menuInput)
+            cell.addSubview(menuMx)
+            cell.addConstraintsWithFormat(format: "H:|-[v0(90)]-[v1]-[v2(90)]-|",
+                                          views: menu, menuInput, menuMx)
+            cell.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: menu)
+            cell.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: menuInput)
+            cell.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: menuMx)
+            return cell
+        }
+        
+        if seccion == "bebidas" {
+            cell.addSubview(bebidas)
+            cell.addSubview(bebidasInput)
+            cell.addSubview(bebidasMx)
+            cell.addConstraintsWithFormat(format: "H:|-[v0(90)]-[v1]-[v2(90)]-|",
+                                          views: bebidas, bebidasInput, bebidasMx)
+            cell.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: bebidas)
+            cell.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: bebidasInput)
+            cell.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: bebidasMx)
+            return cell
+        }
+        
+        if seccion == "postres" {
+            cell.addSubview(postres)
+            cell.addSubview(postresInput)
+            cell.addSubview(postresMx)
+            cell.addConstraintsWithFormat(format: "H:|-[v0(90)]-[v1]-[v2(90)]-|",
+                                          views: postres, postresInput, postresMx)
+            cell.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: postres)
+            cell.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: postresInput)
+            cell.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: postresMx)
+            
+            return cell
+        }
+        
+        if seccion == "costo_total" {
+            cell.addSubview(costoTotal); costoTotal.addBorder()
+            cell.addSubview(totalInput)
+            cell.addSubview(costoTotalMx); costoTotalMx.addBorder()
+            cell.addConstraintsWithFormat(format: "H:[v0(110)]-[v1(90)]-[v2(70)]-|",
+                                          views: costoTotal, totalInput, costoTotalMx)
+            cell.addConstraintsWithFormat(format: "V:[v0(30)]-|", views: costoTotal)
+            cell.addConstraintsWithFormat(format: "V:[v0(30)]-|", views: totalInput)
+            cell.addConstraintsWithFormat(format: "V:[v0(30)]-|", views: costoTotalMx)
+            
+            return cell
+        }
+        
+        return UITableViewCell()
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        let seccion = secciones[indexPath.row]
+        if seccion == "costo_total" {
+            return 200.0
+        }
+        return 70.0
+    }
+    
+    
+} // CostosViewController
 
 
 
@@ -902,26 +1241,215 @@ class CostosViewController: BaseViewController {
 
 
 
-class SeleccionarTarjetaViewController: BaseViewController {
+class SeleccionarTarjetaViewController: BaseViewController, UITableViewDelegate, UITableViewDataSource {
+    
     
     var dataStorage = UserDefaults.standard
+    
+    let defaultReuseId = "cell"
+    lazy var tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.showsVerticalScrollIndicator = false
+        tableView.register(UITableViewCell.classForCoder(), forCellReuseIdentifier: defaultReuseId)
+        tableView.separatorStyle = .none
+        tableView.backgroundColor = .white
+        return tableView
+    }()
+    
+    var tarjetas: [Tarjeta] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
         mainView.backgroundColor = .white
-        self.title = "Selecciona tarjeta"
+        self.title = "Reservar"
         let backButton = UIBarButtonItem()
         self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
         
-        let nextButton = UIBarButtonItem(title: "root", style: .plain, target: self, action: #selector(reservarEvent))
-        self.navigationItem.rightBarButtonItem = nextButton
         
+        mainView.addSubview(tableView)
+        mainView.addConstraintsWithFormat(format: "H:|-[v0]-|", views: tableView)
+        mainView.addConstraintsWithFormat(format: "V:|-[v0]|", views: tableView)
+        
+        let headers: HTTPHeaders = ["Accept": "application/json",
+                                    "Content-Type" : "application/x-www-form-urlencoded"]
+        
+        let parameters: Parameters = ["funcion"  : "getTokensUser",
+                                      "id_user"  : dataStorage.getUserId()] as [String: Any]
+        Alamofire.request(BaseURL.baseUrl(), method: .post, parameters: parameters, encoding: ParameterQueryEncoding(), headers: headers).responseJSON
+            { (response: DataResponse) in
+                switch(response.result) {
+                case .success(let value):
+                    if let result = value as? Dictionary<String, Any> {
+                        
+                        let statusMsg = result["status_msg"] as? String
+                        let state = result["state"] as? String
+                        if statusMsg == "OK" && state == "200" {
+                            
+                            if let tarjetas = result["data"] as? [Dictionary<String, AnyObject>] {
+                                for tarjeta in tarjetas {
+                                    let newTarjet = Tarjeta(tarjetasArray: tarjeta)
+                                    self.tarjetas.append(newTarjet)
+                                }
+                                if self.tarjetas.count > 0 {
+                                    self.tableView.reloadData()
+                                }
+                            }
+                            
+                        }
+                        else{
+                            let alert = UIAlertController(title: "Ocurrió un error al realizar la petición.",
+                                                          message: "\(statusMsg!)",
+                                preferredStyle: UIAlertController.Style.alert)
+                            alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+                            self.present(alert, animated: true, completion: nil)
+                            return;
+                        }
+                    }
+                    //completionHandler(value as? NSDictionary, nil)
+                    break
+                case .failure(let error):
+                    //completionHandler(nil, error as NSError?)
+                    //print(" error:  ")
+                    //print(error)
+                    break
+                }
+        }
+        
+        
+        //let nextButton = UIBarButtonItem(title: "root", style: .plain, target: self, action: #selector(reservarEvent))
+        //self.navigationItem.rightBarButtonItem = nextButton
     }
     
     
     @objc func reservarEvent() {
-        self.navigationController?.popToRootViewController(animated: true)
+        //self.navigationController?.popToRootViewController(animated: true)
+        print("reservarEvent")
+        let headers: HTTPHeaders = ["Accept": "application/json",
+                                    "Content-Type" : "application/x-www-form-urlencoded"]
+        
+        let parameters: Parameters = ["funcion"  : "saveRerservation",
+                                      "id_user"  : dataStorage.getUserId(),
+                                      "cost"     : "",
+                                      "persons"  : "",
+                                      "allergies" : "",
+                                      "allergies_description" : "",
+                                      "id_token_method"       : "",
+                                      "id_token_customer"     : "",
+                                      "id_saucer" : "1",
+                                      "extra_products" : ""] as [String: Any]
+        
+        Alamofire.request(BaseURL.baseUrl(), method: .post, parameters: parameters, encoding: ParameterQueryEncoding(), headers: headers).responseJSON
+            { (response: DataResponse) in
+                switch(response.result) {
+                case .success(let value):
+                    if let result = value as? Dictionary<String, Any> {
+                        
+                        print(" result ")
+                        print(result)
+                        
+                        let statusMsg = result["status_msg"] as? String
+                        let state = result["state"] as? String
+                        if statusMsg == "OK" && state == "200" {
+                            
+                            Utils.showSimpleAlert(message: "Reservacion guardada",
+                                                  context: self, success: nil)
+                            
+                        }
+                        else{
+                            let alert = UIAlertController(title: "Ocurrió un error al realizar la petición.",
+                                                          message: "\(statusMsg!)",
+                                preferredStyle: UIAlertController.Style.alert)
+                            alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+                            self.present(alert, animated: true, completion: nil)
+                            return;
+                        }
+                    }
+                    //completionHandler(value as? NSDictionary, nil)
+                    break
+                case .failure(let error):
+                    //completionHandler(nil, error as NSError?)
+                    //print(" error:  ")
+                    //print(error)
+                    break
+                }
+        }
+        
+        
     }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return tarjetas.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: defaultReuseId, for: indexPath)
+        cell.releaseView()
+        
+        cell.selectionStyle = .none
+        
+        let nTarjeta = tarjetas[indexPath.row]
+        
+        let numTarjeta = UILabel()
+        numTarjeta.text = " **** **** **** " + nTarjeta.digits
+        numTarjeta.textColor = UIColor.darkGray
+        numTarjeta.textAlignment = .center
+        
+        let tipoImgTarjeta = UIImageView()
+        tipoImgTarjeta.contentMode = .scaleAspectFit
+        if nTarjeta.type == TipoTarjeta.american_express.rawValue {
+            tipoImgTarjeta.image = UIImage(named: "american_express")
+        }
+        if nTarjeta.type == TipoTarjeta.visa.rawValue {
+            tipoImgTarjeta.image = UIImage(named: "visa")
+        }
+        if nTarjeta.type == TipoTarjeta.master_card.rawValue {
+            tipoImgTarjeta.image = UIImage(named: "master_card")
+        }
+        
+        
+        cell.addSubview(tipoImgTarjeta)
+        cell.addSubview(numTarjeta)
+        
+        cell.addConstraintsWithFormat(format: "H:|-[v0]-[v1(25)]-16-|",
+                                      views: numTarjeta, tipoImgTarjeta)
+        cell.addConstraintsWithFormat(format: "V:|-[v0]-|", views: numTarjeta)
+        cell.addConstraintsWithFormat(format: "V:|-[v0(20)]", views: tipoImgTarjeta)
+        
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 50.0
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.selectRow(at: indexPath, animated: true, scrollPosition: .top)
+    }
+    
+    
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        let footerView = UIView(frame: CGRect(x: 0, y: 0, width: mainView.frame.size.width, height: 50))
+        footerView.isUserInteractionEnabled = true
+        let addCard = UIButton(type: .system)
+        addCard.setTitle("Reservar", for: .normal)
+        addCard.setTitleColor(UIColor.rosa, for: .normal)
+        addCard.layer.cornerRadius = 10
+        addCard.contentEdgeInsets = UIEdgeInsets(top: 5, left: 15, bottom: 5, right: 15)
+        addCard.imageView?.contentMode = .scaleAspectFit
+        addCard.addBorder(borderColor: UIColor.azul , widthBorder: 2)
+        addCard.addTarget(self, action: #selector(reservarEvent) , for: .touchUpInside)
+        
+        footerView.addSubview(addCard)
+        footerView.addConstraintsWithFormat(format: "H:[v0(150)]-16-|", views: addCard)
+        footerView.addConstraintsWithFormat(format: "V:|-[v0(40)]", views: addCard)
+        
+        return footerView
+        
+    }
+    
+    
     
 }
 
