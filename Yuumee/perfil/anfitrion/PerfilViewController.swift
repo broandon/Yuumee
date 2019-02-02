@@ -171,7 +171,7 @@ extension PerfilViewController: UITableViewDelegate, UITableViewDataSource {
         if seccion == "aviso" {
             let viewController = WebViewController()
             viewController.titleVC = ""
-            viewController.url = "http://easycode.mx/solestra/img/Privacidad/terminos.pdf"
+            viewController.url = "http://easycode.mx/yuumee/privacidad/privacidad.pdf"
             let nav = UINavigationController(rootViewController: viewController)
             self.present(nav, animated: true, completion: nil)
             //self.navigationController?.pushViewController(viewController, animated: true)

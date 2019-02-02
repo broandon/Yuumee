@@ -9,8 +9,9 @@
 import UIKit
 import Alamofire
 
-class SubCategoriasViewController: BaseViewController {
+class SubCategoriasViewController: BaseViewController, UITableViewDelegate, UITableViewDataSource {
     
+    var delegate: SubCategorySelected?
     var idCategoria: String = ""
     
     let cerrarBtn: UIBarButtonItem = {
@@ -21,7 +22,6 @@ class SubCategoriasViewController: BaseViewController {
         cerrarBtn.tintColor = .white
         return cerrarBtn
     }()
-    
     
     let reuseId = "RestaurantCell"
     
@@ -43,75 +43,16 @@ class SubCategoriasViewController: BaseViewController {
         mainView.backgroundColor = .white
         cerrarBtn.target = self
         self.navigationItem.rightBarButtonItem = cerrarBtn
-        
-        
         mainView.addSubview(tableView)
         mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: tableView)
         mainView.addConstraintsWithFormat(format: "V:|-[v0]|", views: tableView)
-        
-        // ---------------------------------------------------------------------
-        if !idCategoria.isEmpty {
-            let headers: HTTPHeaders = [
-                // "Authorization": "Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==",
-                "Accept" : "application/json",
-                "Content-Type" : "application/x-www-form-urlencoded"
-            ]
-            let parameters: Parameters = ["funcion" : "getSubCategories",
-                                          "id_cat" : idCategoria] as [String: Any]
-            Alamofire.request(BaseURL.baseUrl() , method: .post, parameters: parameters,
-                              encoding: ParameterQueryEncoding(),
-                              headers: headers).responseJSON{ (response: DataResponse) in
-                                switch(response.result) {
-                                case .success(let value):
-                                    
-                                    if let result = value as? Dictionary<String, Any> {
-                                        
-                                        let statusMsg = result["status_msg"] as? String
-                                        let state     = result["state"] as? String
-                                        if statusMsg == "OK" && state == "200" {
-                                            if let data = result["data"] as? [Dictionary<String, AnyObject>] {
-                                                
-                                                for c in data {
-                                                    let newC = SubCategoria(categoria: c)
-                                                    self.subCategorias.append(newC)
-                                                }
-                                                
-                                                if self.subCategorias.count > 0 {
-                                                    self.tableView.reloadData()
-                                                }
-                                                
-                                            }
-                                        }
-                                        
-                                    }
-                                    
-                                    //completionHandler(value as? NSDictionary, nil)
-                                    break
-                                case .failure(let error):
-                                    //completionHandler(nil, error as NSError?)
-                                    print(error)
-                                    print(error.localizedDescription)
-                                    break
-                                }
-            }
-        }
-        // ---------------------------------------------------------------------
-        
     }
     
     @objc func closeVC() {
         self.dismiss(animated: true, completion: nil)
     }
     
-
-} // SubCategoriasViewController
-
-
-extension SubCategoriasViewController: UITableViewDelegate, UITableViewDataSource {
-    
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
+    // MARK: Delegate & Datasource - UITableView
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return subCategorias.count
@@ -119,60 +60,34 @@ extension SubCategoriasViewController: UITableViewDelegate, UITableViewDataSourc
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseId, for: indexPath)
-        cell.selectionStyle = .none
-        
         let subC = subCategorias[indexPath.row]
-        print(" subC ")
-        print(subC)
-        
+        let urlImg = URL(string: subC.imagen)
+        let nombre: UILabel = UILabel()
+        nombre.text = subC.titulo
+        let imageView: UIImageView = UIImageView()
+        cell.addSubview(nombre)
+        cell.addSubview(imageView)
+        cell.addConstraintsWithFormat(format: "H:|-[v0(24)]-16-[v1]-|", views: imageView, nombre)
+        cell.addConstraintsWithFormat(format: "V:|-[v0]-|", views: imageView)
+        cell.addConstraintsWithFormat(format: "V:|-[v0]-|", views: nombre)
+        imageView.af_setImage(withURL: urlImg!)
         return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let currentSection = indexPath.section
+        return 50.0
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
         let currentRow = indexPath.row
-        return 300.0 // UITableViewAutomaticDimension
+        let subC = subCategorias[currentRow]
+        delegate?.getSubCategorySelected(subCategory: subC)
+        self.dismiss(animated: true, completion: nil)
     }
-    
-    /*
-     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-     let currentSection = indexPath.section
-     let currentRow = indexPath.row
-     return 550.0 // UITableViewAutomaticDimension
-     }
-     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-     tableView.deselectRow(at: indexPath, animated: true)
-     let currentSection = indexPath.section
-     let currentRow = indexPath.row
-     //print(" currentRow ", currentRow)
-     }
-     */
-    
-} // DetalleListadoCategoriaViewController
 
+} // SubCategoriasViewController
 
-struct SubCategoria {
-    
-    var id: String     = ""
-    var imagen: String = ""
-    var titulo: String = ""
-    
-    init(categoria: Dictionary<String, Any>) {
-        
-        if let id = categoria["Id"] as? String {
-            self.id = id
-        }
-        
-        if let imagen = categoria["imagen"] as? String {
-            self.imagen = imagen
-        }
-        
-        if let titulo = categoria["titulo"] as? String {
-            self.titulo = titulo
-        }
-        
-    }
-    
+protocol SubCategorySelected {
+    func getSubCategorySelected(subCategory: SubCategoria)
 }
-
-

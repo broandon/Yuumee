@@ -1339,11 +1339,16 @@ class SeleccionarTarjetaViewController: BaseViewController, UITableViewDelegate,
                                       "id_token_customer"     : "",
                                       "id_saucer" : "1",
                                       "extra_products" : ""] as [String: Any]
-        
+        print(" parameters ")
+        print(parameters)
         Alamofire.request(BaseURL.baseUrl(), method: .post, parameters: parameters, encoding: ParameterQueryEncoding(), headers: headers).responseJSON
             { (response: DataResponse) in
                 switch(response.result) {
                 case .success(let value):
+                    
+                    print(" value ")
+                    print(value)
+                    
                     if let result = value as? Dictionary<String, Any> {
                         
                         print(" result ")
@@ -1369,13 +1374,12 @@ class SeleccionarTarjetaViewController: BaseViewController, UITableViewDelegate,
                     //completionHandler(value as? NSDictionary, nil)
                     break
                 case .failure(let error):
-                    //completionHandler(nil, error as NSError?)
-                    //print(" error:  ")
-                    //print(error)
+                    print(" error:  ")
+                    print(error)
                     break
                 }
         }
-        
+        print(" se pasa hasta aqui ")
         
     }
     

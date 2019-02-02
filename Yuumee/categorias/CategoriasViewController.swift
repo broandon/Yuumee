@@ -110,7 +110,6 @@ class CategoriasViewController: BaseViewController {
                                     let state     = result["state"] as? String
                                     if statusMsg == "OK" && state == "200" {
                                         if let data = result["data"] as? [Dictionary<String, AnyObject>] {
-                                            
                                             for c in data {
                                                 let newC = Categoria(categoria: c)
                                                 self.categorias.append(newC)
@@ -120,7 +119,6 @@ class CategoriasViewController: BaseViewController {
                                             }
                                         }
                                     }
-                                    
                                 }
                                 
                                 //completionHandler(value as? NSDictionary, nil)
@@ -258,15 +256,18 @@ extension CategoriasViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     
+    /**
+     * Abre el detalle de la categoria
+     *
+     */
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        /*
+        
         let categoria = categorias[indexPath.section]
         let vc = DetalleListadoCategoriaViewController()
         vc.idCategoria = categoria.id
         let nav = UINavigationController(rootViewController: vc)
         self.present(nav, animated: true, completion: nil)
-        */
-        //self.navigationController?.pushViewController(vc, animated: true)
+        
     }
     
     
