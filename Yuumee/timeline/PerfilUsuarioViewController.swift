@@ -1253,6 +1253,13 @@ class LocationCell: UITableViewCell, MKMapViewDelegate, CLLocationManagerDelegat
         }
     }
     
+    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+        let circleRenderer = MKCircleRenderer(overlay: overlay)
+        circleRenderer.strokeColor = UIColor.rosa
+        circleRenderer.lineWidth = 1.0
+        return circleRenderer
+    }
+    
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         // print(" location: \(locations.last) ")
         if let location = locations.last {
@@ -1261,7 +1268,10 @@ class LocationCell: UITableViewCell, MKMapViewDelegate, CLLocationManagerDelegat
             let center = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
             let span = MKCoordinateSpan(latitudeDelta: 0.003, longitudeDelta: 0.003)
             let region = MKCoordinateRegion(center: center, span: span)
+            let radius = 100.0
+            let circle = MKCircle(center: center, radius: radius)
             self.mapView.setRegion(region, animated: true)
+            mapView.addOverlay(circle)
             locationManager.stopUpdatingLocation()
         }
     }

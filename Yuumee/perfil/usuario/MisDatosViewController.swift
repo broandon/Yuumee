@@ -260,46 +260,67 @@ class MisDatosViewController: BaseViewController, UITableViewDelegate, UITableVi
         }
         
         if seccion == "nombre" {
+            let nombreLbl = ArchiaRegularLabel()
+            nombreLbl.textColor = UIColor.darkGray
+            nombreLbl.text = "Nombre"
             nombre.delegate = self
-            nombre.addBottomBorder()
             nombre.font = UIFont.init(name: "MyriadPro-Bold", size: (nombre.font?.pointSize)!)
             nombre.textColor = UIColor.gray
             nombre.returnKeyType = .done
+            nombre.backgroundColor = .gris
             cell.addSubview(nombre)
-            cell.centerInView(superView: cell, container: nombre, sizeV: 40, sizeH: 250)
+            cell.addSubview(nombreLbl)
+            cell.addConstraintsWithFormat(format: "H:|-16-[v0(80)]-[v1]-16-|", views: nombreLbl, nombre)
+            cell.addConstraintsWithFormat(format: "V:|-[v0(35)]", views: nombreLbl)
+            cell.addConstraintsWithFormat(format: "V:|-[v0(35)]", views: nombre)
         }
         
         if seccion == "apellidos" {
+            let apellidosLbl = ArchiaRegularLabel()
+            apellidosLbl.textColor = UIColor.darkGray
+            apellidosLbl.text = "Apellidos"
             apellidos.delegate = self
-            apellidos.addBottomBorder()
             apellidos.font = UIFont.init(name: "MyriadPro-Bold", size: (apellidos.font?.pointSize)!)
             apellidos.textColor = UIColor.gray
             apellidos.returnKeyType = .done
+            apellidos.backgroundColor = .gris
+            cell.addSubview(apellidosLbl)
             cell.addSubview(apellidos)
-            cell.centerInView(superView: cell, container: apellidos, sizeV: 40, sizeH: 250)
+            cell.addConstraintsWithFormat(format: "H:|-16-[v0(80)]-[v1]-16-|", views: apellidosLbl, apellidos)
+            cell.addConstraintsWithFormat(format: "V:|-[v0(35)]", views: apellidosLbl)
+            cell.addConstraintsWithFormat(format: "V:|-[v0(35)]", views: apellidos)
         }
         
         if seccion == "telefono" {
+            let telefonoLbl = ArchiaRegularLabel()
+            telefonoLbl.textColor = UIColor.darkGray
+            telefonoLbl.text = "Teléfono"
             telefono.delegate = self
-            telefono.addBottomBorder()
             telefono.font = UIFont.init(name: "MyriadPro-Bold", size: (telefono.font?.pointSize)!)
             telefono.textColor = UIColor.gray
             telefono.returnKeyType = .done
             telefono.keyboardType = .numberPad
+            telefono.backgroundColor = .gris
+            cell.addSubview(telefonoLbl)
             cell.addSubview(telefono)
-            cell.centerInView(superView: cell, container: telefono, sizeV: 40, sizeH: 250)
+            cell.addConstraintsWithFormat(format: "H:|-16-[v0(80)]-[v1]-16-|", views: telefonoLbl, telefono)
+            cell.addConstraintsWithFormat(format: "V:|-[v0(35)]", views: telefonoLbl)
+            cell.addConstraintsWithFormat(format: "V:|-[v0(35)]", views: telefono)
+            
         }
         
         if seccion == "guardar" {
             let guardar = UIButton(type: .system)
             guardar.clipsToBounds = true
             guardar.setTitle("Guardar", for: .normal)
-            guardar.backgroundColor = UIColor.lightGray
+            guardar.backgroundColor = UIColor.verde
             guardar.addTarget(self, action: #selector(updateDatos) , for: .touchUpInside)
             guardar.setTitleColor(UIColor.white, for: .normal)
-            guardar.layer.cornerRadius = 15
+            guardar.layer.cornerRadius = 10
             cell.addSubview(guardar)
-            cell.centerInView(superView: cell, container: guardar, sizeV: 40, sizeH: 100)
+            
+            cell.centerInView(superView: cell, container: guardar,
+                              sizeV: 40, sizeH: ScreenSize.screenWidth - 32)
         }
         
         return cell
@@ -307,7 +328,7 @@ class MisDatosViewController: BaseViewController, UITableViewDelegate, UITableVi
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let seccion = secciones[indexPath.row]
-        if seccion == "nombre" || seccion == "telefono" || seccion == "email" {
+        if seccion == "nombre" || seccion == "telefono" || seccion == "apellidos" {
             return 60
         }
         return 100

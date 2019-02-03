@@ -98,7 +98,6 @@ class EspaciosDegustarViewController: BaseViewController {
         placeholderLabel.textColor = UIColor.gray
         placeholderLabel.isHidden = !textView.text.isEmpty
         textView.inputAccessoryView = toolbarView
-        
     }
     
     let dataStorage = UserDefaults.standard
@@ -182,6 +181,11 @@ class EspaciosDegustarViewController: BaseViewController {
                         let state     = result["state"] as? String
                         if statusMsg == "OK" && state == "200" {
                             if let espacios = result["data"] as? [Dictionary<String, AnyObject>] {
+                                
+                                print(" espacios ")
+                                print(espacios)
+                                print(" \n\n ")
+                                
                                 for e in espacios {
                                     let newE = Espacio(espacioArray: e)
                                     self.lugares.append(newE)

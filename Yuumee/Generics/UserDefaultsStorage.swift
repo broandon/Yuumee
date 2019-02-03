@@ -32,6 +32,7 @@ enum UserDefaultKeys: String {
     case terminaEvent
     case lastImageSelected
     case lastTitle
+    case costoTotalEvento
     
     case urlAvatar
     case urlPortada
@@ -218,6 +219,16 @@ extension UserDefaults {
     func getLongitud() -> String {
         return string(forKey: UserDefaultKeys.lastLongitude.rawValue)!
     }
+    
+    // Costo totla del evento
+    //
+    func setCostoTotalEvento(costo: String) {
+        set(costo, forKey: UserDefaultKeys.costoTotalEvento.rawValue)
+    }
+    func getCostoTotalEvento() -> String {
+        return string(forKey: UserDefaultKeys.costoTotalEvento.rawValue)!
+    }
+    
     
     
     

@@ -40,7 +40,8 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
         return tableView
     }()
     
-    let secciones = ["background_image", "categoria", "comida", "horario", "detalles_evento", "fechas_evento", "producto_extra", "total"]
+    let secciones = ["background_image", "categoria", "comida", "horario",
+                     "detalles_evento", "fechas_evento", "producto_extra", "total"]
     
     let dataStorage = UserDefaults.standard
     
@@ -58,8 +59,6 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
                              name: UIWindow.keyboardWillHideNotification,
                              object: nil)
         
-        
-        
         mainView.backgroundColor = .white
         mainView.addSubview(tableView)
         mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: tableView)
@@ -69,20 +68,30 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
     @objc func keyboardWillAppear(notification: NSNotification) {
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UIViewController.dismissKeyboard))
         mainView.addGestureRecognizer(tap)
+        
+        // DESPLAZAMIENTO QUE SE LE HACE AL TABLEVIEW AL MOSTRARSE EL KEYBOARD
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
+            tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardSize.height, right: 0)
+        }
     }
     
     @objc func keyboardWillDisappear(notification: NSNotification){
         view.endEditing(true)
         mainView.gestureRecognizers?.removeAll()
+        
+        // REGRESA EL TABLEVIEW A LA NORMALIDAD CUANDO DESAPARECE EL KEYBOARD
+        if ((notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue) != nil {
+            tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        }
     }
     
     // MARK: Data Table
     var imageBackground: UIImageView = {
-        let imageView = UIImageView()
-        imageView.contentMode = .scaleToFill
-        imageView.addBorder(borderColor: UIColor.gray, widthBorder: 1)
-        imageView.isUserInteractionEnabled = true
+        let imageView             = UIImageView()
+        imageView.contentMode     = .scaleToFill
         imageView.backgroundColor = .white
+        imageView.isUserInteractionEnabled = true
+        imageView.addBorder(borderColor: UIColor.gray, widthBorder: 1)
         return imageView
     }()
     var addCamera: UIButton = {
@@ -113,25 +122,21 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
         present(imagePicker, animated: true, completion: nil)
     }
     
+    
+    
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        
         self.imagePicker.dismiss(animated: true, completion: nil)
-        
         if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
-            
             for v in self.imageBackground.subviews {
                 v.removeFromSuperview()
             }
             self.imageBackground.image = image
             self.imageBackground.contentMode = .scaleToFill
-            
-            
             let headers: HTTPHeaders = [
                 "Content-type": "multipart/form-data"
             ]
             Alamofire.upload(
                 multipartFormData: { MultipartFormData in
-                    
                     MultipartFormData.append("uploadImage_event".data(using: String.Encoding.utf8)!, withName: "funcion")
                     let imgString = self.convertImageToBase64(image: image)
                     MultipartFormData.append(imgString.data(using: String.Encoding.utf8)!, withName: "image")
@@ -147,7 +152,6 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
                                 if state == "200" {
                                     if let imageInfo = resultUpload["data"] as! Dictionary<String, Any>? {
                                         let nombreImagen = imageInfo["image_name"]
-                                        
                                         self.dataStorage.setImagenEvent(hora: nombreImagen as! String)
                                     }
                                 }
@@ -157,7 +161,7 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
                             /*let atributtes = [NSAttributedString.Key.foregroundColor: .gray,
                              NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)]
                              self.adjuntarImagen.attributedPlaceholder = NSAttributedString(string: StringConstants.adjuntarImagen, attributes: atributtes)*/
-                            print("Ocurrio un error al procesar la imagen.")
+                            //print("Ocurrio un error al procesar la imagen.")
                             Utils.showSimpleAlert(message: "Ocurrio un error al procesar la imagen.",
                                                   context: self, success: nil)
                             return
@@ -203,23 +207,15 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
     
     
     
-    
-    
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return secciones.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let seccion = secciones[indexPath.row]
-        
-        
-        
         if seccion == "background_image" {
-            
             let cell = tableView.dequeueReusableCell(withIdentifier: defaultReuseId, for: indexPath)
             cell.selectionStyle = .none
-            
             cell.addSubview(imageBackground)
             cell.addConstraintsWithFormat(format: "H:|-[v0]-|", views: imageBackground)
             cell.addConstraintsWithFormat(format: "V:|-[v0]-|", views: imageBackground)
@@ -229,12 +225,9 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
             imageBackground.addConstraintsWithFormat(format: "V:|-[v0]-|", views: addCamera)
             imageBackground.addConstraintsWithFormat(format: "H:[v0]-|", views: addBackground)
             imageBackground.addConstraintsWithFormat(format: "V:[v0]-|", views: addBackground)
-            
             addCamera.addTarget(self, action: #selector(addNewBackgroundImageFromCamera), for: .touchUpInside)
             addBackground.addTarget(self, action: #selector(pickPhotoByAlbum), for: .touchUpInside)
-            
             return cell
-            
             /*let cell = tableView.dequeueReusableCell(withIdentifier: backgroundImageId, for: indexPath)
             if let cell = cell as? BackgroundImageHeader {
                 cell.selectionStyle = .none
@@ -242,9 +235,6 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
                 return cell
             }*/
         }
-        
-        
-        
         if seccion == "categoria" {
             let cell = tableView.dequeueReusableCell(withIdentifier: categoriaCell, for: indexPath)
             if let cell = cell as? CategoriaCell {
@@ -254,7 +244,6 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
                 return cell
             }
         }
-        
         if seccion == "comida" {
             let cell = tableView.dequeueReusableCell(withIdentifier: comidaCell, for: indexPath)
             if let cell = cell as? ComidaCell {
@@ -263,7 +252,6 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
                 return cell
             }
         }
-        
         if seccion == "horario" {
             let cell = tableView.dequeueReusableCell(withIdentifier: horarioCell, for: indexPath)
             if let cell = cell as? HorarioCell {
@@ -272,7 +260,6 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
                 return cell
             }
         }
-        
         if seccion == "detalles_evento" {
             let cell = tableView.dequeueReusableCell(withIdentifier: detallesEventoCell, for: indexPath)
             if let cell = cell as? DetallesEventoCell {
@@ -281,7 +268,6 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
                 return cell
             }
         }
-        
         if seccion == "fechas_evento" {
             let cell = tableView.dequeueReusableCell(withIdentifier: fechasCell, for: indexPath)
             if let cell = cell as? FechasCell {
@@ -290,7 +276,6 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
                 return cell
             }
         }
-        
         if seccion == "producto_extra" {
             let cell = tableView.dequeueReusableCell(withIdentifier: productoExtraCell, for: indexPath)
             if let cell = cell as? ProductoExtraCell {
@@ -299,7 +284,6 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
                 return cell
             }
         }
-        
         if seccion == "total" {
             let cell = tableView.dequeueReusableCell(withIdentifier: defaultReuseId, for: indexPath)
             cell.releaseView()
@@ -307,18 +291,42 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
             cell.addSubview(personasRecibir)
             cell.addSubview(personasRecibirInput)
             cell.addSubview(guardar)
+            let cont: UIView = UIView()
+            cont.isUserInteractionEnabled = true
+            cell.addSubview(cont)
             cell.addConstraintsWithFormat(format: "H:|-[v0(150)]-[v1]-|", views: personasRecibir, personasRecibirInput)
             cell.addConstraintsWithFormat(format: "H:[v0(120)]-|", views: guardar)
+            cell.addConstraintsWithFormat(format: "H:|[v0]|", views: cont)
             cell.addConstraintsWithFormat(format: "V:|-[v0]", views: personasRecibir)
-            cell.addConstraintsWithFormat(format: "V:|-[v0(30)]-[v1(40)]", views: personasRecibirInput, guardar)
+            cell.addConstraintsWithFormat(format: "V:|-[v0(30)]-[v1(50)]-[v2(40)]",
+                                          views: personasRecibirInput, cont, guardar)
+            let costoTotal: ArchiaRegularLabel = ArchiaRegularLabel()
+            costoTotal.text = "Costo total: $"
+            costo.isUserInteractionEnabled = false
+            costo.placeholder = "0"
+            costo.addBorder(borderColor: .gris, widthBorder: 1.0)
+            costo.textAlignment = .center
+            //costo.delegate = self
+            costo.keyboardType = .numberPad
+            let mx: ArchiaRegularLabel = ArchiaRegularLabel()
+            mx.text = ".00 mx"
+            cont.addSubview(costoTotal)
+            cont.addSubview(costo)
+            cont.addSubview(mx)
+            cont.addConstraintsWithFormat(format: "H:[v0(110)]-[v1(80)]-[v2(70)]|", views: costoTotal, costo, mx)
+            cont.addConstraintsWithFormat(format: "V:|-[v0(25)]", views: costoTotal)
+            cont.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: costo)
+            cont.addConstraintsWithFormat(format: "V:|-[v0(25)]", views: mx)
             personasRecibirInput.inputAccessoryView = toolbarPicker
             personasRecibirInput.inputView = picker
             guardar.addTarget(self, action: #selector(guardarEvento) , for: .touchUpInside)
             return cell
         }
-        
         return UITableViewCell()
     }
+    
+    let costo: UITextField = UITextField()
+    
     
     // # de personas a recibir...
     let personasRecibir: ArchiaBoldLabel = {
@@ -372,13 +380,14 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
             return ScreenSize.screenHeight + (ScreenSize.screenWidth/4)
         }
         if seccion == "total" {
-            return 100
+            return 150
         }
         return UITableView.automaticDimension
     }
     
-    // MARK: UIPicker
     
+    
+    // MARK: UIPicker
     lazy var picker: UIPickerView = {
         let picker = UIPickerView()
         picker.delegate = self
@@ -390,19 +399,14 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
-    
     // The number of rows of data
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return pickerData.count
     }
-    
     // The data to return fopr the row and component (column) that's being passed in
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         return pickerData[row]
     }
-    
-   
-    
     private lazy var toolbarPicker: UIToolbar = {
         let rect    = CGRect(x: 0, y: 0, width: ScreenSize.screenWidth, height: 40)
         let toolbar = UIToolbar(frame: rect)
@@ -415,12 +419,9 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
         let flexButton = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
         toolbar.setItems([cancelButton, flexButton, doneButton], animated: true)
     }
-    
     @objc func cancelPressed() {
         personasRecibirInput.resignFirstResponder()
     }
-    
-    
     @objc func donePressed() {
         let selectedValue = pickerData[picker.selectedRow(inComponent: 0)]
         personasRecibirInput.text = "\(selectedValue)"
@@ -442,6 +443,14 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
     
     
     
+    
+    
+    
+    /**
+     * Funcion para recolectar todos los valores del formulario y hacer
+     * el request para guardarlos.
+     *
+     */
     @objc func guardarEvento() {
         
         let idUsuario = dataStorage.getUserId()

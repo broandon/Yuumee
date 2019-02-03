@@ -322,13 +322,6 @@ extension UbicacionViewController : MKMapViewDelegate, CLLocationManagerDelegate
 
 extension UbicacionViewController: GMSAutocompleteViewControllerDelegate {
     
-    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
-        let circleRenderer = MKCircleRenderer(overlay: overlay)
-        circleRenderer.strokeColor = UIColor.rosa
-        circleRenderer.lineWidth = 1.0
-        return circleRenderer
-    }
-    
     func viewController(_ viewController: GMSAutocompleteViewController, didAutocompleteWith place: GMSPlace) {
         /* print("Place: \(place)")
         print("Place name: \(place.name)")
@@ -345,14 +338,10 @@ extension UbicacionViewController: GMSAutocompleteViewControllerDelegate {
         let region = MKCoordinateRegion(center: center, span: span)
         self.mapView.setRegion(region, animated: true)
         
-        let radius = 100.0
-        let circle = MKCircle(center: center, radius: radius)
-        
         let CLLCoordType = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
         let anno = MKPointAnnotation();
         anno.coordinate = CLLCoordType;
         mapView.addAnnotation(anno);
-        mapView.addOverlay(circle)
         
         self.dismiss(animated: true, completion: nil)
     }

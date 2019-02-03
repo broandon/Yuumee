@@ -265,6 +265,7 @@ extension CategoriasViewController: UITableViewDelegate, UITableViewDataSource {
         let categoria = categorias[indexPath.section]
         let vc = DetalleListadoCategoriaViewController()
         vc.idCategoria = categoria.id
+        vc.categoriaTitle = categoria.titulo
         let nav = UINavigationController(rootViewController: vc)
         self.present(nav, animated: true, completion: nil)
         

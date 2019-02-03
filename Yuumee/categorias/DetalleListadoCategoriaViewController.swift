@@ -35,6 +35,8 @@ class DetalleListadoCategoriaViewController: BaseViewController {
     
     var idCategoria: String = ""
     
+    var categoriaTitle: String = ""
+    
     lazy var settings: UIButton = {
         let sizeStandarIcon: CGSize = CGSize(width: 24, height: 24)
         let image: UIImage = (UIImage(named: "settings")?.imageResize(sizeChange: sizeStandarIcon))!
@@ -46,6 +48,7 @@ class DetalleListadoCategoriaViewController: BaseViewController {
     
     override func viewDidLoad() {
         mainView.backgroundColor = .white
+        self.title = categoriaTitle
         // -------------------------------- Nav --------------------------------
         self.navigationController?.isNavigationBarHidden = false
         self.navigationController?.navigationBar.backItem?.title = "Regresar"

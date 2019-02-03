@@ -126,16 +126,22 @@ class HorarioCell: UITableViewCell {
         addConstraintsWithFormat(format: "V:|[v0(v1)]-[v1(v1)]-20-[v2(30)]", views: auxPadding, hora, titulo)
         addConstraintsWithFormat(format: "V:|[v0]-[v1(30)]-16-[v2(30)]", views: comienza, comienzaInput, tituloInput)
         addConstraintsWithFormat(format: "V:|[v0]-[v1(30)]", views: termina, terminaInput)
-        //comienzaInput.addTarget(self, action: #selector(comienzoSeleccionado), for: .touchUpInside)
+        
+        /*
+        let picker = UIPickerView()
+        picker.delegate   = self
+        picker.dataSource = self
+        */
         comienzaInput.inputAccessoryView = toolbar_Picker
         comienzaInput.inputView = pickerView
-        //terminaInput.addTarget(self, action: #selector(terminaSeleccionado), for: .touchUpInside)
+        
+        
         terminaInput.inputAccessoryView = toolbar_Picker
         terminaInput.inputView = pickerView
     }
     
     
-    var pickerView: UIDatePicker = {
+    lazy var pickerView: UIDatePicker = {
         let picker = UIDatePicker()
         //picker.minimumDate = Date()
         picker.datePickerMode = .time
@@ -160,11 +166,6 @@ class HorarioCell: UITableViewCell {
         terminaInput.resignFirstResponder()
     }
     
-    
-    var comienzaIsSelected: Bool = false
-    
-    let dataStorage = UserDefaults.standard
-    
     @objc func donePressed() {
         let timeFormatter = DateFormatter()
         timeFormatter.locale = Locale(identifier: "es_MX")
@@ -181,6 +182,9 @@ class HorarioCell: UITableViewCell {
         }
     }
     
+    var comienzaIsSelected: Bool = false
+    
+    let dataStorage = UserDefaults.standard
     
     
 } // HorarioCell
@@ -209,52 +213,51 @@ extension HorarioCell: UITextFieldDelegate {
 }
 
 
-/*
- extension HorarioCell: UIPickerViewDelegate,UIPickerViewDataSource {
- func numberOfComponents(in pickerView: UIPickerView) -> Int {
- return 3
- }
- func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
- switch component {
- case 0:
- return 25
- case 1,2:
- return 60
- 
- default:
- return 0
- }
- }
- 
- func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
- return pickerView.frame.size.width/3
- }
- 
- func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
- switch component {
- case 0:
- return "\(row) Hour"
- case 1:
- return "\(row) Minute"
- case 2:
- return "\(row) Second"
- default:
- return ""
- }
- }
- func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
- switch component {
- case 0:
- // hour = row
- print(" row: \(row) ")
- case 1:
- // minutes = row
- print(" row: \(row) ")
- case 2:
- // seconds = row
- print(" row: \(row) ")
- default:
- break;
- }
- }
- }*/
+
+
+
+
+extension HorarioCell: UIPickerViewDelegate,UIPickerViewDataSource {
+    
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 2
+    }
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        switch component {
+        case 0:
+            return 25
+        case 1:
+            return 1
+            
+        default:
+            return 0
+        }
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
+        return pickerView.frame.size.width/3
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        switch component {
+        case 0:
+            return "\(row)"
+        case 1:
+            return "00"
+        default:
+            return ""
+        }
+    }
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        switch component {
+        case 0:
+            // hour = row
+            print(" row: \(row) ")
+        case 1:
+            // minutes = row
+            print(" row: \(row) ")
+        default:
+            break;
+        }
+    }
+}

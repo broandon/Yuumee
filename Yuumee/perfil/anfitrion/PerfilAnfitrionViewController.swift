@@ -254,55 +254,69 @@ extension PerfilAnfitrionViewController: UITableViewDelegate, UITableViewDataSou
     }
     
     
+    
     @objc func cancelarEvento(sender: CancelarEventoTapGestur) {
         if let idEvento = sender.idEvento as? String {
-            let parameters: Parameters = ["funcion" : "cancelEvent",
-                                          "id_user": dataStorage.getUserId(),
-                                          "id_event" : idEvento] as [String: Any]
-            let headers: HTTPHeaders = ["Accept": "application/json",
-                                        "Content-Type" : "application/x-www-form-urlencoded"]
-            Alamofire.request(BaseURL.baseUrl(), method: .post, parameters: parameters, encoding: ParameterQueryEncoding(), headers: headers).responseJSON
-                { (response: DataResponse) in
-                    switch(response.result) {
-                    case .success(let value):
-                        if let result = value as? Dictionary<String, Any> {
-                            let statusMsg = result["status_msg"] as? String
-                            let state     = result["state"] as? String
-                            if statusMsg == "OK" && state == "200" {
-                                let alert = UIAlertController(title: "Evento eliminado.",
-                                                              message: "",
-                                                              preferredStyle: UIAlertController.Style.alert)
-                                alert.addAction(UIAlertAction(title: "OK",
-                                                              style: UIAlertAction.Style.default,
-                                                              handler: nil))
-                                self.present(alert, animated: true, completion: nil)
-                                DispatchQueue.main.async {
-                                    self.eventos.remove(at: sender.indexEvent.row)
-                                    self.tableView.beginUpdates()
-                                    self.tableView.deleteRows(at: [sender.indexEvent], with: .automatic)
-                                    self.tableView.endUpdates()
+            
+            let refreshAlert = UIAlertController(title: "Cancelar evento",
+                                                 message: "¿Realmete desea cancelar este evento?",
+                                                 preferredStyle: UIAlertController.Style.alert)
+            refreshAlert.addAction(UIAlertAction(title: "Aceptar", style: .default,
+                                                 handler: { (action: UIAlertAction!) in
+                                                    
+                                                    
+                let parameters: Parameters = ["funcion" : "cancelEvent",
+                                              "id_user": self.dataStorage.getUserId(),
+                                              "id_event" : idEvento] as [String: Any]
+                let headers: HTTPHeaders = ["Accept": "application/json",
+                                            "Content-Type" : "application/x-www-form-urlencoded"]
+                Alamofire.request(BaseURL.baseUrl(), method: .post, parameters: parameters, encoding: ParameterQueryEncoding(), headers: headers).responseJSON
+                    { (response: DataResponse) in
+                        switch(response.result) {
+                        case .success(let value):
+                            if let result = value as? Dictionary<String, Any> {
+                                let statusMsg = result["status_msg"] as? String
+                                let state     = result["state"] as? String
+                                if statusMsg == "OK" && state == "200" {
+                                    let alert = UIAlertController(title: "Evento eliminado.",
+                                                                  message: "",
+                                                                  preferredStyle: UIAlertController.Style.alert)
+                                    alert.addAction(UIAlertAction(title: "OK",
+                                                                  style: UIAlertAction.Style.default,
+                                                                  handler: nil))
+                                    self.present(alert, animated: true, completion: nil)
+                                    DispatchQueue.main.async {
+                                        self.eventos.remove(at: sender.indexEvent.row)
+                                        self.tableView.beginUpdates()
+                                        self.tableView.deleteRows(at: [sender.indexEvent], with: .automatic)
+                                        self.tableView.endUpdates()
+                                    }
+                                }
+                                else{
+                                    let alert = UIAlertController(title: "Ocurrió un error al realizar la petición.",
+                                                                  message: "\(statusMsg!)",
+                                        preferredStyle: UIAlertController.Style.alert)
+                                    alert.addAction(UIAlertAction(title: "OK",
+                                                                  style: UIAlertAction.Style.default,
+                                                                  handler: nil))
+                                    self.present(alert, animated: true, completion: nil)
+                                    return;
                                 }
                             }
-                            else{
-                                let alert = UIAlertController(title: "Ocurrió un error al realizar la petición.",
-                                                              message: "\(statusMsg!)",
-                                    preferredStyle: UIAlertController.Style.alert)
-                                alert.addAction(UIAlertAction(title: "OK",
-                                                              style: UIAlertAction.Style.default,
-                                                              handler: nil))
-                                self.present(alert, animated: true, completion: nil)
-                                return;
-                            }
+                            //completionHandler(value as? NSDictionary, nil)
+                            break
+                        case .failure(let error):
+                            //completionHandler(nil, error as NSError?)
+                            //print(" error:  ")
+                            //print(error)
+                            break
                         }
-                        //completionHandler(value as? NSDictionary, nil)
-                        break
-                    case .failure(let error):
-                        //completionHandler(nil, error as NSError?)
-                        //print(" error:  ")
-                        //print(error)
-                        break
-                    }
-            }
+                }
+                                                    
+            }))
+            refreshAlert.addAction(UIAlertAction(title: "Cancelar", style: .cancel, handler: nil))
+            self.present(refreshAlert, animated: true, completion: nil)
+            
         }
     }
     
