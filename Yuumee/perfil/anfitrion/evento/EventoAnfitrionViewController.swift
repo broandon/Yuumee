@@ -11,7 +11,7 @@ import Alamofire
 import AlamofireImage
 import Photos
 
-class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UITableViewDataSource, UIPickerViewDelegate, UIPickerViewDataSource, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UITableViewDataSource,  UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     let backgroundImageId  = "backgroundImageId"
     let productoExtraCell  = "productoExtraCell"
@@ -228,12 +228,6 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
             addCamera.addTarget(self, action: #selector(addNewBackgroundImageFromCamera), for: .touchUpInside)
             addBackground.addTarget(self, action: #selector(pickPhotoByAlbum), for: .touchUpInside)
             return cell
-            /*let cell = tableView.dequeueReusableCell(withIdentifier: backgroundImageId, for: indexPath)
-            if let cell = cell as? BackgroundImageHeader {
-                cell.selectionStyle = .none
-                cell.setUpView(info: [:])
-                return cell
-            }*/
         }
         if seccion == "categoria" {
             let cell = tableView.dequeueReusableCell(withIdentifier: categoriaCell, for: indexPath)
@@ -317,8 +311,8 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
             cont.addConstraintsWithFormat(format: "V:|-[v0(25)]", views: costoTotal)
             cont.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: costo)
             cont.addConstraintsWithFormat(format: "V:|-[v0(25)]", views: mx)
-            personasRecibirInput.inputAccessoryView = toolbarPicker
-            personasRecibirInput.inputView = picker
+            //personasRecibirInput.inputAccessoryView = toolbarPicker
+            //personasRecibirInput.inputView = picker
             guardar.addTarget(self, action: #selector(guardarEvento) , for: .touchUpInside)
             return cell
         }
@@ -326,6 +320,28 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
     }
     
     let costo: UITextField = UITextField()
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        if textField == personasRecibirInput {
+            personasRecibirInput.resignFirstResponder()
+            
+            let vc = NumeroInvitadosViewController()
+            vc.delegate = self
+            let popVC = UINavigationController(rootViewController: vc)
+            popVC.modalPresentationStyle = .popover
+            let popOverVC = popVC.popoverPresentationController
+            popOverVC?.permittedArrowDirections = .any
+            popOverVC?.delegate   = self
+            popOverVC?.sourceView = personasRecibirInput
+            let midX = self.personasRecibirInput.bounds.midX
+            let minY = self.personasRecibirInput.bounds.minY
+            popOverVC?.sourceRect = CGRect(x: midX, y: minY, width: 0, height: 0)
+            let widthModal = (ScreenSize.screenWidth / 2) // - 16
+            let heightModal = (ScreenSize.screenWidth / 2)
+            popVC.preferredContentSize = CGSize(width: widthModal, height: heightModal)
+            self.present(popVC, animated: true)
+        }
+    }
     
     
     // # de personas a recibir...
@@ -335,10 +351,14 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
         label.textColor = .darkGray
         return label
     }()
-    let personasRecibirInput: UITextField = {
+    lazy var personasRecibirInput: UITextField = {
+        //let tapGesture = UITapGestureRecognizer(target: self, action: #selector(textFieldGetIn(_:)))
+        //tapGesture.numberOfTapsRequired = 1
         let textField = UITextField()
+        textField.delegate = self
         textField.textAlignment = .center
         textField.addBorder(borderColor: .gris, widthBorder: 1)
+        //textField.addTarget(self, action: #selector(textFieldGetIn(_:)), for: .touchUpInside)
         return textField
     }()
     let guardar: UIButton = {
@@ -384,63 +404,6 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
         }
         return UITableView.automaticDimension
     }
-    
-    
-    
-    // MARK: UIPicker
-    lazy var picker: UIPickerView = {
-        let picker = UIPickerView()
-        picker.delegate = self
-        return picker
-    }()
-    var pickerData: [String] = ["1", "2", "3", "4", "5"]
-    
-    // Number of columns of data
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return 1
-    }
-    // The number of rows of data
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return pickerData.count
-    }
-    // The data to return fopr the row and component (column) that's being passed in
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return pickerData[row]
-    }
-    private lazy var toolbarPicker: UIToolbar = {
-        let rect    = CGRect(x: 0, y: 0, width: ScreenSize.screenWidth, height: 40)
-        let toolbar = UIToolbar(frame: rect)
-        self.embedButtons(toolbar)
-        return toolbar
-    }()
-    private func embedButtons(_ toolbar: UIToolbar) {
-        let cancelButton = UIBarButtonItem(title: "Cancelar", style: .plain, target: self, action: #selector(cancelPressed) )
-        let doneButton = UIBarButtonItem(title: "Ok", style: .done, target: self, action: #selector(donePressed))
-        let flexButton = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
-        toolbar.setItems([cancelButton, flexButton, doneButton], animated: true)
-    }
-    @objc func cancelPressed() {
-        personasRecibirInput.resignFirstResponder()
-    }
-    @objc func donePressed() {
-        let selectedValue = pickerData[picker.selectedRow(inComponent: 0)]
-        personasRecibirInput.text = "\(selectedValue)"
-        personasRecibirInput.resignFirstResponder()
-        /*
-        let timeFormatter = DateFormatter()
-        timeFormatter.locale = Locale(identifier: "es_MX")
-        timeFormatter.timeStyle = DateFormatter.Style.short
-        let strDate = timeFormatter.string(from: pickerView.date)
-        if comienzaIsSelected {
-            comienzaInput.text = strDate
-            comienzaInput.resignFirstResponder();
-        }else{
-            terminaInput.text = strDate
-            terminaInput.resignFirstResponder();
-        }
-        */
-    }
-    
     
     
     
@@ -677,5 +640,23 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
     }
     
     
+}
+
+
+
+extension EventoAnfitrionViewController: NumeroInvitadosSelected{
+    
+    func getNumeroSelected(numero: String) {
+        personasRecibirInput.text = numero
+    }
+    
+}
+
+
+extension EventoAnfitrionViewController: UIPopoverPresentationControllerDelegate {
+    
+    func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+        return .none
+    }
 }
 

@@ -9,7 +9,18 @@
 import UIKit
 import JTAppleCalendar
 
+
+var filtrosDePlatillos: Dictionary = [String: String]()
+
+
+protocol ParamsForFiltersByCalendar {
+    func getParamsCal(params: Dictionary<String, String>)
+}
+
+
 class CalendarioViewController: BaseViewController {
+    
+    var delegate: ParamsForFiltersByCalendar?
     
     var calendarView: JTAppleCalendarView = {
         let cellSize        = ScreenSize.screenWidth / 8
@@ -87,7 +98,6 @@ class CalendarioViewController: BaseViewController {
      *
      */
     @objc func next(_ sender: UIButton) {
-        print(" NEXT ")
         self.calendarView.scrollToSegment(.next)
     }
     
@@ -96,7 +106,6 @@ class CalendarioViewController: BaseViewController {
      *
      */
     @objc func previous(_ sender: UIButton) {
-        print(" previous ")
         self.calendarView.scrollToSegment(.previous)
     }
     
@@ -125,23 +134,19 @@ class CalendarioViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         mainView.backgroundColor = .white
-    }
-    
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+        
         //----------------------------------------------------------------------
         //                           JTAppleCalendarView
-        calendarView.minimumLineSpacing      = 0.0
-        calendarView.minimumInteritemSpacing = 0.0
         calendarView.calendarDataSource      = self
         calendarView.calendarDelegate        = self
+        calendarView.minimumLineSpacing      = 0.0
+        calendarView.minimumInteritemSpacing = 0.0
         calendarView.visibleDates {[unowned self] (visibleDates: DateSegmentInfo) in
             self.setupViewsOfCalendar(from: visibleDates)
         }
-        mainView.addSubview(stackView)
-        mainView.addSubview(calendarView)
-        mainView.addSubview(contHeaderCalendar)
+        mainView.addSubview(stackView); stackView.layer.zPosition = 100
+        mainView.addSubview(calendarView); calendarView.layer.zPosition = 100
+        mainView.addSubview(contHeaderCalendar); contHeaderCalendar.layer.zPosition = 100
         mainView.addSubview(listo)
         contHeaderCalendar.addSubview(nextMonth)
         contHeaderCalendar.addSubview(prevMont)
@@ -157,35 +162,49 @@ class CalendarioViewController: BaseViewController {
         mainView.addConstraintsWithFormat(format: "H:|-16-[v0]-32-|", views: listo)
         mainView.addConstraintsWithFormat(format: "V:|-16-[v0(40)][v1(30)][v2(250)]-[v3(40)]",
                                           views: contHeaderCalendar, stackView, calendarView, listo)
+        
         nextMonth.addTarget(self, action: #selector(next(_:)), for: .touchUpInside)
         prevMont.addTarget(self, action: #selector(previous(_:)), for: .touchUpInside)
         
         listo.addTarget(self, action: #selector(listoEvent), for: .touchUpInside)
-    
+        //----------------------------------------------------------------------
+        
+        filtrosDePlatillos["fecha"] = FormattedCurrentDate.getFormattedCurrentDate(date: Date(), format: "yyyy-MM-dd")
+        filtrosDePlatillos["tipo_comida"] = TipoComida.desayuno.rawValue
+        filtrosDePlatillos["numero_personas"] = "1"
+        
     }
     
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+    }
+    
+    
+    /**
+     * Eveto que devuelve los parametros para filtrar el listado de platillos
+     *
+     */
     @objc func listoEvent(ckeck: Any) {
-        print(" listo ")
+        delegate?.getParamsCal(params: filtrosDePlatillos)
     }
+    
+    
     
     func setupViewsOfCalendar(from visibleDates: DateSegmentInfo) {
         guard let startDate = visibleDates.monthDates.first?.date else {
-            print(" a poco se queda aqui?? ")
             return
         }
-        print(" startDate: \(startDate) ")
         let todaysDate = FormattedCurrentDate.getFormattedCurrentDate(date: startDate, format: "MMMM, yyyy")
-        
         /*let month = Calendar.current.dateComponents([.month], from: startDate).month!
         let monthName = DateFormatter().monthSymbols[(month-1) % 12]
         let year = Calendar.current.component(.year, from: startDate)*/
-        
         self.currentMonthAndDate.text = todaysDate // monthName + " " + String(year)
     }
     
-    let outsideMonthColor  = UIColor.gray
+    let outsideMonthColor  = UIColor.clear
     let monthColor         = UIColor.gray
-    let selectedMonthColor = UIColor.gray
+    let selectedMonthColor = UIColor.white
     
     func handleCellTextColor(view: JTAppleCell?, cellState: CellState) {
         guard let validCell = view as? CustomCell else {
@@ -231,7 +250,7 @@ class CalendarioViewController: BaseViewController {
                 validCell.selectedView.backgroundColor = UIColor.clear
             }
             else {
-                validCell.selectedView.layer.cornerRadius = 20
+                validCell.selectedView.layer.cornerRadius = 17
                 validCell.selectedView.layer.borderColor = UIColor.rosa.cgColor
                 validCell.selectedView.layer.borderWidth = 1
                 validCell.selectedView.backgroundColor = UIColor.rosa
@@ -244,6 +263,8 @@ class CalendarioViewController: BaseViewController {
             validCell.selectedView.backgroundColor = UIColor.clear
         }
     }
+    
+    let dataStorage = UserDefaults.standard
     
 }
 
@@ -287,11 +308,13 @@ extension CalendarioViewController:JTAppleCalendarViewDelegate {
     func calendar(_ calendar: JTAppleCalendarView, didSelectDate date: Date, cell: JTAppleCell?, cellState: CellState) {
         handleCellSelected(view: cell, cellState: cellState)
         handleCellTextColor(view: cell, cellState: cellState)
+        filtrosDePlatillos["fecha"] = FormattedCurrentDate.getFormattedCurrentDate(date: date, format: "yyyy-MM-dd")
         // Fecha Seleccionada
         formatter.dateFormat = "yyyy-MM-dd"
         let todaysDate       = formatter.string(from: date)
         dateStringSelected   = todaysDate
         dateSelected         = date
+        //dataStorage.setDate(tipo: todaysDate) // Fecha seleccionada
         cell?.bounce()
     }
     
@@ -302,7 +325,6 @@ extension CalendarioViewController:JTAppleCalendarViewDelegate {
     
     
     func calendar(_ calendar: JTAppleCalendarView, didScrollToDateSegmentWith visibleDates: DateSegmentInfo) {
-        print(" setupViewsOfCalendar ")
         self.setupViewsOfCalendar(from: visibleDates)
     }
     

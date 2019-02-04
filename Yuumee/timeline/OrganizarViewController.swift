@@ -8,7 +8,13 @@
 
 import UIKit
 
+protocol ParamsForFiltersByOrganizar {
+    func getParamsOrg(params: Dictionary<String, String>)
+}
+
 class OrganizarViewController: BaseViewController, UITextFieldDelegate {
+    
+    var delegate: ParamsForFiltersByOrganizar?
     
     let checkBoxDesayuno: UIView = {
         let view = UIView()
@@ -60,7 +66,8 @@ class OrganizarViewController: BaseViewController, UITextFieldDelegate {
         textField.addBorder(borderColor: .gray, widthBorder: 1)
         textField.layer.cornerRadius = 10
         textField.keyboardType  = .numberPad
-        textField.placeholder   = "0"
+        textField.placeholder   = "1"
+        textField.text = "1"
         textField.textAlignment = .center
         //textField.rightViewMode = UITextField.ViewMode.always
         //textField.rightView = imageView
@@ -89,21 +96,28 @@ class OrganizarViewController: BaseViewController, UITextFieldDelegate {
         mainView.addSubview(checkBoxCena)
         mainView.addSubview(noPersonas)
         mainView.addSubview(noPersonasTxt)
+        noPersonasTxt.delegate = self
         mainView.addSubview(listo)
-        mainView.addConstraintsWithFormat(format: "H:|-[v0(14)]-[v1(v5)]-[v2(14)]-[v3(v5)]-[v4(14)]-[v5(v5)]-|",
+        
+        let sizeCheck: CGFloat = 20.0
+        
+        mainView.addConstraintsWithFormat(format: "H:|-[v0(\(sizeCheck))]-[v1(v5)]-[v2(\(sizeCheck))]-[v3(v5)]-[v4(\(sizeCheck))]-[v5(v5)]-|",
                                  views: checkBoxDesayuno, desayuno, checkBoxComida, comida, checkBoxCena, cena)
-        
-        mainView.addConstraintsWithFormat(format: "H:|-[v0(130)]-[v1(100)]", views: noPersonas, noPersonasTxt)
+        mainView.addConstraintsWithFormat(format: "H:|-[v0(130)]-[v1(100)]",
+                                          views: noPersonas, noPersonasTxt)
         mainView.addConstraintsWithFormat(format: "H:|-[v0]-32-|", views: listo)
-        
-        mainView.addConstraintsWithFormat(format: "V:|-4-[v0(14)]-32-[v1(30)]", views: checkBoxDesayuno, noPersonas)
-        mainView.addConstraintsWithFormat(format: "V:|[v0]", views: desayuno)
-        mainView.addConstraintsWithFormat(format: "V:|-4-[v0(14)]-32-[v1(30)]-32-[v2(40)]",
-                                          views: checkBoxComida, noPersonasTxt, listo)
-        mainView.addConstraintsWithFormat(format: "V:|[v0]", views: comida)
-        mainView.addConstraintsWithFormat(format: "V:|-4-[v0(14)]", views: checkBoxCena)
-        mainView.addConstraintsWithFormat(format: "V:|[v0]", views: cena)
-        
+        mainView.addConstraintsWithFormat(format: "V:|-4-[v0(\(sizeCheck))]-32-[v1(30)]",
+                                          views: checkBoxDesayuno, noPersonas)
+        mainView.addConstraintsWithFormat(format: "V:|-4-[v0(\(sizeCheck))]-32-[v1(30)]",
+                                        views: checkBoxComida, noPersonasTxt)
+        mainView.addConstraintsWithFormat(format: "V:|-4-[v0(\(sizeCheck))]",
+                                          views: checkBoxCena)
+        mainView.addConstraintsWithFormat(format: "V:|-6-[v0]", views: comida)
+        mainView.addConstraintsWithFormat(format: "V:|-6-[v0]", views: desayuno)
+        mainView.addConstraintsWithFormat(format: "V:|-6-[v0]", views: cena)
+        let sizeBtn = ScreenSize.screenWidth - 40
+        mainView.addConstraintsWithFormat(format: "V:|-(\(sizeBtn))-[v0(40)]",
+                                          views: listo)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -119,37 +133,76 @@ class OrganizarViewController: BaseViewController, UITextFieldDelegate {
         checkBoxCena.addGestureRecognizer(tapCheckCena)
         noPersonasTxt.delegate = self
         listo.addTarget(self, action: #selector(listoEvent), for: .touchUpInside)
+        checkBoxDesayuno.check()
     }
     
+    /**
+     * Eveto que devuelve los parametros para filtrar el listado de platillos
+     *
+     */
     @objc func listoEvent(ckeck: Any) {
-        print(" listo ")
+        delegate?.getParamsOrg(params: filtrosDePlatillos)
     }
+    
     
     @objc func checkDesayuno(ckeck: Any) {
+        filtrosDePlatillos["tipo_comida"] = TipoComida.desayuno.rawValue
         self.checkBoxDesayuno.check()
         self.checkBoxComida.unCheck()
         self.checkBoxCena.unCheck()
     }
     @objc func checkComida(ckeck: Any) {
+        filtrosDePlatillos["tipo_comida"] = TipoComida.comida.rawValue
         self.checkBoxDesayuno.unCheck()
         self.checkBoxComida.check()
         self.checkBoxCena.unCheck()
     }
     @objc func checkCena(ckeck: Any) {
+        filtrosDePlatillos["tipo_comida"] = TipoComida.cena.rawValue
         self.checkBoxDesayuno.unCheck()
         self.checkBoxComida.unCheck()
         self.checkBoxCena.check()
     }
     
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        
+    func textFieldDidBeginEditing(_ textField: UITextField) {
         if textField == noPersonasTxt {
-            guard let text = textField.text else { return true }
-            let newLength = text.count + string.count - range.length
-            return newLength <= 3
+            noPersonasTxt.resignFirstResponder()
+            let noPersonas: [String] = ["1","2","3","4","5","6","7","8","9","10"]
+            let vc = NumeroInvitadosViewController()
+            vc.delegate = self
+            vc.secciones = noPersonas
+            let popVC = UINavigationController(rootViewController: vc)
+            popVC.modalPresentationStyle = .popover
+            let popOverVC = popVC.popoverPresentationController
+            popOverVC?.permittedArrowDirections = .any
+            popOverVC?.delegate   = self
+            popOverVC?.sourceView = noPersonasTxt
+            let midX = self.noPersonasTxt.bounds.midX
+            let minY = self.noPersonasTxt.bounds.minY
+            popOverVC?.sourceRect = CGRect(x: midX, y: minY, width: 0, height: 0)
+            let widthModal = (ScreenSize.screenWidth / 2) // - 16
+            let heightModal = (ScreenSize.screenWidth / 2)
+            popVC.preferredContentSize = CGSize(width: widthModal, height: heightModal)
+            self.present(popVC, animated: true)
         }
-        
-        return true
     }
     
 }
+
+
+extension OrganizarViewController: NumeroInvitadosSelected{
+    
+    func getNumeroSelected(numero: String) {
+        filtrosDePlatillos["numero_personas"] = numero
+        noPersonasTxt.text = numero
+    }
+    
+}
+
+extension OrganizarViewController: UIPopoverPresentationControllerDelegate {
+    
+    func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+        return .none
+    }
+}
+

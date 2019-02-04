@@ -34,7 +34,10 @@ class TimeLineViewController: BaseViewController {
     }()
     
     
-    static private let insetsPadding: UIEdgeInsets = UIEdgeInsets(top: -44, left: -44, bottom: -44, right: -44)
+    static private let insetsPadding: UIEdgeInsets = UIEdgeInsets(top: -44,
+                                                                  left: -44,
+                                                                  bottom: -44,
+                                                                  right: -44)
     
     static private let sizeStandarIcon: CGSize = CGSize(width: 24, height: 24)
     
@@ -77,6 +80,10 @@ class TimeLineViewController: BaseViewController {
     let dataStorage = UserDefaults.standard
     
     var restaurants = [Restaurant]()
+    
+    var arrayFiltered: [Restaurant] = [Restaurant]()
+    
+    var isFilterActivated: Bool = false
     
     override func viewDidLoad() {
         mainView.backgroundColor = .white
@@ -130,6 +137,7 @@ class TimeLineViewController: BaseViewController {
                                     let state     = result["state"] as? String
                                     if statusMsg == "OK" && state == "200" {
                                         if let data = result["data"] as? [Dictionary<String, AnyObject>] {
+                                            
                                             for r in data {
                                                 let newR = Restaurant(restaurant: r)
                                                 self.restaurants.append(newR)
@@ -170,7 +178,6 @@ class TimeLineViewController: BaseViewController {
     }
     
     
-    
     @objc func filtersEvent(sender: UIButton) {
         self.navigationController?.dismiss(animated: true, completion: nil)
     }
@@ -182,6 +189,7 @@ class TimeLineViewController: BaseViewController {
      */
     @objc func settingsEvent(sender: UIButton) {
         let vc = ModalFiltersViewController()
+        vc.delegate = self
         let popVC = UINavigationController(rootViewController: vc)
         popVC.modalPresentationStyle = .popover
         let popOverVC = popVC.popoverPresentationController
@@ -215,7 +223,7 @@ extension TimeLineViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return restaurants.count
+        return (isFilterActivated) ? arrayFiltered.count : restaurants.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -240,6 +248,37 @@ extension TimeLineViewController: UITableViewDelegate, UITableViewDataSource {
         vc.idSaucerSelected = r.id
         let nav = UINavigationController(rootViewController: vc)
         self.present(nav, animated: true, completion: nil)
+    }
+    
+}
+
+
+
+
+
+extension TimeLineViewController : SendParamsBack {
+    
+    func filterList(params: Dictionary<String, String>) {
+        let tipoComida = params["tipo_comida"]
+        let noPersonas = params["numero_personas"]
+        let fecha      = params["fecha"]
+        
+        for r in self.restaurants {
+            if r.fecha == fecha && r.tipo == tipoComida && r.capacidad == noPersonas {
+                arrayFiltered.append(r)
+            }
+        }
+        if arrayFiltered.count > 0 {
+            self.isFilterActivated = true
+        }
+        else{
+            Utils.showSimpleAlert(message: "Por el momento no tenemos resultados.",
+                                  context: self, success: nil)
+            self.isFilterActivated = false
+        }
+        
+        self.tableView.reloadData()
+        
     }
     
 }
@@ -336,16 +375,17 @@ class RestaurantCell: UITableViewCell {
 
 
 
-
-
 struct Restaurant {
-    var idAnfitrion: String = ""
-    var id:        String = ""
-    var imagen:    String = ""
-    var distancia: String = ""
-    var titulo:    String = ""
-    var anfitrion: String = ""
-    var costo:     String = ""
+    var idAnfitrion:String = ""
+    var id:         String = ""
+    var imagen:     String = ""
+    var distancia:  String = ""
+    var titulo:     String = ""
+    var anfitrion:  String = ""
+    var costo:      String = ""
+    var tipo:       String = ""
+    var capacidad:  String = ""
+    var fecha:      String = ""
     
     var dictionaryRestaurant: [String:Any]?
     init(restaurant: Dictionary<String, Any>) {
@@ -370,6 +410,16 @@ struct Restaurant {
         }
         if let idAnfitrion = restaurant["id_anfitrion"] as? String {
             self.idAnfitrion = idAnfitrion
+        }
+        
+        if let tipo = restaurant["tipo"] as? String {
+            self.tipo = tipo
+        }
+        if let capacidad = restaurant["capacidad"] as? String {
+            self.capacidad = capacidad
+        }
+        if let fecha = restaurant["fecha"] as? String {
+            self.fecha = fecha
         }
         
     }
