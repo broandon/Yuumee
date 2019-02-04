@@ -34,6 +34,11 @@
 		5E88E3B421F429DA0043889A /* CalendarioViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E88E3B321F429DA0043889A /* CalendarioViewController.swift */; };
 		5E88E3B621F42A020043889A /* OrganizarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E88E3B521F42A020043889A /* OrganizarViewController.swift */; };
 		5E99DA8321EED42C005BB6AC /* PerfilClienteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E99DA8221EED42C005BB6AC /* PerfilClienteViewController.swift */; };
+		5EB1C32E2208BDA600464079 /* ReservarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EB1C32D2208BDA600464079 /* ReservarViewController.swift */; };
+		5EB1C3302208BF1100464079 /* CostosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EB1C32F2208BF1100464079 /* CostosViewController.swift */; };
+		5EB1C3322208BF6200464079 /* SeleccionarTarjetaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EB1C3312208BF6200464079 /* SeleccionarTarjetaViewController.swift */; };
+		5EB1C3342208D11100464079 /* BebidaPostreCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EB1C3332208D11100464079 /* BebidaPostreCell.swift */; };
+		5EB1C3362208D18800464079 /* NumeroPersonasViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EB1C3352208D18800464079 /* NumeroPersonasViewController.swift */; };
 		5EBD6AF421F578E200621297 /* SubCategoriasViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBD6AF321F578E200621297 /* SubCategoriasViewController.swift */; };
 		5EBD6AF721F5A8FA00621297 /* CustomSwitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBD6AF521F5A8FA00621297 /* CustomSwitch.swift */; };
 		5EBD6AF821F5A8FA00621297 /* CustomThumbView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBD6AF621F5A8FA00621297 /* CustomThumbView.swift */; };
@@ -104,6 +109,11 @@
 		5E88E3B321F429DA0043889A /* CalendarioViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarioViewController.swift; sourceTree = "<group>"; };
 		5E88E3B521F42A020043889A /* OrganizarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizarViewController.swift; sourceTree = "<group>"; };
 		5E99DA8221EED42C005BB6AC /* PerfilClienteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PerfilClienteViewController.swift; path = Yuumee/perfil/usuario/PerfilClienteViewController.swift; sourceTree = SOURCE_ROOT; };
+		5EB1C32D2208BDA600464079 /* ReservarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReservarViewController.swift; sourceTree = "<group>"; };
+		5EB1C32F2208BF1100464079 /* CostosViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CostosViewController.swift; sourceTree = "<group>"; };
+		5EB1C3312208BF6200464079 /* SeleccionarTarjetaViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeleccionarTarjetaViewController.swift; sourceTree = "<group>"; };
+		5EB1C3332208D11100464079 /* BebidaPostreCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BebidaPostreCell.swift; sourceTree = "<group>"; };
+		5EB1C3352208D18800464079 /* NumeroPersonasViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumeroPersonasViewController.swift; sourceTree = "<group>"; };
 		5EBD6AF321F578E200621297 /* SubCategoriasViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubCategoriasViewController.swift; sourceTree = "<group>"; };
 		5EBD6AF521F5A8FA00621297 /* CustomSwitch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomSwitch.swift; sourceTree = "<group>"; };
 		5EBD6AF621F5A8FA00621297 /* CustomThumbView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomThumbView.swift; sourceTree = "<group>"; };
@@ -242,6 +252,11 @@
 				9C0CFCA121CAFF07006AA810 /* CustomSegmentedControl.swift */,
 				5E88E3B321F429DA0043889A /* CalendarioViewController.swift */,
 				5E88E3B521F42A020043889A /* OrganizarViewController.swift */,
+				5EB1C32D2208BDA600464079 /* ReservarViewController.swift */,
+				5EB1C32F2208BF1100464079 /* CostosViewController.swift */,
+				5EB1C3312208BF6200464079 /* SeleccionarTarjetaViewController.swift */,
+				5EB1C3332208D11100464079 /* BebidaPostreCell.swift */,
+				5EB1C3352208D18800464079 /* NumeroPersonasViewController.swift */,
 			);
 			path = timeline;
 			sourceTree = "<group>";
@@ -575,6 +590,7 @@
 				5E68D65821C8A3D100DA00AB /* InicioViewController.swift in Sources */,
 				5E800ED921E738C5008F4F66 /* Card.m in Sources */,
 				5E68D6B321C8B02E00DA00AB /* DetalleConversacionViewController.swift in Sources */,
+				5EB1C3362208D18800464079 /* NumeroPersonasViewController.swift in Sources */,
 				5E68D6AF21C8B01600DA00AB /* TimeLineViewController.swift in Sources */,
 				5E68D64321C89FF400DA00AB /* AppDelegate.swift in Sources */,
 				5E68D69D21C8AF6400DA00AB /* Extensions.swift in Sources */,
@@ -587,6 +603,8 @@
 				5EBEEEFB21E2F3C300F718A4 /* FormattedCurrentDate.swift in Sources */,
 				9C3C8E5621F8EA6F007C2A77 /* MisDatosViewController.swift in Sources */,
 				5EC49D3121D1F3FC00DAC1BD /* ArchiaRegularLabel.swift in Sources */,
+				5EB1C3322208BF6200464079 /* SeleccionarTarjetaViewController.swift in Sources */,
+				5EB1C3342208D11100464079 /* BebidaPostreCell.swift in Sources */,
 				5EBD6AF821F5A8FA00621297 /* CustomThumbView.swift in Sources */,
 				5EC3636721F840C600729047 /* ProductoExtraCell.swift in Sources */,
 				9CA8E88221E7C26F00266E99 /* StringConstants.swift in Sources */,
@@ -594,6 +612,8 @@
 				5EC3636921F8533200729047 /* EspaciosDegustarViewController.swift in Sources */,
 				5E68D6B421C8B02E00DA00AB /* MensajesViewController.swift in Sources */,
 				5E68D6AC21C8AFEE00DA00AB /* RegistroViewController.swift in Sources */,
+				5EB1C3302208BF1100464079 /* CostosViewController.swift in Sources */,
+				5EB1C32E2208BDA600464079 /* ReservarViewController.swift in Sources */,
 				5E88E3B621F42A020043889A /* OrganizarViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
