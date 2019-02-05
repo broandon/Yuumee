@@ -16,6 +16,7 @@ class DetallesEventoCell: UITableViewCell {
         fatalError(" Error to init ")
     }
     
+    
     func getBoldLabel(text: String) -> ArchiaBoldLabel {
         let label = ArchiaBoldLabel()
         label.text = text

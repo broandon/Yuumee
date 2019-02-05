@@ -258,6 +258,7 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
             let cell = tableView.dequeueReusableCell(withIdentifier: detallesEventoCell, for: indexPath)
             if let cell = cell as? DetallesEventoCell {
                 cell.selectionStyle = .none
+                cell.releaseView()
                 cell.setUpView()
                 return cell
             }
@@ -279,6 +280,38 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
             }
         }
         if seccion == "total" {
+            var costoMenu: String = "0"
+            if let textView = mainView.viewWithTag(TAG_COSTO_MENU_EVENT) as? UITextView {
+                if !(textView.text!).isEmpty {
+                    costoMenu = textView.text!
+                }
+            }
+            else{
+                costoMenu = "0"
+            }
+            var costoBebidas: String = "0"
+            if let textView = mainView.viewWithTag(TAG_COSTO_BEBIDAS_EVENT) as? UITextView {
+                if !(textView.text!).isEmpty {
+                    //costoMenu = textView.text!
+                    costoBebidas = textView.text!
+                }
+            }else{
+                costoBebidas = "0"
+            }
+            var costoPostres: String = "0"
+            if let textView = mainView.viewWithTag(TAG_COSTO_POSTRES_EVENT) as? UITextView {
+                if !(textView.text!).isEmpty {
+                    //costoMenu = textView.text!
+                    costoPostres = textView.text!
+                }
+            }
+            else{
+                costoPostres = "0"
+            }
+            let costoMenuInt: Int    = Int(costoMenu)!
+            let costoBebidasInt: Int = Int(costoBebidas)!
+            let costoPostresInt: Int = Int(costoPostres)!
+            let costoTotalInput = costoMenuInt + costoBebidasInt + costoPostresInt
             let cell = tableView.dequeueReusableCell(withIdentifier: defaultReuseId, for: indexPath)
             cell.releaseView()
             cell.selectionStyle = .none
@@ -300,6 +333,7 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
             costo.placeholder = "0"
             costo.addBorder(borderColor: .gris, widthBorder: 1.0)
             costo.textAlignment = .center
+            costo.text = "\(costoTotalInput)"
             //costo.delegate = self
             costo.keyboardType = .numberPad
             let mx: ArchiaRegularLabel = ArchiaRegularLabel()
@@ -318,6 +352,166 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
         }
         return UITableViewCell()
     }
+    
+    
+    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        let seccion = secciones[indexPath.row]
+        if seccion == "total" {
+            //let cell = tableView.dequeueReusableCell(withIdentifier: defaultReuseId, for: indexPath)
+            if let cell = cell as? UITableViewCell {
+                var costoMenu: String = "0"
+                if let textView = mainView.viewWithTag(TAG_COSTO_MENU_EVENT) as? UITextView {
+                    if !(textView.text!).isEmpty {
+                        costoMenu = textView.text!
+                    }
+                }
+                else{
+                    costoMenu = "0"
+                }
+                var costoBebidas: String = "0"
+                if let textView = mainView.viewWithTag(TAG_COSTO_BEBIDAS_EVENT) as? UITextView {
+                    if !(textView.text!).isEmpty {
+                        //costoMenu = textView.text!
+                        costoBebidas = textView.text!
+                    }
+                }else{
+                    costoBebidas = "0"
+                }
+                var costoPostres: String = "0"
+                if let textView = mainView.viewWithTag(TAG_COSTO_POSTRES_EVENT) as? UITextView {
+                    if !(textView.text!).isEmpty {
+                        //costoMenu = textView.text!
+                        costoPostres = textView.text!
+                    }
+                }
+                else{
+                    costoPostres = "0"
+                }
+                let costoMenuInt: Int    = Int(costoMenu)!
+                let costoBebidasInt: Int = Int(costoBebidas)!
+                let costoPostresInt: Int = Int(costoPostres)!
+                let costoTotalInput = costoMenuInt + costoBebidasInt + costoPostresInt
+                
+                cell.releaseView()
+                cell.selectionStyle = .none
+                cell.addSubview(personasRecibir)
+                cell.addSubview(personasRecibirInput)
+                cell.addSubview(guardar)
+                let cont: UIView = UIView()
+                cont.isUserInteractionEnabled = true
+                cell.addSubview(cont)
+                cell.addConstraintsWithFormat(format: "H:|-[v0(150)]-[v1]-|", views: personasRecibir, personasRecibirInput)
+                cell.addConstraintsWithFormat(format: "H:[v0(120)]-|", views: guardar)
+                cell.addConstraintsWithFormat(format: "H:|[v0]|", views: cont)
+                cell.addConstraintsWithFormat(format: "V:|-[v0]", views: personasRecibir)
+                cell.addConstraintsWithFormat(format: "V:|-[v0(30)]-[v1(50)]-[v2(40)]",
+                                              views: personasRecibirInput, cont, guardar)
+                let costoTotal: ArchiaRegularLabel = ArchiaRegularLabel()
+                costoTotal.text = "Costo total: $"
+                costo.isUserInteractionEnabled = false
+                costo.placeholder = "0"
+                costo.addBorder(borderColor: .gris, widthBorder: 1.0)
+                costo.textAlignment = .center
+                //costo.delegate = self
+                costo.keyboardType = .numberPad
+                costo.text = "\(costoTotalInput)"
+                let mx: ArchiaRegularLabel = ArchiaRegularLabel()
+                mx.text = ".00 mx"
+                cont.addSubview(costoTotal)
+                cont.addSubview(costo)
+                cont.addSubview(mx)
+                cont.addConstraintsWithFormat(format: "H:[v0(110)]-[v1(80)]-[v2(70)]|", views: costoTotal, costo, mx)
+                cont.addConstraintsWithFormat(format: "V:|-[v0(25)]", views: costoTotal)
+                cont.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: costo)
+                cont.addConstraintsWithFormat(format: "V:|-[v0(25)]", views: mx)
+                guardar.addTarget(self, action: #selector(guardarEvento) , for: .touchUpInside)
+            }
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        
+        let seccion = secciones[indexPath.row]
+        if seccion == "total" {
+            //let cell = tableView.dequeueReusableCell(withIdentifier: defaultReuseId, for: indexPath)
+            if let cell = cell as? UITableViewCell {
+                var costoMenu: String = "0"
+                if let textView = mainView.viewWithTag(TAG_COSTO_MENU_EVENT) as? UITextView {
+                    if !(textView.text!).isEmpty {
+                        costoMenu = textView.text!
+                    }
+                }
+                else{
+                    costoMenu = "0"
+                }
+                var costoBebidas: String = "0"
+                if let textView = mainView.viewWithTag(TAG_COSTO_BEBIDAS_EVENT) as? UITextView {
+                    if !(textView.text!).isEmpty {
+                        //costoMenu = textView.text!
+                        costoBebidas = textView.text!
+                    }
+                }else{
+                    costoBebidas = "0"
+                }
+                var costoPostres: String = "0"
+                if let textView = mainView.viewWithTag(TAG_COSTO_POSTRES_EVENT) as? UITextView {
+                    if !(textView.text!).isEmpty {
+                        //costoMenu = textView.text!
+                        costoPostres = textView.text!
+                    }
+                }
+                else{
+                    costoPostres = "0"
+                }
+                let costoMenuInt: Int    = Int(costoMenu)!
+                let costoBebidasInt: Int = Int(costoBebidas)!
+                let costoPostresInt: Int = Int(costoPostres)!
+                let costoTotalInput = costoMenuInt + costoBebidasInt + costoPostresInt
+                
+                cell.releaseView()
+                cell.selectionStyle = .none
+                cell.addSubview(personasRecibir)
+                cell.addSubview(personasRecibirInput)
+                cell.addSubview(guardar)
+                let cont: UIView = UIView()
+                cont.isUserInteractionEnabled = true
+                cell.addSubview(cont)
+                cell.addConstraintsWithFormat(format: "H:|-[v0(150)]-[v1]-|", views: personasRecibir, personasRecibirInput)
+                cell.addConstraintsWithFormat(format: "H:[v0(120)]-|", views: guardar)
+                cell.addConstraintsWithFormat(format: "H:|[v0]|", views: cont)
+                cell.addConstraintsWithFormat(format: "V:|-[v0]", views: personasRecibir)
+                cell.addConstraintsWithFormat(format: "V:|-[v0(30)]-[v1(50)]-[v2(40)]",
+                                              views: personasRecibirInput, cont, guardar)
+                let costoTotal: ArchiaRegularLabel = ArchiaRegularLabel()
+                costoTotal.text = "Costo total: $"
+                costo.isUserInteractionEnabled = false
+                costo.placeholder = "0"
+                costo.addBorder(borderColor: .gris, widthBorder: 1.0)
+                costo.textAlignment = .center
+                //costo.delegate = self
+                costo.keyboardType = .numberPad
+                costo.text = "\(costoTotalInput)"
+                let mx: ArchiaRegularLabel = ArchiaRegularLabel()
+                mx.text = ".00 mx"
+                cont.addSubview(costoTotal)
+                cont.addSubview(costo)
+                cont.addSubview(mx)
+                cont.addConstraintsWithFormat(format: "H:[v0(110)]-[v1(80)]-[v2(70)]|", views: costoTotal, costo, mx)
+                cont.addConstraintsWithFormat(format: "V:|-[v0(25)]", views: costoTotal)
+                cont.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: costo)
+                cont.addConstraintsWithFormat(format: "V:|-[v0(25)]", views: mx)
+                guardar.addTarget(self, action: #selector(guardarEvento) , for: .touchUpInside)
+            }
+        }
+        
+        
+        
+    }
+    
+    
+    
+    
+    
     
     let costo: UITextField = UITextField()
     
@@ -554,24 +748,42 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
         if let textView = mainView.viewWithTag(TAG_POSTRES_EVENT) as? UITextView {
             postres = textView.text!
         }
+        
+        
         var costoMenu: String = "0"
         if let textView = mainView.viewWithTag(TAG_COSTO_MENU_EVENT) as? UITextView {
-            costoMenu = textView.text!
+            if !(textView.text!).isEmpty {
+                costoMenu = textView.text!
+            }
+        }
+        else{
+            costoMenu = "0"
         }
         var costoBebidas: String = "0"
         if let textView = mainView.viewWithTag(TAG_COSTO_BEBIDAS_EVENT) as? UITextView {
-            costoBebidas = textView.text!
+            if !(textView.text!).isEmpty {
+                //costoMenu = textView.text!
+                costoBebidas = textView.text!
+            }
+        }else{
+            costoBebidas = "0"
         }
         var costoPostres: String = "0"
         if let textView = mainView.viewWithTag(TAG_COSTO_POSTRES_EVENT) as? UITextView {
-            costoPostres = textView.text!
+            if !(textView.text!).isEmpty {
+                //costoMenu = textView.text!
+                costoPostres = textView.text!
+            }
+        }
+        else{
+            costoPostres = "0"
         }
         
         let tituloEvento = dataStorage.getLastTitle()
         
         let costoMenuInt: Int    = Int(costoMenu)!
-        let costoBebidasInt: Int = Int(costoMenu)!
-        let costoPostresInt: Int = Int(costoMenu)!
+        let costoBebidasInt: Int = Int(costoBebidas)!
+        let costoPostresInt: Int = Int(costoPostres)!
         let costoTotal = costoMenuInt + costoBebidasInt + costoPostresInt
         
         let jsonData = try! JSONSerialization.data(withJSONObject: productsExtra, options: [])

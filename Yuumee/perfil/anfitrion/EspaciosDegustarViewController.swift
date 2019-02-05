@@ -31,7 +31,7 @@ class EspaciosDegustarViewController: BaseViewController {
     let guardar: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Guardar", for: .normal)
-        button.setTitleColor(.lightGray, for: .normal)
+        button.setTitleColor(.darkGray, for: .normal)
         button.layer.cornerRadius = 15
         button.addBorder(borderColor: .lightGray, widthBorder: 1)
         return button
@@ -104,6 +104,11 @@ class EspaciosDegustarViewController: BaseViewController {
     
     @objc func sendRequestSpace(sender: UIButton) {
         
+        if idsEspacios.count <= 0 {
+            Utils.showSimpleAlert(message: "Por favor, marque uno o mas espacions",
+                                  context: self, success: nil)
+            return;
+        }
         var spaceOther = ""
         if idsEspacios.contains("6") {
             spaceOther = textView.text!
@@ -129,10 +134,15 @@ class EspaciosDegustarViewController: BaseViewController {
                         let statusMsg = result["status_msg"] as? String
                         let state     = result["state"] as? String
                         if statusMsg == "OK" && state == "200" {
-                            let alert = UIAlertController(title: "Información actualizada.", message: "", preferredStyle: UIAlertController.Style.alert)
-                            alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
-                            self.present(alert, animated: true, completion: nil)
-                            return;
+                            
+                            Utils.showSimpleAlert(message: "Información actualizada.",
+                                                  context: self,
+                                                  success: {(alert: UIAlertAction!) in
+                                                    
+                                self.navigationController?.popViewController(animated: true)
+                                                    
+                            })
+                            
                         }
                         else{
                             let alert = UIAlertController(title: "Ocurrió un error al realizar la petición.", message: "\(statusMsg!)", preferredStyle: UIAlertController.Style.alert)
@@ -150,7 +160,6 @@ class EspaciosDegustarViewController: BaseViewController {
                     break
                 }
         }
-        
         
     }
     
@@ -181,11 +190,6 @@ class EspaciosDegustarViewController: BaseViewController {
                         let state     = result["state"] as? String
                         if statusMsg == "OK" && state == "200" {
                             if let espacios = result["data"] as? [Dictionary<String, AnyObject>] {
-                                
-                                print(" espacios ")
-                                print(espacios)
-                                print(" \n\n ")
-                                
                                 for e in espacios {
                                     let newE = Espacio(espacioArray: e)
                                     self.lugares.append(newE)

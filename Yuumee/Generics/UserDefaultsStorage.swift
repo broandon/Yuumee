@@ -105,8 +105,8 @@ extension UserDefaults {
     func setDate(tipo: String) {
         set(tipo, forKey: UserDefaultKeys.lastDateEventSelected.rawValue)
     }
-    func getDate() -> String {
-        return string(forKey: UserDefaultKeys.lastDateEventSelected.rawValue)!
+    func getDate() -> String? {
+        return string(forKey: UserDefaultKeys.lastDateEventSelected.rawValue) ?? ""
     }
     
     // Ultima comida seleccionada del evento
@@ -114,8 +114,8 @@ extension UserDefaults {
     func setLastFoodSelectedEvent(tipo: String) {
         set(tipo, forKey: UserDefaultKeys.lastFoodSelectedEvent.rawValue)
     }
-    func getLastFoodSelectedEvent() -> String {
-        return string(forKey: UserDefaultKeys.lastFoodSelectedEvent.rawValue)!
+    func getLastFoodSelectedEvent() -> String? {
+        return string(forKey: UserDefaultKeys.lastFoodSelectedEvent.rawValue) ?? ""
     }
     
     
@@ -124,8 +124,8 @@ extension UserDefaults {
     func setLastCategorySelectedEvent(tipo: String) {
         set(tipo, forKey: UserDefaultKeys.lastCategorySelectedEvent.rawValue)
     }
-    func getLastCategorySelectedEvent() -> String {
-        return string(forKey: UserDefaultKeys.lastCategorySelectedEvent.rawValue)!
+    func getLastCategorySelectedEvent() -> String? {
+        return string(forKey: UserDefaultKeys.lastCategorySelectedEvent.rawValue) ?? ""
     }
     
     
@@ -134,8 +134,8 @@ extension UserDefaults {
     func setLastSubCategorySelectedEvent(tipo: String) {
         set(tipo, forKey: UserDefaultKeys.lastSubCategorySelectedEvent.rawValue)
     }
-    func getLastSubCategorySelectedEvent() -> String {
-        return string(forKey: UserDefaultKeys.lastSubCategorySelectedEvent.rawValue)!
+    func getLastSubCategorySelectedEvent() -> String? {
+        return string(forKey: UserDefaultKeys.lastSubCategorySelectedEvent.rawValue) ?? ""
     }
     
     
@@ -145,8 +145,8 @@ extension UserDefaults {
     func setComienzaEvent(hora: String) {
         set(hora, forKey: UserDefaultKeys.comienzaEvent.rawValue)
     }
-    func getComienzaEvent() -> String {
-        return string(forKey: UserDefaultKeys.comienzaEvent.rawValue)!
+    func getComienzaEvent() -> String? {
+        return string(forKey: UserDefaultKeys.comienzaEvent.rawValue) ?? ""
     }
     
     
@@ -157,8 +157,8 @@ extension UserDefaults {
     func setTerminaEvent(hora: String) {
         set(hora, forKey: UserDefaultKeys.terminaEvent.rawValue)
     }
-    func getTerminaEvent() -> String {
-        return string(forKey: UserDefaultKeys.terminaEvent.rawValue)!
+    func getTerminaEvent() -> String? {
+        return string(forKey: UserDefaultKeys.terminaEvent.rawValue) ?? ""
     }
     
     
@@ -168,8 +168,8 @@ extension UserDefaults {
     func setImagenEvent(hora: String) {
         set(hora, forKey: UserDefaultKeys.lastImageSelected.rawValue)
     }
-    func getImagenEvent() -> String {
-        return string(forKey: UserDefaultKeys.lastImageSelected.rawValue)!
+    func getImagenEvent() -> String? {
+        return string(forKey: UserDefaultKeys.lastImageSelected.rawValue) ?? ""
     }
     
     
@@ -179,8 +179,8 @@ extension UserDefaults {
     func setLastTitle(title: String) {
         set(title, forKey: UserDefaultKeys.lastTitle.rawValue)
     }
-    func getLastTitle() -> String {
-        return string(forKey: UserDefaultKeys.lastTitle.rawValue)!
+    func getLastTitle() -> String? {
+        return string(forKey: UserDefaultKeys.lastTitle.rawValue) ?? ""
     }
     
     
@@ -210,16 +210,16 @@ extension UserDefaults {
     func setLatitud(tipo: String) {
         set(tipo, forKey: UserDefaultKeys.lastLatitude.rawValue)
     }
-    func getLatitud() -> String {
-        return string(forKey: UserDefaultKeys.lastLatitude.rawValue)!
+    func getLatitud() -> String? {
+        return string(forKey: UserDefaultKeys.lastLatitude.rawValue) ?? ""
     }
     
     // Longitud
     func setLongitud(tipo: String) {
         set(tipo, forKey: UserDefaultKeys.lastLongitude.rawValue)
     }
-    func getLongitud() -> String {
-        return string(forKey: UserDefaultKeys.lastLongitude.rawValue)!
+    func getLongitud() -> String? {
+        return string(forKey: UserDefaultKeys.lastLongitude.rawValue) ?? ""
     }
     
     // Costo totla del evento
@@ -227,8 +227,8 @@ extension UserDefaults {
     func setCostoTotalEvento(costo: String) {
         set(costo, forKey: UserDefaultKeys.costoTotalEvento.rawValue)
     }
-    func getCostoTotalEvento() -> String {
-        return string(forKey: UserDefaultKeys.costoTotalEvento.rawValue)!
+    func getCostoTotalEvento() -> String? {
+        return string(forKey: UserDefaultKeys.costoTotalEvento.rawValue) ?? ""
     }
     
     
