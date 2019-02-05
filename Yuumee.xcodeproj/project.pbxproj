@@ -39,6 +39,7 @@
 		5EB1C3322208BF6200464079 /* SeleccionarTarjetaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EB1C3312208BF6200464079 /* SeleccionarTarjetaViewController.swift */; };
 		5EB1C3342208D11100464079 /* BebidaPostreCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EB1C3332208D11100464079 /* BebidaPostreCell.swift */; };
 		5EB1C3362208D18800464079 /* NumeroPersonasViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EB1C3352208D18800464079 /* NumeroPersonasViewController.swift */; };
+		5EBBD8BE2209684A007E07D4 /* CalificarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBBD8BD2209684A007E07D4 /* CalificarViewController.swift */; };
 		5EBD6AF421F578E200621297 /* SubCategoriasViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBD6AF321F578E200621297 /* SubCategoriasViewController.swift */; };
 		5EBD6AF721F5A8FA00621297 /* CustomSwitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBD6AF521F5A8FA00621297 /* CustomSwitch.swift */; };
 		5EBD6AF821F5A8FA00621297 /* CustomThumbView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBD6AF621F5A8FA00621297 /* CustomThumbView.swift */; };
@@ -114,6 +115,7 @@
 		5EB1C3312208BF6200464079 /* SeleccionarTarjetaViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeleccionarTarjetaViewController.swift; sourceTree = "<group>"; };
 		5EB1C3332208D11100464079 /* BebidaPostreCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BebidaPostreCell.swift; sourceTree = "<group>"; };
 		5EB1C3352208D18800464079 /* NumeroPersonasViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumeroPersonasViewController.swift; sourceTree = "<group>"; };
+		5EBBD8BD2209684A007E07D4 /* CalificarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalificarViewController.swift; sourceTree = "<group>"; };
 		5EBD6AF321F578E200621297 /* SubCategoriasViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubCategoriasViewController.swift; sourceTree = "<group>"; };
 		5EBD6AF521F5A8FA00621297 /* CustomSwitch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomSwitch.swift; sourceTree = "<group>"; };
 		5EBD6AF621F5A8FA00621297 /* CustomThumbView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomThumbView.swift; sourceTree = "<group>"; };
@@ -287,6 +289,7 @@
 				5E68D6B921C8B05900DA00AB /* MetodoDePagoViewController.swift */,
 				9CA8E88321E7D24700266E99 /* TarjetasViewController.swift */,
 				9C3C8E5521F8EA6F007C2A77 /* MisDatosViewController.swift */,
+				5EBBD8BD2209684A007E07D4 /* CalificarViewController.swift */,
 			);
 			path = usuario;
 			sourceTree = "<group>";
@@ -605,6 +608,7 @@
 				5EC49D3121D1F3FC00DAC1BD /* ArchiaRegularLabel.swift in Sources */,
 				5EB1C3322208BF6200464079 /* SeleccionarTarjetaViewController.swift in Sources */,
 				5EB1C3342208D11100464079 /* BebidaPostreCell.swift in Sources */,
+				5EBBD8BE2209684A007E07D4 /* CalificarViewController.swift in Sources */,
 				5EBD6AF821F5A8FA00621297 /* CustomThumbView.swift in Sources */,
 				5EC3636721F840C600729047 /* ProductoExtraCell.swift in Sources */,
 				9CA8E88221E7C26F00266E99 /* StringConstants.swift in Sources */,

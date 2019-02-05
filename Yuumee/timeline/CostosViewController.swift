@@ -24,6 +24,7 @@ class CostosViewController: BaseViewController, UITextFieldDelegate, UITableView
         let textField = UITextField()
         textField.delegate = self
         textField.addBorder(borderColor: .gris, widthBorder: 1.0)
+        textField.textAlignment = .center
         return textField
     }
     
@@ -63,6 +64,20 @@ class CostosViewController: BaseViewController, UITextFieldDelegate, UITableView
     var costoTotal: UILabel!
     var costoTotalMx: UILabel!
     
+    
+    //  Params -----------------------------------------------------------------
+    var alergia: Bool        = false
+    var alergiaDesc: String  = ""
+    var costoMenu: String    = ""
+    var costoBebidas: Float = 0.0
+    var costoPostres: Float = 0.0
+    var bebidasPostresParam: [Dictionary<String, AnyObject>] = []
+    var idPlatillo: String = ""
+    var personasRecibir: String = ""
+    // -------------------------------------------------------------------------
+    
+    var totalPagar: String = ""
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         mainView.backgroundColor = .white
@@ -98,12 +113,19 @@ class CostosViewController: BaseViewController, UITextFieldDelegate, UITableView
         mainView.addConstraintsWithFormat(format: "H:|-16-[v0]-16-|", views: continuar)
         mainView.addConstraintsWithFormat(format: "V:|-[v0]-[v1(1)]-[v2(40)]-|",
                                           views: tableView, sep, continuar)
+        
     }
     
     
     
-    @objc func nextStep(){
+    @objc func nextStep() {
         let vc = SeleccionarTarjetaViewController()
+        vc.idPlatillo = idPlatillo
+        vc.alergia = alergia
+        vc.alergiaDesc = alergiaDesc
+        vc.bebidasPostresParam = bebidasPostresParam
+        vc.costoTotal = totalPagar
+        vc.personas = personasRecibir
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
@@ -133,6 +155,7 @@ class CostosViewController: BaseViewController, UITextFieldDelegate, UITableView
             cell.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: menu)
             cell.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: menuInput)
             cell.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: menuMx)
+            menuInput.text = costoMenu
             return cell
         }
         
@@ -145,6 +168,7 @@ class CostosViewController: BaseViewController, UITextFieldDelegate, UITableView
             cell.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: bebidas)
             cell.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: bebidasInput)
             cell.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: bebidasMx)
+            bebidasInput.text = "\(costoBebidas)"
             return cell
         }
         
@@ -157,20 +181,22 @@ class CostosViewController: BaseViewController, UITextFieldDelegate, UITableView
             cell.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: postres)
             cell.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: postresInput)
             cell.addConstraintsWithFormat(format: "V:|-[v0(30)]", views: postresMx)
-            
+            postresInput.text = "\(costoPostres)"
             return cell
         }
         
         if seccion == "costo_total" {
-            cell.addSubview(costoTotal); costoTotal.addBorder()
+            cell.addSubview(costoTotal)
             cell.addSubview(totalInput)
-            cell.addSubview(costoTotalMx); costoTotalMx.addBorder()
+            cell.addSubview(costoTotalMx)
             cell.addConstraintsWithFormat(format: "H:[v0(110)]-[v1(90)]-[v2(70)]-|",
                                           views: costoTotal, totalInput, costoTotalMx)
             cell.addConstraintsWithFormat(format: "V:[v0(30)]-|", views: costoTotal)
             cell.addConstraintsWithFormat(format: "V:[v0(30)]-|", views: totalInput)
             cell.addConstraintsWithFormat(format: "V:[v0(30)]-|", views: costoTotalMx)
-            
+            let total = Float(costoMenu)! + costoBebidas + costoPostres
+            totalPagar = "\(total)"
+            totalInput.text = "\(total)"
             return cell
         }
         

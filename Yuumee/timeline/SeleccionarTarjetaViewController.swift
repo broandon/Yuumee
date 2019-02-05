@@ -29,6 +29,16 @@ class SeleccionarTarjetaViewController: BaseViewController, UITableViewDelegate,
     
     var tarjetas: [Tarjeta] = []
     
+    //  Params -----------------------------------------------------------------
+    var alergia: Bool        = false
+    var alergiaDesc: String  = ""
+    var costoTotal: String   = ""
+    var personas: String     = ""
+    var idPlatillo: String   = ""
+    var bebidasPostresParam: [Dictionary<String, AnyObject>] = []
+    // -------------------------------------------------------------------------
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         mainView.backgroundColor = .white
@@ -36,9 +46,20 @@ class SeleccionarTarjetaViewController: BaseViewController, UITableViewDelegate,
         let backButton = UIBarButtonItem()
         self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
         
+        let save = UIButton(type: .system)
+        save.setTitle("Reservar", for: .normal)
+        save.setTitleColor(UIColor.rosa, for: .normal)
+        save.layer.cornerRadius = 10
+        save.contentEdgeInsets = UIEdgeInsets(top: 5, left: 15, bottom: 5, right: 15)
+        save.imageView?.contentMode = .scaleAspectFit
+        save.addBorder(borderColor: UIColor.azul , widthBorder: 2)
+        save.addTarget(self, action: #selector(reservarEvent) , for: .touchUpInside)
+        
         mainView.addSubview(tableView)
+        mainView.addSubview(save)
         mainView.addConstraintsWithFormat(format: "H:|-[v0]-|", views: tableView)
-        mainView.addConstraintsWithFormat(format: "V:|-[v0]|", views: tableView)
+        mainView.addConstraintsWithFormat(format: "H:[v0(150)]-16-|", views: save)
+        mainView.addConstraintsWithFormat(format: "V:|-[v0]-[v1(40)]-16-|", views: tableView, save)
         
         let headers: HTTPHeaders = ["Accept": "application/json",
                                     "Content-Type" : "application/x-www-form-urlencoded"]
@@ -91,43 +112,52 @@ class SeleccionarTarjetaViewController: BaseViewController, UITableViewDelegate,
     }
     
     
+    var cardIdToPay = ""
+    var idStore = ""
+    
     @objc func reservarEvent() {
-        //self.navigationController?.popToRootViewController(animated: true)
-        print("reservarEvent")
+        
+        if idStore.isEmpty || cardIdToPay.isEmpty {
+            Utils.showSimpleAlert(message: "Por favor seleccione una tarjeta.",
+                                  context: self, success: nil)
+            return;
+        }
+        
+        let jsonData = try! JSONSerialization.data(withJSONObject: bebidasPostresParam, options: [])
+        let decoded = String(data: jsonData, encoding: .utf8)!
+        
         let headers: HTTPHeaders = ["Accept": "application/json",
                                     "Content-Type" : "application/x-www-form-urlencoded"]
         
         let parameters: Parameters = ["funcion"  : "saveRerservation",
                                       "id_user"  : dataStorage.getUserId(),
-                                      "cost"     : "",
-                                      "persons"  : "",
-                                      "allergies" : "",
-                                      "allergies_description" : "",
-                                      "id_token_method"       : "",
-                                      "id_token_customer"     : "",
-                                      "id_saucer" : "1",
-                                      "extra_products" : ""] as [String: Any]
-        print(" parameters ")
-        print(parameters)
+                                      "cost"     : costoTotal,
+                                      "persons"  : personas,
+                                      "allergies" : (alergia) ? 2 : 1 ,
+                                      "allergies_description" : alergiaDesc,
+                                      "id_token_method"       : cardIdToPay,
+                                      "id_token_customer"     : idStore,
+                                      "id_saucer" : idPlatillo,
+                                      "extra_products" : decoded] as [String: Any]
+        
         Alamofire.request(BaseURL.baseUrl(), method: .post, parameters: parameters, encoding: ParameterQueryEncoding(), headers: headers).responseJSON
             { (response: DataResponse) in
                 switch(response.result) {
                 case .success(let value):
                     
-                    print(" value ")
-                    print(value)
-                    
                     if let result = value as? Dictionary<String, Any> {
-                        
-                        print(" result ")
-                        print(result)
                         
                         let statusMsg = result["status_msg"] as? String
                         let state = result["state"] as? String
                         if statusMsg == "OK" && state == "200" {
-                            
+                            wasReservationSaved = true
                             Utils.showSimpleAlert(message: "Reservacion guardada",
-                                                  context: self, success: nil)
+                                                  context: self,
+                                                  success: {(alert: UIAlertAction!) in
+                                                    
+                            self.navigationController?.popToRootViewController(animated: true)
+                                                    
+                            })
                             
                         }
                         else{
@@ -144,10 +174,10 @@ class SeleccionarTarjetaViewController: BaseViewController, UITableViewDelegate,
                 case .failure(let error):
                     print(" error:  ")
                     print(error)
+                    print(error.localizedDescription)
                     break
                 }
         }
-        print(" se pasa hasta aqui ")
         
     }
     
@@ -158,8 +188,6 @@ class SeleccionarTarjetaViewController: BaseViewController, UITableViewDelegate,
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: defaultReuseId, for: indexPath)
         cell.releaseView()
-        
-        cell.selectionStyle = .none
         
         let nTarjeta = tarjetas[indexPath.row]
         
@@ -180,12 +208,9 @@ class SeleccionarTarjetaViewController: BaseViewController, UITableViewDelegate,
             tipoImgTarjeta.image = UIImage(named: "master_card")
         }
         
-        
         cell.addSubview(tipoImgTarjeta)
         cell.addSubview(numTarjeta)
-        
-        cell.addConstraintsWithFormat(format: "H:|-[v0]-[v1(25)]-16-|",
-                                      views: numTarjeta, tipoImgTarjeta)
+        cell.addConstraintsWithFormat(format: "H:|-[v0]-[v1(25)]-16-|", views: numTarjeta, tipoImgTarjeta)
         cell.addConstraintsWithFormat(format: "V:|-[v0]-|", views: numTarjeta)
         cell.addConstraintsWithFormat(format: "V:|-[v0(20)]", views: tipoImgTarjeta)
         
@@ -198,9 +223,14 @@ class SeleccionarTarjetaViewController: BaseViewController, UITableViewDelegate,
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.selectRow(at: indexPath, animated: true, scrollPosition: .top)
+        
+        let nTarjeta = tarjetas[indexPath.row]
+        cardIdToPay = nTarjeta.id
+        idStore = nTarjeta.client
+        
     }
     
-    
+    /*
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         let footerView = UIView(frame: CGRect(x: 0, y: 0, width: mainView.frame.size.width, height: 50))
         footerView.isUserInteractionEnabled = true
@@ -220,7 +250,7 @@ class SeleccionarTarjetaViewController: BaseViewController, UITableViewDelegate,
         return footerView
         
     }
-    
+    */
     
     
 }

@@ -125,6 +125,7 @@ class ReservarViewController: BaseViewController, UICollectionViewDelegate, UICo
     let descEspecifica: UITextField = {
         let textField = UITextField()
         textField.backgroundColor = .gris
+        textField.font = UIFont.init(name: "ArchiaRegular", size: 10)
         return textField
     }()
     let contenedorEspecifica: UIView = {
@@ -140,6 +141,15 @@ class ReservarViewController: BaseViewController, UICollectionViewDelegate, UICo
         self.title = "Reservar"
         self.navigationController?.navigationBar.topItem?.backBarButtonItem = UIBarButtonItem()
         self.hideKeyboardWhenTappedAround()
+        
+        let notifier = NotificationCenter.default
+        notifier.addObserver(self, selector: #selector(keyboardWillAppear),
+                             name: UIWindow.keyboardWillShowNotification,
+                             object: nil)
+        notifier.addObserver(self, selector: #selector(keyboardWillDisappear),
+                             name: UIWindow.keyboardWillHideNotification,
+                             object: nil)
+        
         mainView.addSubview(collectionBebidas)
         mainView.addSubview(collectionPostres)
         mainView.addSubview(continuar)
@@ -180,6 +190,12 @@ class ReservarViewController: BaseViewController, UICollectionViewDelegate, UICo
         contenedorEspecifica.addConstraintsWithFormat(format: "V:|-[v0]", views: especifica)
         contenedorEspecifica.addConstraintsWithFormat(format: "V:|-[v0(60)]", views: descEspecifica)
         
+        
+        if let platillo = infoUsuario["saucer"] as? Dictionary<String, AnyObject> {
+            self.idPlatillo = (platillo["id_platillo"] as? String)!
+        }
+        
+        
         if let bebidasPostres = infoUsuario["extra_saucer"] as? [Dictionary<String, AnyObject>] {
             for bp in bebidasPostres {
                 let tipo = bp["tipo"] as! String
@@ -213,25 +229,78 @@ class ReservarViewController: BaseViewController, UICollectionViewDelegate, UICo
         } // If
     }
     
+    @objc func keyboardWillAppear(notification: NSNotification) {
+        // DESPLAZAMIENTO QUE SE LE HACE AL TABLEVIEW AL MOSTRARSE EL KEYBOARD
+        self.view.frame.origin.y -= 170
+    }
+    
+    @objc func keyboardWillDisappear(notification: NSNotification){
+        // REGRESA EL TABLEVIEW A LA NORMALIDAD CUANDO DESAPARECE EL KEYBOARD
+        self.view.frame.origin.y += 170
+    }
+    
+    
+    var idPlatillo: String = ""
+    
     var infoUsuario: Dictionary<String, AnyObject> = [:]
     
-    //var bebidasParams: [Dictionary<String, AnyObject>] = [[String:AnyObject]]()
     var bebidasParams = Dictionary<String, Array<AnyObject>>()
-    //var postresParams: [Dictionary<String, AnyObject>] = [[String:AnyObject]]()
     var postresParams = Dictionary<String, Array<AnyObject>>()
+    var bebidasPostresParam: [Dictionary<String, AnyObject>] = []
     
+    
+    /**
+     * Evento para enviar los parametros y tealizar la reservacion.
+     *
+     */
     @objc func nextStep() {
+        var costoTempBebidas: Float = 0.0
+        for k in self.bebidasParams.keys {
+            if let array = self.bebidasParams[k] as? [Dictionary<String, AnyObject>] {
+                let bebida = array.first as! Dictionary<String, AnyObject>
+                bebidasPostresParam.append( ["id" : bebida["Id"]!,
+                                             "cantidad" : bebida["total_seleccionado"]!,
+                                             "precio" : bebida["costo_calculo"]!
+                    ]
+                )
+                if let totalPorCadaBebida = bebida["total_por_cada_bebida"] as? Float {
+                    costoTempBebidas = costoTempBebidas + totalPorCadaBebida
+                }
+                
+            }
+        }
         
-        print(" bebidasParams ")
-        print(bebidasParams)
-        print(" \n\n ")
+        var costoTempPostre: Float = 0.0
+        for k in self.postresParams.keys {
+            if let array = self.postresParams[k] as? [Dictionary<String, AnyObject>] {
+                let postre = array.first as! Dictionary<String, AnyObject>
+                bebidasPostresParam.append( ["id" : postre["Id"]!,
+                                             "cantidad" : postre["total_seleccionado"]!,
+                                             "precio" : postre["costo_calculo"]!
+                    ]
+                )
+                if let totalPorCadaPostre = postre["total_por_cada_postre"] as? Float{
+                    costoTempPostre = costoTempPostre + totalPorCadaPostre
+                }
+                
+            }
+        }
         
-        print(" postresParams ")
-        print(postresParams)
-        print(" \n\n ")
+        let info          = infoUsuario["saucer"]
+        let costoMenu     = info!["costo_calculo"] as! String
+        let tieneAlergias = switchAlergias.isOn
         
-        //let vc = CostosViewController()
-        //self.navigationController?.pushViewController(vc, animated: true)
+        let vc = CostosViewController()
+        vc.alergia = tieneAlergias
+        vc.alergiaDesc = descEspecifica.text!
+        vc.costoMenu = costoMenu
+        vc.costoBebidas = costoTempBebidas
+        vc.costoPostres = costoTempPostre
+        vc.bebidasPostresParam = self.bebidasPostresParam
+        vc.idPlatillo = self.idPlatillo
+        vc.personasRecibir = numPersonas.text!
+        self.navigationController?.pushViewController(vc, animated: true)
+        
     }
     
     

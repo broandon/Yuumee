@@ -9,6 +9,8 @@
 import UIKit
 import Alamofire
 
+var wasReservationSaved: Bool = false
+
 class PerfilUsuarioViewController: BaseViewController {
     
     let locationCell = "LocationCell"
@@ -149,6 +151,15 @@ class PerfilUsuarioViewController: BaseViewController {
         }
         
         // ---------------------------------------------------------------------
+        wasReservationSaved = false
+    }
+    
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if wasReservationSaved {
+            self.regresar()
+        }
         
     }
     
@@ -1106,9 +1117,7 @@ class ComentariosCell: UITableViewCell, UICollectionViewDelegate, UICollectionVi
             
             cell.addConstraintsWithFormat(format: "H:|-16-[v0]-[v1(100)]-|", views: nombre, rank)
             cell.addConstraintsWithFormat(format: "H:|-16-[v0]-16-|", views: descripcion)
-            
             //cell.addConstraintsWithFormat(format: "H:[v0(100)]-|", views: )
-            
             //cell.addConstraintsWithFormat(format: "V:|-[v0(30)][v1]-[v2(20)]-|", views: , descripcion, )
             cell.addConstraintsWithFormat(format: "V:|[v0(30)]-[v1]-|", views: nombre, descripcion)
             cell.addConstraintsWithFormat(format: "V:|-10-[v0(20)]-[v1]-|", views: rank, descripcion)

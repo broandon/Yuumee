@@ -56,6 +56,7 @@ class ReservasViewController: BaseViewController, UITableViewDelegate, UITableVi
                         let state = result["state"] as? String
                         if statusMsg == "OK" && state == "200" {
                             if let reservas = result["data"] as? [Dictionary<String, AnyObject>] {
+                                
                                 for r in reservas {
                                     let newE = Reserva(reservaArray: r)
                                     self.reservas.append(newE)
@@ -112,6 +113,16 @@ class ReservasViewController: BaseViewController, UITableViewDelegate, UITableVi
         platillo.textColor     = .white
         platillo.numberOfLines = 0
         
+        let cliente  = UILabel()
+        cliente.text = reserva.cliente
+        cliente.textColor     = .white
+        cliente.numberOfLines = 0
+        
+        let noPersonas  = UILabel()
+        noPersonas.text = reserva.noPersonas
+        noPersonas.textColor     = .white
+        noPersonas.numberOfLines = 0
+        
         let fecha  = UILabel()
         fecha.text = reserva.fecha
         fecha.textColor     = .white
@@ -131,18 +142,27 @@ class ReservasViewController: BaseViewController, UITableViewDelegate, UITableVi
         cell.addSubview(fecha)
         cell.addSubview(costoLbl)
         cell.addSubview(costo)
+        cell.addSubview(noPersonas)
+        cell.addSubview(cliente)
+        
         
         cell.addConstraintsWithFormat(format: "H:|-[v0]|", views: platillo)
         cell.addConstraintsWithFormat(format: "H:|-[v0]|", views: fecha)
+        cell.addConstraintsWithFormat(format: "H:|-[v0]|", views: cliente)
+        cell.addConstraintsWithFormat(format: "H:|-[v0]|", views: noPersonas)
         cell.addConstraintsWithFormat(format: "H:[v0(70)]-[v1]-|", views: costoLbl, costo)
-        cell.addConstraintsWithFormat(format: "V:|-[v0]-[v1]-[v2]", views: platillo, fecha, costoLbl)
-        cell.addConstraintsWithFormat(format: "V:|-[v0]-[v1]-[v2]", views: platillo, fecha, costo)
+        //cell.addConstraintsWithFormat(format: "V:|-[v0]-[v1]-[v2]", views: platillo, fecha, costoLbl)
+        //cell.addConstraintsWithFormat(format: "V:|-[v0]-[v1]-[v2]", views: platillo, fecha, costo)
+        cell.addConstraintsWithFormat(format: "V:|-[v0]-[v1]-[v2]-[v3]", views: platillo, cliente, noPersonas, fecha)
+        
+        cell.addConstraintsWithFormat(format: "V:[v0(25)]-|", views: costoLbl)
+        cell.addConstraintsWithFormat(format: "V:[v0(25)]-|", views: costo)
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 100
+        return 150
     }
     
 }
@@ -156,12 +176,16 @@ struct Reserva {
     var nombre: String
     var fecha: String
     var costo: String
+    var noPersonas: String
+    var cliente: String
     
     init(reservaArray: Dictionary<String, AnyObject>) {
         self.id     = reservaArray["Id"] as! String
         self.nombre = reservaArray["nombre_platillo"] as! String
         self.fecha  = reservaArray["fecha_platillo"] as! String
         self.costo  = reservaArray["costo"] as! String
+        self.noPersonas  = reservaArray["num_personas"] as! String
+        self.cliente  = reservaArray["cliente"] as! String
     }
     
 }

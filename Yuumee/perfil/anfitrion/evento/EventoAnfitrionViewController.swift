@@ -574,6 +574,9 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
         let costoPostresInt: Int = Int(costoMenu)!
         let costoTotal = costoMenuInt + costoBebidasInt + costoPostresInt
         
+        let jsonData = try! JSONSerialization.data(withJSONObject: productsExtra, options: [])
+        let decoded = String(data: jsonData, encoding: .utf8)!
+        
         let parameters: Parameters=["funcion"    : "saveEvent",
                                     "id_user"    : idUsuario,
                                     "name"       : tituloEvento,
@@ -593,7 +596,7 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
                                     "id_cat"     : dataStorage.getLastCategorySelectedEvent(),
                                     "id_sub_cat" : dataStorage.getLastSubCategorySelectedEvent(),
                                     "image"      : dataStorage.getImagenEvent(),
-                                    "extra_products" : productsExtra] as [String: Any]
+                                    "extra_products" : decoded] as [String: Any]
         
         let headers: HTTPHeaders = ["Accept": "application/json",
                                     "Content-Type" : "application/x-www-form-urlencoded"]

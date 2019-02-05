@@ -122,11 +122,6 @@ class MensajesViewController: BaseViewController {
         let parameters: Parameters = ["funcion" : funcion,
                                       "id_user" : dataStorage.getUserId()] as [String: Any]
         
-        print("-----------------------------------")
-        print(" parameters: ")
-        print(parameters)
-        print("-----------------------------------")
-        
         Alamofire.request(BaseURL.baseUrl() , method: .post, parameters: parameters,
                           encoding: ParameterQueryEncoding(),
                           headers: headers).responseJSON{ (response: DataResponse) in

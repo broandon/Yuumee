@@ -39,6 +39,8 @@ enum UserDefaultKeys: String {
     
     case wasTokenSavedInDB
     
+    case wasSavedReservation
+    
 }
 
 // -----------------------------------------------------------------------------
@@ -228,8 +230,6 @@ extension UserDefaults {
     func getCostoTotalEvento() -> String {
         return string(forKey: UserDefaultKeys.costoTotalEvento.rawValue)!
     }
-    
-    
     
     
     
