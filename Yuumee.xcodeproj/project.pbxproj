@@ -34,6 +34,7 @@
 		5E88E3B421F429DA0043889A /* CalendarioViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E88E3B321F429DA0043889A /* CalendarioViewController.swift */; };
 		5E88E3B621F42A020043889A /* OrganizarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E88E3B521F42A020043889A /* OrganizarViewController.swift */; };
 		5E99DA8321EED42C005BB6AC /* PerfilClienteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E99DA8221EED42C005BB6AC /* PerfilClienteViewController.swift */; };
+		5EA2BA23220A8B3A00A5C139 /* MensajePagadoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EA2BA22220A8B3A00A5C139 /* MensajePagadoViewController.swift */; };
 		5EB1C32E2208BDA600464079 /* ReservarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EB1C32D2208BDA600464079 /* ReservarViewController.swift */; };
 		5EB1C3302208BF1100464079 /* CostosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EB1C32F2208BF1100464079 /* CostosViewController.swift */; };
 		5EB1C3322208BF6200464079 /* SeleccionarTarjetaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EB1C3312208BF6200464079 /* SeleccionarTarjetaViewController.swift */; };
@@ -110,6 +111,7 @@
 		5E88E3B321F429DA0043889A /* CalendarioViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarioViewController.swift; sourceTree = "<group>"; };
 		5E88E3B521F42A020043889A /* OrganizarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizarViewController.swift; sourceTree = "<group>"; };
 		5E99DA8221EED42C005BB6AC /* PerfilClienteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PerfilClienteViewController.swift; path = Yuumee/perfil/usuario/PerfilClienteViewController.swift; sourceTree = SOURCE_ROOT; };
+		5EA2BA22220A8B3A00A5C139 /* MensajePagadoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MensajePagadoViewController.swift; sourceTree = "<group>"; };
 		5EB1C32D2208BDA600464079 /* ReservarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReservarViewController.swift; sourceTree = "<group>"; };
 		5EB1C32F2208BF1100464079 /* CostosViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CostosViewController.swift; sourceTree = "<group>"; };
 		5EB1C3312208BF6200464079 /* SeleccionarTarjetaViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeleccionarTarjetaViewController.swift; sourceTree = "<group>"; };
@@ -290,6 +292,7 @@
 				9CA8E88321E7D24700266E99 /* TarjetasViewController.swift */,
 				9C3C8E5521F8EA6F007C2A77 /* MisDatosViewController.swift */,
 				5EBBD8BD2209684A007E07D4 /* CalificarViewController.swift */,
+				5EA2BA22220A8B3A00A5C139 /* MensajePagadoViewController.swift */,
 			);
 			path = usuario;
 			sourceTree = "<group>";
@@ -602,6 +605,7 @@
 				9C3C8E5421F8DBC1007C2A77 /* ReservasViewController.swift in Sources */,
 				5EC3636521F83F7300729047 /* ProductosExtraView.swift in Sources */,
 				5E68D6AB21C8AFEE00DA00AB /* LoginViewController.swift in Sources */,
+				5EA2BA23220A8B3A00A5C139 /* MensajePagadoViewController.swift in Sources */,
 				5E68D6A721C8AFCE00DA00AB /* UbicacionViewController.swift in Sources */,
 				5EBEEEFB21E2F3C300F718A4 /* FormattedCurrentDate.swift in Sources */,
 				9C3C8E5621F8EA6F007C2A77 /* MisDatosViewController.swift in Sources */,

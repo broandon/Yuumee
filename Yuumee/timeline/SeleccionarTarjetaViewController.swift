@@ -149,32 +149,46 @@ class SeleccionarTarjetaViewController: BaseViewController, UITableViewDelegate,
                         
                         let statusMsg = result["status_msg"] as? String
                         let state = result["state"] as? String
+                        wasReservationSaved = true
                         if statusMsg == "OK" && state == "200" {
-                            wasReservationSaved = true
-                            Utils.showSimpleAlert(message: "Reservacion guardada",
+                            
+                            let vc = MensajePagadoViewController()
+                            vc.delegate = self
+                            let popVC = UINavigationController(rootViewController: vc)
+                            popVC.modalPresentationStyle = .overFullScreen
+                            self.present(popVC, animated: true)
+                            
+                            /*Utils.showSimpleAlert(message: "Reservacion guardada", context: self,
+                                                  success: {(alert: UIAlertAction!) in
+                            self.navigationController?.popToRootViewController(animated: true)
+                            })
+                            */
+                        }
+                        else{
+                            Utils.showSimpleAlert(message: "Ocurrió un error al realizar la petición.",
                                                   context: self,
                                                   success: {(alert: UIAlertAction!) in
-                                                    
                             self.navigationController?.popToRootViewController(animated: true)
                                                     
                             })
-                            
-                        }
-                        else{
-                            let alert = UIAlertController(title: "Ocurrió un error al realizar la petición.",
-                                                          message: "\(statusMsg!)",
-                                preferredStyle: UIAlertController.Style.alert)
-                            alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
-                            self.present(alert, animated: true, completion: nil)
                             return;
                         }
                     }
                     //completionHandler(value as? NSDictionary, nil)
                     break
                 case .failure(let error):
-                    print(" error:  ")
-                    print(error)
-                    print(error.localizedDescription)
+                    //print(" error:  ")
+                    //print(error)
+                    //print(error.localizedDescription)
+                    
+                    Utils.showSimpleAlert(message: error.localizedDescription,
+                                          context: self,
+                                          success: {(alert: UIAlertAction!) in
+                        self.navigationController?.popToRootViewController(animated: true)
+                                            
+                    })
+                    return;
+                    
                     break
                 }
         }
@@ -252,5 +266,13 @@ class SeleccionarTarjetaViewController: BaseViewController, UITableViewDelegate,
     }
     */
     
+    
+}
+
+
+extension SeleccionarTarjetaViewController: BackToList {
+    func backToList() {
+        self.navigationController?.popToRootViewController(animated: true)
+    }
     
 }
