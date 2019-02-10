@@ -95,6 +95,7 @@ class PerfilUsuarioViewController: BaseViewController {
                             case .success(let value):
                                 
                                 if let result = value as? Dictionary<String, Any> {
+                                    
                                     let statusMsg = result["status_msg"] as? String
                                     let state     = result["state"] as? String
                                     if statusMsg == "OK" && state == "200" {
@@ -437,7 +438,7 @@ extension PerfilUsuarioViewController: UITableViewDelegate, UITableViewDataSourc
         if currentSection == 0 {
             let currentRow = indexPath.row
             if currentRow == 0 {
-                return ScreenSize.screenHeight - 350 // 70.0
+                return ScreenSize.screenWidth - 50 //ScreenSize.screenHeight - 350 // 70.0
             }
             
             if currentRow == 1 {
@@ -1252,9 +1253,9 @@ class LocationCell: UITableViewCell, MKMapViewDelegate, CLLocationManagerDelegat
         // print(" manager.location?.coordinate: \(String(describing: manager.location?.coordinate)) ")
         if status == .authorizedWhenInUse || status == .authorizedAlways {
             if manager.location?.coordinate != nil {
-                lastLocation = manager.location?.coordinate
-                latitude = (manager.location?.coordinate.latitude)!
-                longitude = (manager.location?.coordinate.longitude)!
+                //lastLocation = manager.location?.coordinate
+                //latitude = (manager.location?.coordinate.latitude)!
+                //longitude = (manager.location?.coordinate.longitude)!
             }
         }
         else{
@@ -1272,8 +1273,8 @@ class LocationCell: UITableViewCell, MKMapViewDelegate, CLLocationManagerDelegat
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         // print(" location: \(locations.last) ")
         if let location = locations.last {
-            let latitude = location.coordinate.latitude
-            let longitude = location.coordinate.longitude
+            let latitude = self.latitude //location.coordinate.latitude
+            let longitude = self.longitude //location.coordinate.longitude
             let center = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
             let span = MKCoordinateSpan(latitudeDelta: 0.003, longitudeDelta: 0.003)
             let region = MKCoordinateRegion(center: center, span: span)

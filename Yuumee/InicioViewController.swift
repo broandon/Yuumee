@@ -181,7 +181,7 @@ extension InicioViewController: FBSDKLoginButtonDelegate {
         FBSDKGraphRequest(graphPath: "/me", parameters: ["fields" : "email, first_name, last_name, picture.type(large)"]).start {
             (connection, result, error) in
             if error != nil {
-                print("Peticion Fallida")
+                // print("Peticion Fallida")
                 return
             }
             
@@ -279,6 +279,7 @@ extension InicioViewController: FBSDKLoginButtonDelegate {
                                         self.dataStorage.setLastName(lastName: lastNameFiltered)
                                         self.dataStorage.setEmail(email: emailFiltered)
                                         self.dataStorage.setFirstName(firstName: nameFiltered)
+                                        self.dataStorage.setTipo(tipo: "\(TipoUsuario.cliente.rawValue)")
                                         
                                         let vc = UbicacionViewController()
                                         let nav = UINavigationController(rootViewController: vc)

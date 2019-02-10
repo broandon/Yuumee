@@ -84,18 +84,19 @@ class MisDatosViewController: BaseViewController, UITableViewDelegate, UITableVi
                             if let info = result["data"] as? Dictionary<String, AnyObject> {
                                 let id        = info["info"]!["id"] as? String
                                 let apellidos = info["info"]!["apellidos"] as? String
-                                let imagen    = info["info"]!["imagen"] as? String
+                                let imagen    = info["info"]!["imagen"] as? String ?? ""
                                 let nombre    = info["info"]!["nombre"] as? String
                                 let telefono  = info["info"]!["telefono"] as? String
-                                
-                                self.lastImagedownloaded = URL(string: imagen!)
-                                self.idDownloaded        = id!
-                                
+                                self.idDownloaded   = id!
                                 self.nombre.text    = nombre
                                 self.apellidos.text = apellidos
                                 self.telefono.text  = telefono
-                                let url = URL(string: imagen!)
-                                self.imageViewAvatar.af_setImage(withURL: url!)
+                                if !imagen.isEmpty {
+                                    self.lastImagedownloaded = URL(string: imagen)
+                                    let url = URL(string: imagen)
+                                    self.imageViewAvatar.af_setImage(withURL: url!)
+                                }
+                                
                                 
                             }
                             
@@ -120,7 +121,12 @@ class MisDatosViewController: BaseViewController, UITableViewDelegate, UITableVi
     
     
     @objc func updateDatos() {
-        let nameImage         = lastImagedownloaded.lastPathComponent
+        var nameImage = ""
+        
+        if lastImagedownloaded != nil {
+            nameImage = lastImagedownloaded!.lastPathComponent
+        }
+        
         let nameToUpdate      = nombre.text!
         let telephoneToUpdate = telefono.text!
         let apellidosToUpdate = apellidos.text!
@@ -171,7 +177,13 @@ class MisDatosViewController: BaseViewController, UITableViewDelegate, UITableVi
     }
     
     @objc func actualizarDatos(newImage: String = "") {
-        let nameImage         = newImage.isEmpty ? lastImagedownloaded.lastPathComponent : newImage
+        //let nameImage         = newImage.isEmpty ? lastImagedownloaded.lastPathComponent : newImage
+        
+        var nameImage = ""
+        if lastImagedownloaded != nil {
+            nameImage = lastImagedownloaded!.lastPathComponent
+        }
+        
         let nameToUpdate      = nombre.text!
         let telephoneToUpdate = telefono.text!
         let apellidosToUpdate = apellidos.text!
@@ -218,7 +230,7 @@ class MisDatosViewController: BaseViewController, UITableViewDelegate, UITableVi
         }
     }
     
-    var lastImagedownloaded: URL!
+    var lastImagedownloaded: URL? = nil
     var idDownloaded: String = ""
     
     var imageViewAvatar: UIImageView!

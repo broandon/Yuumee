@@ -148,6 +148,9 @@ class CalificarViewController: BaseViewController {
                     if let result = value as? Dictionary<String, Any> {
                         let statusMsg = result["status_msg"] as? String
                         let state     = result["state"] as? String
+                        
+                        print(result)
+                        
                         if statusMsg == "OK" && state == "200" {
                             
                             Utils.showSimpleAlert(message: "Calificación enviada!",

@@ -8,10 +8,17 @@
 
 import UIKit
 import Alamofire
+import FBSDKLoginKit
 
 class PerfilClienteViewController: BaseViewController, UITableViewDelegate, UITableViewDataSource {
 
     let defaultReuseID = "cell"
+    
+    let facebook: FBSDKLoginButton = {
+        let button = FBSDKLoginButton()
+        button.readPermissions = ["email", "public_profile"]
+        return button
+    }()
     
     lazy var tableView: UITableView = {
         let tableView = UITableView()
@@ -153,7 +160,7 @@ class PerfilClienteViewController: BaseViewController, UITableViewDelegate, UITa
         }*/
         
         
-        if seccion == "salir" {
+        if seccion == "salir" && !dataStorage.isLoggedInFacebook() {
             cell.textLabel?.text = "Cerrar sesión"
             let avatarImg = UIImage(named: "power")
             let avatar = UIImageView(image: avatarImg)
@@ -162,6 +169,20 @@ class PerfilClienteViewController: BaseViewController, UITableViewDelegate, UITa
             cell.addSubview(avatar)
             cell.addConstraintsWithFormat(format: "H:[v0(25)]-|", views: avatar)
             cell.addConstraintsWithFormat(format: "V:|-16-[v0(25)]", views: avatar)
+        }
+        
+        if seccion == "salir" && dataStorage.isLoggedInFacebook() {
+            
+            cell.addSubview(facebook)
+            facebook.delegate = self
+            facebook.translatesAutoresizingMaskIntoConstraints = false
+            
+            cell.centerInView(superView: cell, container: facebook, sizeV: 40, sizeH: 150)
+            
+            //cell.addConstraintsWithFormat(format: "H:|-[v0]", views: facebook)
+            //cell.addConstraintsWithFormat(format: "V:|-[v0]|", views: facebook)
+            return cell
+            
         }
         
         let sep = UIView()
@@ -247,4 +268,34 @@ class PerfilClienteViewController: BaseViewController, UITableViewDelegate, UITa
     }
     
 
+}
+
+
+
+
+// MARK : Registro con Facebook
+
+extension PerfilClienteViewController: FBSDKLoginButtonDelegate {
+    func loginButton(_ loginButton: FBSDKLoginButton!, didCompleteWith result: FBSDKLoginManagerLoginResult!, error: Error!) {
+        //
+    }
+    
+    func loginButtonDidLogOut(_ loginButton: FBSDKLoginButton!) {
+        
+        let dictionary = self.dataStorage.dictionaryRepresentation()
+        dictionary.keys.forEach { key in
+            self.dataStorage.removeObject(forKey: key)
+        }
+        /*self.dataStorage.setUserId(userId: "")
+         self.dataStorage.setLoggedIn(value: false)
+         self.dataStorage.setLoggedInFacebook(value: false)
+         self.dataStorage.setFirstName(firstName: "")
+         self.dataStorage.setLastName(lastName: "")
+         self.dataStorage.setEmail(email: "")
+         self.dataStorage.setAvatarFacebook(userId: "")*/
+        let vc = InicioViewController()
+        //let nav = UINavigationController(rootViewController: vc)
+        self.present(vc, animated: true, completion: nil)
+    }
+    
 }

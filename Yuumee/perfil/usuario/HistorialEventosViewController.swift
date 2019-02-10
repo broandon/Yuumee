@@ -38,6 +38,7 @@ class HistorialEventosViewController: BaseViewController {
         let userId = dataStorage.getUserId()
         let parameters: Parameters = ["funcion"  : "getOrders",
                                       "id_user"  : userId] as [String: Any]
+        
         Alamofire.request(BaseURL.baseUrl(), method: .post, parameters: parameters, encoding: ParameterQueryEncoding(), headers: headers).responseJSON
             { (response: DataResponse) in
                 switch(response.result) {
@@ -45,6 +46,7 @@ class HistorialEventosViewController: BaseViewController {
                     if let result = value as? Dictionary<String, Any> {
                         let statusMsg = result["status_msg"] as? String
                         let state = result["state"] as? String
+                        
                         if statusMsg == "OK" && state == "200" {
                             if let orders = result["data"] as? [Dictionary<String, AnyObject>] {
                                 for e in orders {

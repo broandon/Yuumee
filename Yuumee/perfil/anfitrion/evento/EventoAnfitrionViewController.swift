@@ -646,11 +646,6 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
                     "tipo" : "1"
                 ],
                 [
-                    "nombre": bebidasOpcion2,
-                    "precio" : bebidasCosto2,
-                    "tipo" : "1"
-                ],
-                [
                     "nombre": bebidasOpcion3,
                     "precio" : bebidasCosto3,
                     "tipo" : "1"
@@ -698,11 +693,6 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
                 [
                     "nombre": postresOpcion1,
                     "precio" : postresCosto1,
-                    "tipo" : "2"
-                ],
-                [
-                    "nombre": postresOpcion2,
-                    "precio" : postresCosto2,
                     "tipo" : "2"
                 ],
                 [
