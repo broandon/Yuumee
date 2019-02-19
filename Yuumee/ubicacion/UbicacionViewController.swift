@@ -134,6 +134,18 @@ class UbicacionViewController: BaseViewController, UITextFieldDelegate {
     
     
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if !dataStorage.getTutorialFollowed()! {
+            let vc = TutorialViewController()
+            let popVC = UINavigationController(rootViewController: vc)
+            popVC.modalPresentationStyle = .overFullScreen
+            self.present(popVC, animated: true)
+        }
+    }
+    
+    
+    
     @objc func close() {
         self.dismiss(animated: true, completion: nil)
     }

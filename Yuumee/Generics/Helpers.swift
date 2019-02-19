@@ -645,6 +645,214 @@ protocol NumeroInvitadosSelected {
 
 
 
+class SeparatorOr: UIView {
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+    }
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    func getView() -> UIView {
+        let view = UIView()
+        view.backgroundColor = .rosa
+        return view
+    }
+    let or: UILabel = {
+        let label = UILabel()
+        label.text = "Ó"
+        label.textAlignment = .center
+        label.numberOfLines = 1
+        label.font = UIFont.boldSystemFont(ofSize: 13)
+        label.textColor = .rosa
+        return label
+    }()
+    func setUpView(){
+        let sep1 = getView()
+        let sep2 = getView()
+        addSubview(sep1)
+        addSubview(or)
+        addSubview(sep2)
+        addConstraintsWithFormat(format: "H:|[v0(v1)][v1(v1)][v2(v1)]|", views: sep1, or, sep2)
+        addConstraintsWithFormat(format: "V:|-[v0(1)]", views: sep1)
+        addConstraintsWithFormat(format: "V:|[v0(14)]|", views: or)
+        addConstraintsWithFormat(format: "V:|-[v0(1)]", views: sep2)
+    }
+}
+
+
+
+
+class TutorialViewController: BaseViewController, UICollectionViewDelegateFlowLayout, UICollectionViewDelegate, UICollectionViewDataSource {
+    
+    let imageNames: [String] = ["tutorial1", "tutorial2", "tutorial3", "tutorial4", "tutorial5"]
+    
+    let dataStorage = UserDefaults.standard
+    
+    private let reuseId = "cell"
+    
+    lazy var collectionView: UICollectionView = {
+        let frame: CGRect = CGRect.zero
+        let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+        layout.scrollDirection         = .horizontal
+        layout.minimumLineSpacing      = 1
+        layout.minimumInteritemSpacing = 1
+        let collectionView = UICollectionView(frame: frame, collectionViewLayout: layout)
+        collectionView.backgroundColor = .clear
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseId)
+        collectionView.isPagingEnabled = true
+        return collectionView
+    }()
+    
+    var pageControl: UIPageControl = {
+        let pageControl = UIPageControl()
+        //pageControl.numberOfPages = 5 // PagerViewController.views.count
+        pageControl.currentPage = 0
+        pageControl.tintColor = UIColor.red
+        pageControl.pageIndicatorTintColor = .white
+        pageControl.currentPageIndicatorTintColor = .rosa
+        pageControl.layer.zPosition = 5
+        pageControl.transform = CGAffineTransform(scaleX: 1, y: 1)
+        pageControl.isUserInteractionEnabled = false
+        //pageControl.layer.zPosition = 10
+        return pageControl
+    }()
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        pageControl.currentPage = Int(scrollView.contentOffset.x) / Int(scrollView.frame.width)
+    }
+    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        pageControl.currentPage = Int(scrollView.contentOffset.x) / Int(scrollView.frame.width)
+    }
+    
+    lazy var closeVC: UIButton = {
+        let size = CGSize(width: 10, height: 15)
+        let image = UIImage(named: "cerrar") //?.imageResize(sizeChange: size)
+        let close = UIButton(type: .system)
+        //close.setTitle("Volver", for: .normal)
+        close.setImage(image, for: .normal)
+        //close.imageEdgeInsets = UIEdgeInsets(top: 0, left: -5, bottom: 0, right: 5)
+        close.addTarget(self, action: #selector(closeEvent), for: .touchUpInside)
+        close.tintColor = .white
+        return close
+    }()
+    
+    
+    lazy var regresar: UIButton = {
+        let size = CGSize(width: 25, height: 25)
+        let image = UIImage(named: "atras")//?.imageResize(sizeChange: size)
+        let close = UIButton(type: .system)
+        //close.setTitle(StringConstants.volver, for: .normal)
+        close.setImage(image, for: .normal)
+        close.imageEdgeInsets = UIEdgeInsets(top: 0, left: -5, bottom: 0, right: 5)
+        close.tintColor = UIColor.white
+        close.addTarget(self, action: #selector(regresarEvent), for: .touchUpInside)
+        close.titleLabel!.font = UIFont.boldSystemFont(ofSize: (close.titleLabel?.font.pointSize)!)
+        //close.backgroundColor = UIColor.grisClaro
+        close.layer.cornerRadius = 15
+        return close
+    }()
+    
+    
+    lazy var continuar: UIButton = {
+        let size = CGSize(width: 25, height: 25)
+        let image = UIImage(named: "adelante")//?.imageResize(sizeChange: size)
+        let close = UIButton(type: .system)
+        //close.setTitle(StringConstants.continuar, for: .normal)
+        close.setImage(image, for: .normal)
+        close.imageEdgeInsets = UIEdgeInsets(top: 0, left: 5, bottom: 0, right: -5)
+        close.tintColor = UIColor.white
+        close.addTarget(self, action: #selector(continuarEvent), for: .touchUpInside)
+        close.semanticContentAttribute = .forceRightToLeft
+        close.titleLabel!.font = UIFont.boldSystemFont(ofSize: (close.titleLabel?.font.pointSize)!)
+        //close.backgroundColor = UIColor.grisClaro
+        close.layer.cornerRadius = 15
+        return close
+    }()
+    
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidLoad()
+        mainView.backgroundColor = UIColor.black.withAlphaComponent(0.7)
+        self.navigationController?.isNavigationBarHidden = true
+        
+        mainView.addSubview(collectionView)
+        mainView.addSubview(closeVC)
+        
+        mainView.addConstraintsWithFormat(format: "H:|-[v0]-|", views: collectionView)
+        mainView.addConstraintsWithFormat(format: "H:[v0(25)]-|", views: closeVC)
+        mainView.addConstraintsWithFormat(format: "V:|-[v0(25)]-[v1]-|", views: closeVC, collectionView)
+        
+        mainView.addSubview(regresar)
+        mainView.addSubview(continuar)
+        
+        mainView.addConstraintsWithFormat(format: "H:|-[v0(40)]", views: regresar)
+        mainView.addConstraintsWithFormat(format: "H:[v0(40)]-|", views: continuar)
+        let topMarginYCenter = mainView.center.y
+        mainView.addConstraintsWithFormat(format: "V:|-(\(topMarginYCenter))-[v0(40)]", views: regresar)
+        mainView.addConstraintsWithFormat(format: "V:|-(\(topMarginYCenter))-[v0(40)]", views: continuar)
+        
+        
+        //pageControl.numberOfPages = imageNames.count // PagerViewController.views.count
+    }
+    
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return imageNames.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        let imageName = imageNames[indexPath.row]
+        
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseId, for: indexPath)
+        
+        cell.backgroundColor = .rosa
+        
+        let image: UIImage = UIImage(named: imageName)!
+        
+        let imageView = UIImageView(image: image)
+        imageView.contentMode = .scaleAspectFit
+        cell.addSubview(imageView)
+        cell.addConstraintsWithFormat(format: "H:|-[v0]-|", views: imageView)
+        cell.addConstraintsWithFormat(format: "V:|-[v0]-|", views: imageView)
+        cell.layer.cornerRadius = 15
+        return cell
+    }
+    
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: collectionView.frame.width, height: collectionView.frame.height - 16)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        self.pageControl.currentPage = indexPath.section
+    }
+    
+    // Cerrar vista
+    @objc func closeEvent() {
+        dataStorage.wasTutorialFollowed(saved: true)
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+    @objc func regresarEvent() {
+        // pageViewController.goToPreviousPage(animated: true, pages: self.pages, pageControl: self.pageControl)
+        self.collectionView.scrollToPreviousItem()
+    }
+    
+    @objc func continuarEvent() {
+        // pageViewController.goToNextPage(animated: true, pages: self.pages, pageControl: self.pageControl)
+        self.collectionView.scrollToNextItem()
+    }
+    
+    
+}
+
 
 
 

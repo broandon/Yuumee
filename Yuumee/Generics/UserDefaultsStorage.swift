@@ -41,6 +41,8 @@ enum UserDefaultKeys: String {
     
     case wasSavedReservation
     
+    case tutorialFollowed
+    
 }
 
 // -----------------------------------------------------------------------------
@@ -270,6 +272,18 @@ extension UserDefaults {
     func getTokenSabedInDB() -> Bool? {
         return bool(forKey: UserDefaultKeys.wasTokenSavedInDB.rawValue)
     }
+    
+    
+    //--------------------------------------------------------------------------
+    // ----------- VALOR PARA SABER SI EL USUARIO SIGUIÓ EL TUTORIAL -----------
+    //--------------------------------------------------------------------------
+    func wasTutorialFollowed(saved: Bool = false) {
+        set(saved, forKey: UserDefaultKeys.tutorialFollowed.rawValue)
+    }
+    func getTutorialFollowed() -> Bool? {
+        return bool(forKey: UserDefaultKeys.tutorialFollowed.rawValue)
+    }
+    //--------------------------------------------------------------------------
     
     
     // ---------------- ACTIVAR/DEASCTIVAR NOTIFICACIONES ----------------------

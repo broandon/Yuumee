@@ -28,6 +28,19 @@ class InicioViewController: BaseViewController {
         return button
     }()
     
+    let unete: UILabel = {
+        let label = UILabel()
+        label.text = "¡Únete a Yuumee!, Registrate aquí."
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        label.textColor = UIColor.rosa
+        label.adjustsFontForContentSizeCategory = true
+        label.sizeToFit()
+        label.isUserInteractionEnabled = true
+        label.underline()
+        return label
+    }()
+    
     let iniciaSesionAqui: UILabel = {
         let label = UILabel()
         //                                     Sangria necesaria para el underline
@@ -87,13 +100,22 @@ class InicioViewController: BaseViewController {
         mainView.addSubview(registrate)
         mainView.addSubview(iniciaSesionAqui)
         mainView.addSubview(containerBottom)
+        
+        let separatorOr = SeparatorOr()
+        separatorOr.setUpView()
+        mainView.addSubview(separatorOr)
+        mainView.addSubview(unete)
+        
         mainView.addConstraintsWithFormat(format: "H:|-64-[v0]-64-|", views: buttonFacebook)
         mainView.addConstraintsWithFormat(format: "H:|-64-[v0]-64-|", views: registrate)
         mainView.addConstraintsWithFormat(format: "H:|-[v0]-|", views: iniciaSesionAqui)
+        mainView.addConstraintsWithFormat(format: "H:|-[v0]-|", views: unete)
         mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: containerBottom)
+        mainView.addConstraintsWithFormat(format: "H:|-[v0]-|", views: separatorOr)
+        
         let topMargin = mainView.bounds.height/4
-        mainView.addConstraintsWithFormat(format: "V:|-\(topMargin)-[v0(40)]-[v1(40)]-20-[v2]-(>=8)-[v3(45)]-|",
-            views: buttonFacebook, registrate, iniciaSesionAqui, containerBottom)
+        mainView.addConstraintsWithFormat(format: "V:|-\(topMargin)-[v0(40)]-[v1(40)]-40-[v2(21)]-16-[v3(21)]-16-[v4(21)]-(>=8)-[v5(45)]-|",
+            views: buttonFacebook, registrate, unete, separatorOr, iniciaSesionAqui, containerBottom)
         containerBottom.addSubview(omitir)
         containerBottom.addSubview(imageArrow)
         containerBottom.addConstraintsWithFormat(format: "H:[v0][v1(10)]-16-|", views: omitir, imageArrow)
@@ -104,6 +126,12 @@ class InicioViewController: BaseViewController {
         inicioSesion.numberOfTapsRequired = 1
         iniciaSesionAqui.addGestureRecognizer(inicioSesion)
         omitir.addTarget(self, action: #selector(omitirEvent) , for: .touchUpInside)
+        
+        
+        let abrirUrl = UITapGestureRecognizer(target: self, action: #selector(openUrl))
+        abrirUrl.numberOfTapsRequired = 1
+        unete.addGestureRecognizer(abrirUrl)
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -160,6 +188,23 @@ class InicioViewController: BaseViewController {
         self.present(tabBar, animated: true, completion: nil)
         return
         */
+    }
+    
+    
+    @objc func openUrl(sender: UIButton) {
+        //let website = self.esSucursal ? sucursal.website : restaurant.website
+        let urlOpen = "http://easycode.mx/sistema_yuumee/login.php"
+        if !urlOpen.isEmpty {
+            let url = URL(string: urlOpen)!
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        }
+        else{
+            let ac = UIAlertController(title: "Open Website",
+                                       message: "The URL is not available for now",
+                                       preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            self.present(ac, animated: true, completion: nil)
+        }
     }
 
 }
