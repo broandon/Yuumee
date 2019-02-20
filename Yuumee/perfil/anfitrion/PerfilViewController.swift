@@ -97,7 +97,6 @@ extension PerfilViewController: UITableViewDelegate, UITableViewDataSource {
             cell.addConstraintsWithFormat(format: "V:|-16-[v0(24)]", views: avatar)
         }
         
-        
         if seccion == "reservas" {
             cell.textLabel?.text = "Reservas activas"
             let avatarImg = UIImage(named: "reservar")

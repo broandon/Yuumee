@@ -52,6 +52,11 @@ class SubCategoriasViewController: BaseViewController, UITableViewDelegate, UITa
         self.dismiss(animated: true, completion: nil)
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        self.tableView.reloadData()
+    }
+    
     // MARK: Delegate & Datasource - UITableView
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

@@ -47,6 +47,7 @@ class ReservasViewController: BaseViewController, UITableViewDelegate, UITableVi
         let userId = dataStorage.getUserId()
         let parameters: Parameters = ["funcion"  : "getOrdersAmphitryon",
                                       "id_user"  : userId] as [String: Any]
+        
         Alamofire.request(BaseURL.baseUrl(), method: .post, parameters: parameters, encoding: ParameterQueryEncoding(), headers: headers).responseJSON
             { (response: DataResponse) in
                 switch(response.result) {
@@ -54,6 +55,7 @@ class ReservasViewController: BaseViewController, UITableViewDelegate, UITableVi
                     if let result = value as? Dictionary<String, Any> {
                         let statusMsg = result["status_msg"] as? String
                         let state = result["state"] as? String
+                        
                         if statusMsg == "OK" && state == "200" {
                             if let reservas = result["data"] as? [Dictionary<String, AnyObject>] {
                                 
@@ -119,7 +121,7 @@ class ReservasViewController: BaseViewController, UITableViewDelegate, UITableVi
         cliente.numberOfLines = 0
         
         let noPersonas  = UILabel()
-        noPersonas.text = reserva.noPersonas
+        noPersonas.text = "No. de personas: \(reserva.noPersonas)"
         noPersonas.textColor     = .white
         noPersonas.numberOfLines = 0
         

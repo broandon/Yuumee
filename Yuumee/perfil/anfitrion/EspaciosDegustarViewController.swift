@@ -24,7 +24,9 @@ class EspaciosDegustarViewController: BaseViewController {
         return tableView
     }()
 
-    var lugares = [Espacio]() //["Terraza", "Jardín", "Comedor", "Corredor", "Casa", "Otros"]
+    var lugares = ["Terraza", "Jardín", "Comedor", "Corredor", "Casa", "Otros"]
+    
+    var ids: [String] = []
     
     let textView = UITextView()
     
@@ -102,26 +104,32 @@ class EspaciosDegustarViewController: BaseViewController {
     
     let dataStorage = UserDefaults.standard
     
+    var spaceOther = ""
+    
     @objc func sendRequestSpace(sender: UIButton) {
         
-        if idsEspacios.count <= 0 {
-            Utils.showSimpleAlert(message: "Por favor, marque uno o mas espacions",
-                                  context: self, success: nil)
-            return;
-        }
-        var spaceOther = ""
-        if idsEspacios.contains("6") {
+        if (idsEspacios["6"]!) {
+            
+            if textView.text!.isEmpty {
+                let alert = UIAlertController(title: "Campo requerido.",
+                                              message: "Es necesario un platillo para este espacio.",
+                                              preferredStyle: UIAlertController.Style.alert)
+                alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+                self.present(alert, animated: true, completion: nil)
+                return;
+            }
+            
             spaceOther = textView.text!
         }
         
         let parameters: Parameters=["funcion" : "saveSpaces",
                                     "id_user": dataStorage.getUserId(),
-                                    "space1" : idsEspacios.contains("1") ? "1" : 0,
-                                    "space2" : idsEspacios.contains("2") ? "2" : 0,
-                                    "space3" : idsEspacios.contains("3") ? "3" : 0,
-                                    "space4" : idsEspacios.contains("4") ? "4" : 0,
-                                    "space5" : idsEspacios.contains("5") ? "5" : 0,
-                                    "space6" : idsEspacios.contains("6") ? "6" : 0,
+                                    "space1" : idsEspacios["1"]! ? "1" : 0,
+                                    "space2" : idsEspacios["2"]! ? "2" : 0,
+                                    "space3" : idsEspacios["3"]! ? "3" : 0,
+                                    "space4" : idsEspacios["4"]! ? "4" : 0,
+                                    "space5" : idsEspacios["5"]! ? "5" : 0,
+                                    "space6" : idsEspacios["6"]! ? "6" : 0,
                                     "space_other" : spaceOther] as [String: Any]
         
         let headers: HTTPHeaders = ["Accept": "application/json",
@@ -134,15 +142,11 @@ class EspaciosDegustarViewController: BaseViewController {
                         let statusMsg = result["status_msg"] as? String
                         let state     = result["state"] as? String
                         if statusMsg == "OK" && state == "200" {
-                            
                             Utils.showSimpleAlert(message: "Información actualizada.",
                                                   context: self,
                                                   success: {(alert: UIAlertAction!) in
-                                                    
                                 self.navigationController?.popViewController(animated: true)
-                                                    
                             })
-                            
                         }
                         else{
                             let alert = UIAlertController(title: "Ocurrió un error al realizar la petición.", message: "\(statusMsg!)", preferredStyle: UIAlertController.Style.alert)
@@ -160,6 +164,7 @@ class EspaciosDegustarViewController: BaseViewController {
                     break
                 }
         }
+        
         
     }
     
@@ -186,17 +191,26 @@ class EspaciosDegustarViewController: BaseViewController {
                 switch(response.result) {
                 case .success(let value):
                     if let result = value as? Dictionary<String, Any> {
+                        
                         let statusMsg = result["status_msg"] as? String
                         let state     = result["state"] as? String
                         if statusMsg == "OK" && state == "200" {
                             if let espacios = result["data"] as? [Dictionary<String, AnyObject>] {
+                                
                                 for e in espacios {
                                     let newE = Espacio(espacioArray: e)
-                                    self.lugares.append(newE)
+                                    self.ids.append(newE.id)
+                                    
+                                    self.idsEspacios["\(newE.id)"] = true
+                                    
+                                    if newE.id == "6" {
+                                        self.spaceOther = newE.descripcion
+                                    }
+                                    
                                 }
-                                if self.lugares.count > 0 {
-                                    self.tableView.reloadData()
-                                }
+                                
+                                self.tableView.reloadData()
+                                
                             }
                         }
                         else{
@@ -217,13 +231,21 @@ class EspaciosDegustarViewController: BaseViewController {
                     break
                 }
         }
-        
     }
     
-    var idsEspacios: [String] = [String]()
+    
+    //var idsEspacios: [String] = [String]()
+    var idsEspacios: Dictionary<String, Bool> = ["1": false, "2": false,
+                                                 "3": false, "4": false,
+                                                 "5": false, "6": false]
     
     @objc func lugarParaDegustarEvent(sender: CustomSwitch) {
+        
         let isActivated = sender.isOn
+        
+        idsEspacios["\(sender.tag)"] = isActivated
+        
+        /*
         if isActivated {
             // Agrega al array el nuevo ID
             if !idsEspacios.contains("\(sender.tag)") {
@@ -235,7 +257,7 @@ class EspaciosDegustarViewController: BaseViewController {
             if let index = idsEspacios.index(of: "\(sender.tag)") {
                 idsEspacios.remove(at: index)
             }
-        }
+        }*/
         
         /*
          switchNotifications.addTarget(self, action: #selector(switchValueDidChange), for: .valueChanged)
@@ -249,7 +271,10 @@ class EspaciosDegustarViewController: BaseViewController {
          */
     }
     
+    
+    
     let placeholderLabel = UILabel()
+    
     
 }
 
@@ -259,36 +284,62 @@ extension EspaciosDegustarViewController: UITableViewDelegate, UITableViewDataSo
         return lugares.count
     }
     
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let lugar = lugares[indexPath.row]
         
-        let espacio = lugares[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: defaultId, for: indexPath)
-        cell.textLabel?.text = espacio.descripcion
+        cell.textLabel?.textColor = .darkGray
+        let tagId = indexPath.row + 1
         
-        let switchP = CustomSwitch(frame: CGRect(x: 50, y: 50, width: 55, height: 25))
-        switchP.isOn = false
-        switchP.onTintColor = UIColor.rosa
-        switchP.offTintColor = UIColor.darkGray
+        let frame: CGRect = CGRect(x: 50, y: 50, width: 55, height: 25)
+        let switchP = CustomSwitch(frame: frame)
+        switchP.onTintColor  = UIColor.rosa
+        switchP.offTintColor = UIColor.black
         switchP.cornerRadius = 0.5
         switchP.thumbCornerRadius = 0.5
         switchP.thumbSize = CGSize(width: 30, height: 30)
         switchP.thumbTintColor = UIColor.white
+        
+        if ids.contains("\(tagId)") {
+            // idsEspacios.append("\(sender.tag)")
+            switchP.isOn = true
+        }
+        else{
+            switchP.isOn = false
+        }
+        
         switchP.padding = 0
         switchP.animationDuration = 0.25
-        switchP.tag = Int(espacio.id)!
         switchP.addTarget(self, action: #selector(lugarParaDegustarEvent), for: .valueChanged)
+        
+        switchP.tag = tagId
+        
+        
+        if tagId == 6 {
+            
+            cell.textLabel?.text = spaceOther
+            
+        }
+        else{
+            cell.textLabel?.text = lugar
+        }
+        
+        cell.textLabel?.tag = tagId
         
         cell.accessoryView = switchP
         cell.selectionStyle = .none
-        
         return cell
     }
+    
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 70
     }
     
 }
+
+
 
 extension EspaciosDegustarViewController: UITextViewDelegate {
     
@@ -299,19 +350,19 @@ extension EspaciosDegustarViewController: UITextViewDelegate {
 }
 
 
+
+
+
 struct Espacio {
     
     var id: String = ""
     var descripcion: String = ""
     
     init(espacioArray: Dictionary<String, AnyObject>) {
-        
         self.id = espacioArray["Id"] as! String
-        
         if let desc = espacioArray["descripcion"] as? String {
             self.descripcion = desc
         }
-        
     }
     
 }

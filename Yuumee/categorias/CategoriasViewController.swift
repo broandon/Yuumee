@@ -261,14 +261,12 @@ extension CategoriasViewController: UITableViewDelegate, UITableViewDataSource {
      *
      */
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
         let categoria = categorias[indexPath.section]
         let vc = DetalleListadoCategoriaViewController()
         vc.idCategoria = categoria.id
         vc.categoriaTitle = categoria.titulo
         let nav = UINavigationController(rootViewController: vc)
         self.present(nav, animated: true, completion: nil)
-        
     }
     
     
