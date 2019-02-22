@@ -17,21 +17,24 @@ class DetallesEventoCell: UITableViewCell {
     }
     
     
+    let dataStorage = UserDefaults.standard
+    
     func getBoldLabel(text: String) -> ArchiaBoldLabel {
-        let label = ArchiaBoldLabel()
+        let label  = ArchiaBoldLabel()
         label.text = text
         return label
     }
     func getRegularLabel(text: String) -> ArchiaRegularLabel {
-        let label = ArchiaRegularLabel()
+        let label  = ArchiaRegularLabel()
         label.text = text
         return label
     }
     func getTextView() -> UITextView {
-        let textView = UITextView()
-        textView.addBorder(borderColor: .black, widthBorder: 1)
+        let textView       = UITextView()
         textView.textColor = UIColor.darkGray
-        textView.font = UIFont(name: "ArchiaRegular", size: 14.0)
+        textView.font      = UIFont(name: "ArchiaRegular", size: 14.0)
+        textView.delegate  = self
+        textView.addBorder(borderColor: .black, widthBorder: 1)
         return textView
     }
     func getView() -> UIView {
@@ -41,60 +44,57 @@ class DetallesEventoCell: UITableViewCell {
     
     
     var dscripcion: ArchiaBoldLabel!
-    var menu: ArchiaBoldLabel!
-    var bebidas: ArchiaBoldLabel!
-    var postres: ArchiaBoldLabel!
-    
-    var descTextView: UITextView!
-    var menuTextView: UITextView!
-    var bebidasTextView: UITextView!
-    var postresTextView: UITextView!
-    var contCostoMenu: UIView!
+    var menu:       ArchiaBoldLabel!
+    var bebidas:    ArchiaBoldLabel!
+    var postres:    ArchiaBoldLabel!
+
+    var descTextView:     UITextView!
+    var menuTextView:     UITextView!
+    var bebidasTextView:  UITextView!
+    var postresTextView:  UITextView!
+    var contCostoMenu:    UIView!
     var contCostoBebidas: UIView!
     var contCostoPostres: UIView!
     
-    
-    var costoMenu: ArchiaBoldLabel!
+    var costoMenu:    ArchiaBoldLabel!
     var costoBebidas: ArchiaBoldLabel!
     var costoPostres: ArchiaBoldLabel!
-    
-    var pesosMenu: ArchiaRegularLabel!
+    var pesosMenu:    ArchiaRegularLabel!
     var pesosBebidas: ArchiaRegularLabel!
     var pesosPostres: ArchiaRegularLabel!
     
-    var costoMenuTextView: UITextView!
+    var costoMenuTextView:    UITextView!
     var costoBebidasTextView: UITextView!
-    var costoPostreTextView: UITextView!
+    var costoPostreTextView:  UITextView!
     
-    var mxMenu: ArchiaRegularLabel!
+    var mxMenu:    ArchiaRegularLabel!
     var mxBebidas: ArchiaRegularLabel!
     var mxPostres: ArchiaRegularLabel!
     
     func setUpView() {
         dscripcion = getBoldLabel(text: "Descripción:")
-        menu = getBoldLabel(text: "Menú:")
-        bebidas = getBoldLabel(text: "Bebidas:")
-        postres = getBoldLabel(text: "Postres:")
+        menu       = getBoldLabel(text: "Menú:")
+        bebidas    = getBoldLabel(text: "Bebidas:")
+        postres    = getBoldLabel(text: "Postres:")
         
-        
-        descTextView = getTextView()
+        // ---------------------------------------------------------------------
+        descTextView     = getTextView()
         descTextView.tag = TAG_DESCRIPCION_EVENT
-        
-        
-        menuTextView = getTextView()
+        menuTextView     = getTextView()
         menuTextView.tag = TAG_MENU_EVENT
-            
-        bebidasTextView = getTextView()
+        bebidasTextView     = getTextView()
         bebidasTextView.tag = TAG_BEBIDAS_EVENT
-            
-        postresTextView = getTextView()
+        postresTextView     = getTextView()
         postresTextView.tag = TAG_POSTRES_EVENT
         
-            
-        contCostoMenu = getView()
+        descTextView.text = dataStorage.getDescEvento()
+        menuTextView.text = dataStorage.getMenuEvento()
+        bebidasTextView.text = dataStorage.getBebidasEvento()
+        postresTextView.text = dataStorage.getPostreEvento()
+        // ---------------------------------------------------------------------
+        contCostoMenu    = getView()
         contCostoBebidas = getView()
         contCostoPostres = getView()
-        
         
         // Labels
         addSubview(dscripcion)
@@ -133,6 +133,7 @@ class DetallesEventoCell: UITableViewCell {
         costoMenuTextView.font = UIFont.boldSystemFont(ofSize: 14)
         costoMenuTextView.addBorder(borderColor: .black, widthBorder: 1)
         costoMenuTextView.keyboardType = .numberPad
+        costoMenuTextView.text = dataStorage.getCostoMenuEvento() // Costo
         pesosMenu = getRegularLabel(text: "$")
         pesosMenu.textColor = UIColor.lightGray
         mxMenu = getRegularLabel(text: ".00 mx")
@@ -156,6 +157,7 @@ class DetallesEventoCell: UITableViewCell {
         costoBebidasTextView.font = UIFont.boldSystemFont(ofSize: 14)
         costoBebidasTextView.addBorder(borderColor: .black, widthBorder: 1)
         costoBebidasTextView.keyboardType = .numberPad
+        costoBebidasTextView.text = dataStorage.getCostoBebidasEvento() // Costo
         pesosBebidas = getRegularLabel(text: "$")
         pesosBebidas.textColor = UIColor.lightGray
         mxBebidas = getRegularLabel(text: ".00 mx")
@@ -179,6 +181,7 @@ class DetallesEventoCell: UITableViewCell {
         costoPostreTextView.font = UIFont.boldSystemFont(ofSize: 14)
         costoPostreTextView.addBorder(borderColor: .black, widthBorder: 1)
         costoPostreTextView.keyboardType = .numberPad
+        costoPostreTextView.text = dataStorage.getCostoPostreEvento() // Costo
         pesosPostres = getRegularLabel(text: "$")
         pesosPostres.textColor = UIColor.lightGray
         mxPostres = getRegularLabel(text: ".00 mx")
@@ -198,3 +201,41 @@ class DetallesEventoCell: UITableViewCell {
     
     
 }
+
+
+extension DetallesEventoCell: UITextViewDelegate {
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        
+        if textView == descTextView {
+            self.dataStorage.setDescripcionEvento(desc: descTextView.text)
+        }
+        
+        if textView == menuTextView {
+            self.dataStorage.setMenuEvento(menu: menuTextView.text)
+        }
+        
+        if textView == bebidasTextView {
+            self.dataStorage.setBebidasEvento(bebida: bebidasTextView.text)
+        }
+        
+        if textView == postresTextView {
+            self.dataStorage.setPostresEvento(postre: postresTextView.text)
+        }
+        
+        if textView == costoMenuTextView {
+            self.dataStorage.setCostoMenuEvento(costo: costoMenuTextView.text)
+        }
+        
+        if textView == costoBebidasTextView {
+            self.dataStorage.setCostoBebidasEvento(costo: costoMenuTextView.text)
+        }
+        
+        if textView == costoPostreTextView {
+            self.dataStorage.setPostresEventoCosto(costo: costoPostreTextView.text)
+        }
+        
+    }
+    
+} // UITextViewDelegate
+

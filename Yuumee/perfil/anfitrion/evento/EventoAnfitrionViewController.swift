@@ -45,13 +45,14 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
     
     let dataStorage = UserDefaults.standard
     
+    let notifier = NotificationCenter.default
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Reemplaza el titulo del back qu eviene por Default
         self.navigationController?.navigationBar.topItem?.title = "Evento"
         //self.hideKeyboardWhenTappedAround()
         
-        let notifier = NotificationCenter.default
         notifier.addObserver(self, selector: #selector(keyboardWillAppear),
                              name: UIWindow.keyboardWillShowNotification,
                              object: nil)
@@ -63,27 +64,47 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
         mainView.addSubview(tableView)
         mainView.addConstraintsWithFormat(format: "H:|[v0]|", views: tableView)
         mainView.addConstraintsWithFormat(format: "V:|-[v0]|", views: tableView)
+        
+        dataStorage.setDescripcionEvento(desc: "")
+        dataStorage.setMenuEvento(menu: "")
+        dataStorage.setCostoMenuEvento(costo: "")
+        dataStorage.setBebidasEvento(bebida: "")
+        dataStorage.setCostoBebidasEvento(costo: "")
+        dataStorage.setPostresEvento(postre: "")
+        dataStorage.setPostresEventoCosto(costo: "")
+        
     }
     
+    
+    
+    // -------------------------------------------------------------------------
+    /**
+     * Se mostrará el Keyboard
+     *
+     */
     @objc func keyboardWillAppear(notification: NSNotification) {
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UIViewController.dismissKeyboard))
         mainView.addGestureRecognizer(tap)
-        
         // DESPLAZAMIENTO QUE SE LE HACE AL TABLEVIEW AL MOSTRARSE EL KEYBOARD
         if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
             tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardSize.height, right: 0)
         }
     }
-    
+    /**
+     * Se Oculta el Keyboard
+     *
+     */
     @objc func keyboardWillDisappear(notification: NSNotification){
         view.endEditing(true)
         mainView.gestureRecognizers?.removeAll()
-        
         // REGRESA EL TABLEVIEW A LA NORMALIDAD CUANDO DESAPARECE EL KEYBOARD
         if ((notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue) != nil {
             tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         }
     }
+    // -------------------------------------------------------------------------
+    
+    
     
     // MARK: Data Table
     var imageBackground: UIImageView = {
@@ -96,13 +117,15 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
     }()
     var addCamera: UIButton = {
         let button = UIButton(type: .system)
-        button.setImage(UIImage(named: "camera"), for: .normal)
+        let image: UIImage = UIImage(named: "camera")!
+        button.setImage(image, for: .normal)
         button.tintColor = UIColor.rosa.withAlphaComponent(0.5)
         return button
     }()
     var addBackground: UIButton = {
         let button = UIButton(type: .system)
-        button.setImage(UIImage(named: "add"), for: .normal)
+        let image: UIImage = UIImage(named: "add")!
+        button.setImage(image, for: .normal)
         button.tintColor = UIColor.rosa.withAlphaComponent(0.5)
         return button
     }()
@@ -200,16 +223,18 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
         let base64String = imageData?.base64EncodedString(options: .lineLength64Characters)
         return base64String!
     }
-    
     @objc func addNewBackgroundImageFromCamera() {
         self.pickPhotoByAlbum()
     }
     
     
     
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return secciones.count
     }
+    
+    
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let seccion = secciones[indexPath.row]
@@ -254,6 +279,7 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
                 return cell
             }
         }
+        
         if seccion == "detalles_evento" {
             let cell = tableView.dequeueReusableCell(withIdentifier: detallesEventoCell, for: indexPath)
             if let cell = cell as? DetallesEventoCell {
@@ -271,14 +297,44 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
                 return cell
             }
         }
+        
+        
         if seccion == "producto_extra" {
-            let cell = tableView.dequeueReusableCell(withIdentifier: productoExtraCell, for: indexPath)
-            if let cell = cell as? ProductoExtraCell {
+            
+            /*let cell = tableView.dequeueReusableCell(withIdentifier: productoExtraCell, for: indexPath) as! ProductoExtraCell
+            cell.releaseView()
+            if cell == nil {
+                let cell = tableView.dequeueReusableCell(withIdentifier: productoExtraCell, for: indexPath) as! ProductoExtraCell
                 cell.selectionStyle = .none
                 cell.setUpView()
                 return cell
             }
+            cell.selectionStyle = .none
+            cell.setUpView()
+            return cell*/
+            
+            /*
+            var cell: ProductoExtraCell! = tableView.dequeueReusableCell(withIdentifier: productoExtraCell, for: indexPath) as? ProductoExtraCell
+            //cell.releaseView()
+            if cell == nil {
+                cell = tableView.dequeueReusableCell(withIdentifier: productoExtraCell, for: indexPath) as? ProductoExtraCell
+            }
+            cell.selectionStyle = .none
+            cell.setUpView()
+            return cell
+            */
+            
+            let cell = tableView.dequeueReusableCell(withIdentifier: productoExtraCell, for: indexPath) // as! ProductoExtraCell
+            if let cell = cell as? ProductoExtraCell {
+                //cell.releaseView()
+                cell.selectionStyle = .none
+                cell.setUpView()
+                return cell
+            }
+            
         }
+        
+        
         if seccion == "total" {
             var costoMenu: String = "0"
             if let textView = mainView.viewWithTag(TAG_COSTO_MENU_EVENT) as? UITextView {
@@ -722,6 +778,7 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
         
         let productsExtra = arrayBebidas + arrayPostres
         
+        // ---------------------------------------------------------------------
         var descripcion: String = ""
         if let textView = mainView.viewWithTag(TAG_DESCRIPCION_EVENT) as? UITextView {
             descripcion = textView.text!
@@ -738,7 +795,6 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
         if let textView = mainView.viewWithTag(TAG_POSTRES_EVENT) as? UITextView {
             postres = textView.text!
         }
-        
         
         var costoMenu: String = "0"
         if let textView = mainView.viewWithTag(TAG_COSTO_MENU_EVENT) as? UITextView {
@@ -775,6 +831,8 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
         let costoBebidasInt: Int = Int(costoBebidas)!
         let costoPostresInt: Int = Int(costoPostres)!
         let costoTotal = costoMenuInt + costoBebidasInt + costoPostresInt
+        
+        // ---------------------------------------------------------------------
         
         let jsonData = try! JSONSerialization.data(withJSONObject: productsExtra, options: [])
         let decoded = String(data: jsonData, encoding: .utf8)!

@@ -45,16 +45,23 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+    
 	<key>NSCameraUsageDescription</key>
-	<string>Se requiere acceso a sus Fotos para actualizar su perfil.</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Program requires GPS to track cars and job orders</string>
+	<string>Se requiere acceso a su Camara para mejorar su perfil ó pedido.</string>
+	
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Se requiere acceso a su Camara para mejorar su perfil ó pedido.</string>
+    
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>La aplicación requiere accesos a su ubicación para mostrar los restaurantes más cercanos</string>
+    
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Your location is required for xyz benefits for you</string>
+	<string>La aplicación requiere accesos a su ubicación para mostrar los restaurantes más cercanos</string>
+    
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Your location is required for xyz benefits for you</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Se requiere acceso a sus Fotos para actualizar su perfil.</string>
+	<string>La aplicación requiere accesos a su ubicación para mostrar los restaurantes más cercanos</string>
+	
+    
 	<key>UIAppFonts</key>
 	<array>
 		<string>ArchiaRegular.ttf</string>

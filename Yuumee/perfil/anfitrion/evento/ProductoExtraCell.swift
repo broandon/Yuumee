@@ -62,11 +62,14 @@ class ProductoExtraCell: UITableViewCell {
     
     let width = (ScreenSize.screenWidth - 50) / 2
     
-    let bebidasView = ProductosExtraView()
+    var bebidasView: ProductosExtraView!
     
-    let postresView = ProductosExtraView()
+    var postresView: ProductosExtraView!
     
     func setUpView() {
+        bebidasView = ProductosExtraView()
+        postresView = ProductosExtraView()
+        
         addSubview(productoExtra)
         addSubview(contentBebidas)
         addSubview(sep)
@@ -78,14 +81,16 @@ class ProductoExtraCell: UITableViewCell {
         addConstraintsWithFormat(format: "V:|-[v0(30)]-[v1]-|", views: productoExtra, sep)
         addConstraintsWithFormat(format: "V:|-[v0(30)]-[v1]-|", views: productoExtra, contentPostres)
         
+        
         // -------------------------- Bebidas ----------------------------------
         bebidasView.setUpView()
         bebidasView.tag = ProductoExtraCell.TAG_BEBIDAS_VIEW
         contentBebidas.addSubview(bebidas)
         contentBebidas.addSubview(bebidasView)
-        contentBebidas.addConstraintsWithFormat(format: "H:|-[v0]",     views: bebidas)
-        contentBebidas.addConstraintsWithFormat(format: "H:|[v0]|",     views: bebidasView)
+        contentBebidas.addConstraintsWithFormat(format: "H:|-[v0]", views: bebidas)
+        contentBebidas.addConstraintsWithFormat(format: "H:|[v0]|", views: bebidasView)
         contentBebidas.addConstraintsWithFormat(format: "V:|-[v0(30)]-[v1]|", views: bebidas, bebidasView)
+        
         
         // -------------------------- Postres ----------------------------------
         postresView.setUpView()
@@ -95,6 +100,7 @@ class ProductoExtraCell: UITableViewCell {
         contentPostres.addConstraintsWithFormat(format: "H:|-[v0]", views: postres)
         contentPostres.addConstraintsWithFormat(format: "H:|[v0]|", views: postresView)
         contentPostres.addConstraintsWithFormat(format: "V:|-[v0(30)]-[v1]|", views: postres, postresView)
+        
     }
     
     static let TAG_BEBIDAS_VIEW: Int = 246

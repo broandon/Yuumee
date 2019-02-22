@@ -590,7 +590,7 @@ class NumeroInvitadosViewController: BaseViewController, UITableViewDelegate, UI
     }()
     
     // Se declara como VAR, pues varia el listado que se listará. Se usa en otros lugares
-    var secciones = ["1", "2", "3", "4", "5"]
+    var secciones = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
     
     
     var delegate: NumeroInvitadosSelected?

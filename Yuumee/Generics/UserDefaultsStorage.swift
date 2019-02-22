@@ -38,10 +38,18 @@ enum UserDefaultKeys: String {
     case urlPortada
     
     case wasTokenSavedInDB
-    
     case wasSavedReservation
-    
     case tutorialFollowed
+    
+    
+    case lastEventDescription
+    case lastEventMenu
+    case lastEventMenuCosto
+    case lastEventBebidas
+    case lastEventBebidasCosto
+    case lastEventPostres
+    case lastEventPostresCosto
+    
     
 }
 
@@ -286,13 +294,80 @@ extension UserDefaults {
     //--------------------------------------------------------------------------
     
     
-    // ---------------- ACTIVAR/DEASCTIVAR NOTIFICACIONES ----------------------
-    /*func activateNotifications(activate: Bool = false) {
-        set(activate, forKey: UserDefaultKeys.notificationsActive.rawValue)
+    
+    //--------------------------------------------------------------------------
+    // ------------------------- Evento Detalles -------------------------------
+    //--------------------------------------------------------------------------
+    
+    func setDescripcionEvento(desc: String = "") {
+        set(desc, forKey: UserDefaultKeys.lastEventDescription.rawValue)
     }
-    func isNotificationActivated() -> Bool? {
-        return bool(forKey: UserDefaultKeys.notificationsActive.rawValue)
-    }*/
+    func getDescEvento() -> String? {
+        return string(forKey: UserDefaultKeys.lastEventDescription.rawValue) ?? ""
+    }
+    
+    
+    func setMenuEvento(menu: String = "") {
+        set(menu, forKey: UserDefaultKeys.lastEventMenu.rawValue)
+    }
+    func getMenuEvento() -> String? {
+        return string(forKey: UserDefaultKeys.lastEventMenu.rawValue) ?? ""
+    }
+    
+    
+    func setCostoMenuEvento(costo: String = "") {
+        set(costo, forKey: UserDefaultKeys.lastEventMenuCosto.rawValue)
+    }
+    func getCostoMenuEvento() -> String? {
+        return string(forKey: UserDefaultKeys.lastEventMenuCosto.rawValue) ?? ""
+    }
+    
+    
+    func setBebidasEvento(bebida: String = "") {
+        set(bebida, forKey: UserDefaultKeys.lastEventBebidas.rawValue)
+    }
+    func getBebidasEvento() -> String? {
+        return string(forKey: UserDefaultKeys.lastEventBebidas.rawValue) ?? ""
+    }
+    
+    
+    func setCostoBebidasEvento(costo: String = "") {
+        set(costo, forKey: UserDefaultKeys.lastEventBebidasCosto.rawValue)
+    }
+    func getCostoBebidasEvento() -> String? {
+        return string(forKey: UserDefaultKeys.lastEventBebidasCosto.rawValue) ?? ""
+    }
+    
+    
+    func setPostresEvento(postre: String = "") {
+        set(postre, forKey: UserDefaultKeys.lastEventPostres.rawValue)
+    }
+    func getPostreEvento() -> String? {
+        return string(forKey: UserDefaultKeys.lastEventPostres.rawValue) ?? ""
+    }
+    
+    
+    func setPostresEventoCosto(costo: String = "") {
+        set(costo, forKey: UserDefaultKeys.lastEventPostresCosto.rawValue)
+    }
+    func getCostoPostreEvento() -> String? {
+        return string(forKey: UserDefaultKeys.lastEventPostresCosto.rawValue) ?? ""
+    }
+    
+    /* para recetear el detalle
+     setDescripcionEvento
+     setMenuEvento
+     setCostoMenuEvento
+     setBebidasEvento
+     setCostoBebidasEvento
+     setPostresEvento
+     setPostresEventoCosto
+     */
+    //--------------------------------------------------------------------------
+    
+    
+    
+    
     
 }
 
