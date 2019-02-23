@@ -909,7 +909,7 @@ class OtrosCell: UITableViewCell, UICollectionViewDelegate, UICollectionViewData
         addSubview(collectionViewPlatilos)
         
         addConstraintsWithFormat(format: "H:|-[v0]-|", views: platillosLbl)
-        addConstraintsWithFormat(format: "H:|-[v0]-|", views: collectionViewPlatilos)
+        addConstraintsWithFormat(format: "H:|[v0]|", views: collectionViewPlatilos)
         addConstraintsWithFormat(format: "V:|-[v0(25)]-[v1]|", views: platillosLbl, collectionViewPlatilos)
     }
     

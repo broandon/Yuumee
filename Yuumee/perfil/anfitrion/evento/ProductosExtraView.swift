@@ -13,12 +13,12 @@ import UIKit
 class ProductosExtraView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
+        self.setNeedsLayout()
+        self.layoutIfNeeded()
     }
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
-    
-    
     
     private func getOpcionLabel(text: String) -> UILabel {
         let label  = UILabel()
@@ -26,6 +26,7 @@ class ProductosExtraView: UIView {
         label.textColor = .rosa
         return label
     }
+    
     private func getCostoLabel() -> UILabel {
         let label  = UILabel()
         label.text = "Costo:"
@@ -51,66 +52,63 @@ class ProductosExtraView: UIView {
     var contOpcion1 = UIView()
     var opcion1Label: UILabel!
     var costo1Label:  UILabel!
-    
     var opcion1Input: UITextField!
     var costo1Input:  UITextField!
+    
     
     var contOpcion2 = UIView()
     var opcion2Label: UILabel!
     var costo2Label:  UILabel!
-    
     var opcion2Input: UITextField!
     var costo2Input:  UITextField!
+    
     
     var contOpcion3 = UIView()
     var opcion3Label: UILabel!
     var costo3Label:  UILabel!
-    
     var opcion3Input: UITextField!
     var costo3Input:  UITextField!
+    
     
     var contOpcion4 = UIView()
     var opcion4Label: UILabel!
     var costo4Label:  UILabel!
-    
     var opcion4Input: UITextField!
     var costo4Input:  UITextField!
+    
     
     var contOpcion5 = UIView()
     var opcion5Label: UILabel!
     var costo5Label:  UILabel!
-    
     var opcion5Input: UITextField!
     var costo5Input:  UITextField!
     
+    
     let heightCont: CGFloat = 120.0
     
+    
     func setUpView() {
-        //contOpcion1  = UIView()
+        
         opcion1Label = getOpcionLabel(text: "Opción 1:")
         costo1Label  = getCostoLabel()
         opcion1Input = getOpcionTextField()
         costo1Input  = getCostoTextField()
         
-        //contOpcion2  = UIView()
         opcion2Label = getOpcionLabel(text: "Opción 2:")
         costo2Label  = getCostoLabel()
         opcion2Input = getOpcionTextField()
         costo2Input  = getCostoTextField()
         
-        //contOpcion3  = UIView()
         opcion3Label = getOpcionLabel(text: "Opción 3:")
         costo3Label  = getCostoLabel()
         opcion3Input = getOpcionTextField()
         costo3Input  = getCostoTextField()
         
-        //contOpcion4  = UIView()
         opcion4Label = getOpcionLabel(text: "Opción 4:")
         costo4Label  = getCostoLabel()
         opcion4Input = getOpcionTextField()
         costo4Input  = getCostoTextField()
         
-        //contOpcion5  = UIView()
         opcion5Label = getOpcionLabel(text: "Opción 5:")
         costo5Label  = getCostoLabel()
         opcion5Input = getOpcionTextField()
@@ -121,13 +119,13 @@ class ProductosExtraView: UIView {
         addSubview(contOpcion3)
         addSubview(contOpcion4)
         addSubview(contOpcion5)
-        
+        /*
         contOpcion1.isUserInteractionEnabled = true
         contOpcion2.isUserInteractionEnabled = true
         contOpcion3.isUserInteractionEnabled = true
         contOpcion4.isUserInteractionEnabled = true
         contOpcion5.isUserInteractionEnabled = true
-        
+        */
         addConstraintsWithFormat(format: "H:|[v0]|", views: contOpcion1)
         addConstraintsWithFormat(format: "H:|[v0]|", views: contOpcion2)
         addConstraintsWithFormat(format: "H:|[v0]|", views: contOpcion3)

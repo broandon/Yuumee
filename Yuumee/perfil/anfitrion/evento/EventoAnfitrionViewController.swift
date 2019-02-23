@@ -11,7 +11,7 @@ import Alamofire
 import AlamofireImage
 import Photos
 
-class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UITableViewDataSource,  UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UITableViewDataSource, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
     
     let backgroundImageId  = "backgroundImageId"
     let productoExtraCell  = "productoExtraCell"
@@ -73,6 +73,37 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
         dataStorage.setPostresEvento(postre: "")
         dataStorage.setPostresEventoCosto(costo: "")
         
+        dataStorage.setLastTitle(title: "")
+        dataStorage.setDate(tipo: "")
+        dataStorage.setComienzaEvent(hora: "")
+        dataStorage.setTerminaEvent(hora: "")
+        dataStorage.setLastFoodSelectedEvent(tipo: "")
+        dataStorage.setLastCategorySelectedEvent(tipo: "")
+        dataStorage.setLastSubCategorySelectedEvent(tipo: "")
+        dataStorage.setImagenEvent(hora: "")
+        
+        
+        dataStorage.setBebida1(opcion: "")
+        dataStorage.setBebida2(opcion: "")
+        dataStorage.setBebida3(opcion: "")
+        dataStorage.setBebida4(opcion: "")
+        dataStorage.setBebida5(opcion: "")
+        dataStorage.setCostoBebida1(costo: "")
+        dataStorage.setCostoBebida2(costo: "")
+        dataStorage.setCostoBebida3(costo: "")
+        dataStorage.setCostoBebida4(costo: "")
+        dataStorage.setCostoBebida5(costo: "")
+        dataStorage.setPostre1(opcion: "")
+        dataStorage.setPostre2(opcion: "")
+        dataStorage.setPostre3(opcion: "")
+        dataStorage.setPostre4(opcion: "")
+        dataStorage.setPostre5(opcion: "")
+        dataStorage.setCostoPostre1(costo: "")
+        dataStorage.setCostoPostre2(costo: "")
+        dataStorage.setCostoPostre3(costo: "")
+        dataStorage.setCostoPostre4(costo: "")
+        dataStorage.setCostoPostre5(costo: "")
+        
     }
     
     
@@ -86,9 +117,17 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UIViewController.dismissKeyboard))
         mainView.addGestureRecognizer(tap)
         // DESPLAZAMIENTO QUE SE LE HACE AL TABLEVIEW AL MOSTRARSE EL KEYBOARD
-        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
+        /*if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
             tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardSize.height, right: 0)
-        }
+        }*/
+        // self.keyboardControl(notification)
+        guard let userInfo = notification.userInfo as? [String: AnyObject],
+            let keyboardFrame = (userInfo[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue
+            else { return }
+        var contentInset = self.tableView.contentInset
+        //contentInset.bottom += keyboardFrame.height
+        self.tableView.contentInset = contentInset
+        self.tableView.scrollIndicatorInsets = contentInset
     }
     /**
      * Se Oculta el Keyboard
@@ -98,11 +137,38 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
         view.endEditing(true)
         mainView.gestureRecognizers?.removeAll()
         // REGRESA EL TABLEVIEW A LA NORMALIDAD CUANDO DESAPARECE EL KEYBOARD
-        if ((notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue) != nil {
+        /*if ((notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue) != nil {
             tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        }
+        }*/
+        // self.keyboardControl(notification)
+        guard let userInfo = notification.userInfo as? [String: AnyObject],
+            let keyboardFrame = (userInfo[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue
+            else { return }
+        var contentInset = self.tableView.contentInset
+        //contentInset.bottom -= keyboardFrame.height
+        self.tableView.contentInset = contentInset
+        self.tableView.scrollIndicatorInsets = contentInset
+        
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     // -------------------------------------------------------------------------
+    
+    private func keyboardControl(_ notification: NSNotification) {
+        //let duration = notification.userInfo![UIResponder.keyboardAnimationDurationUserInfoKey] as! Double
+        //let curve = notification.userInfo![UIResponder.keyboardAnimationCurveUserInfoKey] as! UInt
+        let curFrame = (notification.userInfo![UIResponder.keyboardFrameBeginUserInfoKey] as! NSValue).cgRectValue
+        let targetFrame = (notification.userInfo![UIResponder.keyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
+        let deltaY = targetFrame.origin.y - curFrame.origin.y
+        self.view.frame.origin.y+=deltaY
+        /*
+        UIView.animateKeyframes(withDuration: duration, delay: 0.0, options: UIView.KeyframeAnimationOptions(rawValue: curve), animations: {
+            self.tableView.frame.origin.y+=deltaY
+        },completion: nil)
+        */
+    }
     
     
     
@@ -237,7 +303,9 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
     
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
         let seccion = secciones[indexPath.row]
+        
         if seccion == "background_image" {
             let cell = tableView.dequeueReusableCell(withIdentifier: defaultReuseId, for: indexPath)
             cell.selectionStyle = .none
@@ -254,6 +322,7 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
             addBackground.addTarget(self, action: #selector(pickPhotoByAlbum), for: .touchUpInside)
             return cell
         }
+        
         if seccion == "categoria" {
             let cell = tableView.dequeueReusableCell(withIdentifier: categoriaCell, for: indexPath)
             if let cell = cell as? CategoriaCell {
@@ -289,6 +358,7 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
                 return cell
             }
         }
+        
         if seccion == "fechas_evento" {
             let cell = tableView.dequeueReusableCell(withIdentifier: fechasCell, for: indexPath)
             if let cell = cell as? FechasCell {
@@ -298,42 +368,15 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
             }
         }
         
-        
         if seccion == "producto_extra" {
-            
-            /*let cell = tableView.dequeueReusableCell(withIdentifier: productoExtraCell, for: indexPath) as! ProductoExtraCell
-            cell.releaseView()
-            if cell == nil {
-                let cell = tableView.dequeueReusableCell(withIdentifier: productoExtraCell, for: indexPath) as! ProductoExtraCell
-                cell.selectionStyle = .none
-                cell.setUpView()
-                return cell
-            }
-            cell.selectionStyle = .none
-            cell.setUpView()
-            return cell*/
-            
-            /*
-            var cell: ProductoExtraCell! = tableView.dequeueReusableCell(withIdentifier: productoExtraCell, for: indexPath) as? ProductoExtraCell
-            //cell.releaseView()
-            if cell == nil {
-                cell = tableView.dequeueReusableCell(withIdentifier: productoExtraCell, for: indexPath) as? ProductoExtraCell
-            }
-            cell.selectionStyle = .none
-            cell.setUpView()
-            return cell
-            */
-            
             let cell = tableView.dequeueReusableCell(withIdentifier: productoExtraCell, for: indexPath) // as! ProductoExtraCell
             if let cell = cell as? ProductoExtraCell {
-                //cell.releaseView()
+                cell.releaseView()
                 cell.selectionStyle = .none
                 cell.setUpView()
                 return cell
             }
-            
-        }
-        
+        } // producto_extra
         
         if seccion == "total" {
             var costoMenu: String = "0"
@@ -412,6 +455,7 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
     
     func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let seccion = secciones[indexPath.row]
+        
         if seccion == "total" {
             //let cell = tableView.dequeueReusableCell(withIdentifier: defaultReuseId, for: indexPath)
             if let cell = cell as? UITableViewCell {
@@ -482,12 +526,13 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
                 cont.addConstraintsWithFormat(format: "V:|-[v0(25)]", views: mx)
                 guardar.addTarget(self, action: #selector(guardarEvento) , for: .touchUpInside)
             }
-        }
+        } // Total
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         
         let seccion = secciones[indexPath.row]
+        
         if seccion == "total" {
             //let cell = tableView.dequeueReusableCell(withIdentifier: defaultReuseId, for: indexPath)
             if let cell = cell as? UITableViewCell {
@@ -668,6 +713,117 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
         
         let idUsuario = dataStorage.getUserId()
         
+        if (dataStorage.getImagenEvent()!).isEmpty {
+            Utils.showSimpleAlert(message: "La imagen del evento es requerida.", context: self, success: nil)
+            return;
+        }
+        
+        let tituloEvento = dataStorage.getLastTitle()
+        
+        if tituloEvento!.isEmpty {
+            Utils.showSimpleAlert(message: "El título del evento es requerido.", context: self, success: nil)
+            return;
+        }
+        
+        if (dataStorage.getLastCategorySelectedEvent()!).isEmpty || (dataStorage.getLastSubCategorySelectedEvent()!).isEmpty {
+            Utils.showSimpleAlert(message: "La categoría y sub-categoria son requeridas.", context: self, success: nil)
+            return;
+        }
+        
+        if (dataStorage.getLastFoodSelectedEvent()!).isEmpty {
+            Utils.showSimpleAlert(message: "El tipo de comida es requerida.", context: self, success: nil)
+            return;
+        }
+        
+        if (dataStorage.getComienzaEvent()!).isEmpty || (dataStorage.getTerminaEvent()!).isEmpty {
+            Utils.showSimpleAlert(message: "El horario del evento es requerido.", context: self, success: nil)
+            return;
+        }
+        
+        
+        // ---------------------------------------------------------------------
+        var descripcion: String = ""
+        if let textView = mainView.viewWithTag(TAG_DESCRIPCION_EVENT) as? UITextView {
+            descripcion = textView.text!
+        }
+        
+        if descripcion.isEmpty {
+            Utils.showSimpleAlert(message: "La descripción del evento es requerida.", context: self, success: nil)
+            return;
+        }
+        
+        var menu: String = ""
+        if let textView = mainView.viewWithTag(TAG_MENU_EVENT) as? UITextView {
+            menu = textView.text!
+        }
+        
+        if menu.isEmpty {
+            Utils.showSimpleAlert(message: "El menú del evento es requerida.", context: self, success: nil)
+            return;
+        }
+        
+        var bebidas: String = ""
+        if let textView = mainView.viewWithTag(TAG_BEBIDAS_EVENT) as? UITextView {
+            bebidas = textView.text!
+        }
+        
+        if bebidas.isEmpty {
+            Utils.showSimpleAlert(message: "La bebida del evento es requerida.", context: self, success: nil)
+            return;
+        }
+        
+        var postres: String = ""
+        if let textView = mainView.viewWithTag(TAG_POSTRES_EVENT) as? UITextView {
+            postres = textView.text!
+        }
+        
+        if postres.isEmpty {
+            Utils.showSimpleAlert(message: "El postre del evento es requerido.", context: self, success: nil)
+            return;
+        }
+        
+        var costoMenu: String = "0"
+        if let textView = mainView.viewWithTag(TAG_COSTO_MENU_EVENT) as? UITextView {
+            if !(textView.text!).isEmpty {
+                costoMenu = textView.text!
+            }
+        }
+        else{
+            costoMenu = "0"
+        }
+        var costoBebidas: String = "0"
+        if let textView = mainView.viewWithTag(TAG_COSTO_BEBIDAS_EVENT) as? UITextView {
+            if !(textView.text!).isEmpty {
+                //costoMenu = textView.text!
+                costoBebidas = textView.text!
+            }
+        }else{
+            costoBebidas = "0"
+        }
+        var costoPostres: String = "0"
+        if let textView = mainView.viewWithTag(TAG_COSTO_POSTRES_EVENT) as? UITextView {
+            if !(textView.text!).isEmpty {
+                //costoMenu = textView.text!
+                costoPostres = textView.text!
+            }
+        }
+        else{
+            costoPostres = "0"
+        }
+        
+        let costoMenuInt: Int    = Int(costoMenu)!
+        let costoBebidasInt: Int = Int(costoBebidas)!
+        let costoPostresInt: Int = Int(costoPostres)!
+        let costoTotal = costoMenuInt + costoBebidasInt + costoPostresInt
+        
+        // ---------------------------------------------------------------------
+        
+        
+        if (dataStorage.getDate()!).isEmpty {
+            Utils.showSimpleAlert(message: "La fecha del evento es requerida.", context: self, success: nil)
+            return;
+        }
+        
         var bebidasOpcion1: String = ""
         var bebidasCosto1: String = ""
         var bebidasOpcion2: String = ""
@@ -712,7 +868,7 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
                     "tipo" : "1"
                 ],
                 [
-                    "nomybre": bebidasOpcion5,
+                    "nombre": bebidasOpcion5,
                     "precio" : bebidasCosto5,
                     "tipo" : "1"
                 ]
@@ -720,6 +876,10 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
         }
         
         
+        if bebidasOpcion1.isEmpty || bebidasCosto1.isEmpty || bebidasOpcion2.isEmpty || bebidasCosto2.isEmpty || bebidasOpcion3.isEmpty || bebidasCosto3.isEmpty || bebidasOpcion4.isEmpty || bebidasCosto4.isEmpty || bebidasOpcion5.isEmpty || bebidasCosto5.isEmpty {
+            Utils.showSimpleAlert(message: "Los campos de productos extra son requeridos.", context: self, success: nil)
+            return;
+        }
         
         
         var postresOpcion1: String = ""
@@ -776,70 +936,25 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
         
         
         
+        if postresOpcion1.isEmpty || postresCosto1.isEmpty || postresOpcion2.isEmpty || postresCosto2.isEmpty || postresOpcion3.isEmpty || postresCosto3.isEmpty || postresOpcion4.isEmpty || postresCosto4.isEmpty || postresOpcion5.isEmpty || postresCosto5.isEmpty {
+            Utils.showSimpleAlert(message: "Los campos de productos extra son requeridos.", context: self, success: nil)
+            return;
+        }
+        
         let productsExtra = arrayBebidas + arrayPostres
         
-        // ---------------------------------------------------------------------
-        var descripcion: String = ""
-        if let textView = mainView.viewWithTag(TAG_DESCRIPCION_EVENT) as? UITextView {
-            descripcion = textView.text!
+        if (personasRecibirInput.text!).isEmpty {
+            Utils.showSimpleAlert(message: "Las personas a recibir son requeridas.", context: self, success: nil)
+            return;
         }
-        var menu: String = ""
-        if let textView = mainView.viewWithTag(TAG_MENU_EVENT) as? UITextView {
-            menu = textView.text!
-        }
-        var bebidas: String = ""
-        if let textView = mainView.viewWithTag(TAG_BEBIDAS_EVENT) as? UITextView {
-            bebidas = textView.text!
-        }
-        var postres: String = ""
-        if let textView = mainView.viewWithTag(TAG_POSTRES_EVENT) as? UITextView {
-            postres = textView.text!
-        }
-        
-        var costoMenu: String = "0"
-        if let textView = mainView.viewWithTag(TAG_COSTO_MENU_EVENT) as? UITextView {
-            if !(textView.text!).isEmpty {
-                costoMenu = textView.text!
-            }
-        }
-        else{
-            costoMenu = "0"
-        }
-        var costoBebidas: String = "0"
-        if let textView = mainView.viewWithTag(TAG_COSTO_BEBIDAS_EVENT) as? UITextView {
-            if !(textView.text!).isEmpty {
-                //costoMenu = textView.text!
-                costoBebidas = textView.text!
-            }
-        }else{
-            costoBebidas = "0"
-        }
-        var costoPostres: String = "0"
-        if let textView = mainView.viewWithTag(TAG_COSTO_POSTRES_EVENT) as? UITextView {
-            if !(textView.text!).isEmpty {
-                //costoMenu = textView.text!
-                costoPostres = textView.text!
-            }
-        }
-        else{
-            costoPostres = "0"
-        }
-        
-        let tituloEvento = dataStorage.getLastTitle()
-        
-        let costoMenuInt: Int    = Int(costoMenu)!
-        let costoBebidasInt: Int = Int(costoBebidas)!
-        let costoPostresInt: Int = Int(costoPostres)!
-        let costoTotal = costoMenuInt + costoBebidasInt + costoPostresInt
-        
-        // ---------------------------------------------------------------------
         
         let jsonData = try! JSONSerialization.data(withJSONObject: productsExtra, options: [])
+        
         let decoded = String(data: jsonData, encoding: .utf8)!
         
         let parameters: Parameters=["funcion"    : "saveEvent",
                                     "id_user"    : idUsuario,
-                                    "name"       : tituloEvento,
+                                    "name"       : tituloEvento!,
                                     "description": descripcion,
                                     "menu"       : menu,
                                     "menu_cost"  : costoMenu,
@@ -847,16 +962,17 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
                                     "drinks_cost": costoBebidas,
                                     "dessert"    : postres,
                                     "dessert_cost" : costoPostres,
-                                    "date_event" : dataStorage.getDate(),
-                                    "start_time" : dataStorage.getComienzaEvent(),
-                                    "end_time"   : dataStorage.getTerminaEvent(),
+                                    "date_event" : dataStorage.getDate()!,
+                                    "start_time" : dataStorage.getComienzaEvent()!,
+                                    "end_time"   : dataStorage.getTerminaEvent()!,
                                     "capacity"   : personasRecibirInput.text!,
                                     "costo"      : costoTotal,
-                                    "type"       : dataStorage.getLastFoodSelectedEvent(),
-                                    "id_cat"     : dataStorage.getLastCategorySelectedEvent(),
-                                    "id_sub_cat" : dataStorage.getLastSubCategorySelectedEvent(),
-                                    "image"      : dataStorage.getImagenEvent(),
+                                    "type"       : dataStorage.getLastFoodSelectedEvent()!,
+                                    "id_cat"     : dataStorage.getLastCategorySelectedEvent()!,
+                                    "id_sub_cat" : dataStorage.getLastSubCategorySelectedEvent()!,
+                                    "image"      : dataStorage.getImagenEvent()!,
                                     "extra_products" : decoded] as [String: Any]
+        
         
         let headers: HTTPHeaders = ["Accept": "application/json",
                                     "Content-Type" : "application/x-www-form-urlencoded"]
@@ -865,10 +981,10 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
                 switch(response.result) {
                 case .success(let value):
                     if let result = value as? Dictionary<String, Any> {
+                        
                         let statusMsg = result["status_msg"] as? String
                         let state     = result["state"] as? String
                         if statusMsg == "OK" && state == "200" {
-                            
                             
                             let alert = UIAlertController(title: "Evento Creado.",
                                                           message: "",
@@ -876,7 +992,6 @@ class EventoAnfitrionViewController: BaseViewController, UITableViewDelegate, UI
                             alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default,
                                                           handler: self.closeVC))
                             self.present(alert, animated: true, completion: nil)
-                            
                             
                             return;
                         }
@@ -922,4 +1037,3 @@ extension EventoAnfitrionViewController: UIPopoverPresentationControllerDelegate
         return .none
     }
 }
-

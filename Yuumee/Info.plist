@@ -15,7 +15,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.10</string>
+	<string>1.11</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -26,7 +26,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>11</string>
+	<string>12</string>
 	<key>FacebookAppID</key>
 	<string>547059635770800</string>
 	<key>FacebookDisplayName</key>
@@ -45,23 +45,16 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
-    
 	<key>NSCameraUsageDescription</key>
 	<string>Se requiere acceso a su Camara para mejorar su perfil ó pedido.</string>
-	
-    <key>NSPhotoLibraryUsageDescription</key>
-    <string>Se requiere acceso a su Camara para mejorar su perfil ó pedido.</string>
-    
-    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>La aplicación requiere accesos a su ubicación para mostrar los restaurantes más cercanos</string>
-    
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>La aplicación requiere accesos a su ubicación para mostrar los restaurantes más cercanos</string>
-    
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>La aplicación requiere accesos a su ubicación para mostrar los restaurantes más cercanos</string>
-	
-    
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Se requiere acceso a su Camara para mejorar su perfil ó pedido.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>ArchiaRegular.ttf</string>

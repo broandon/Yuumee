@@ -372,8 +372,8 @@
 				9C31C7AF21E00DD400F5F585 /* HorarioCell.swift */,
 				5EBEEEF821E2D80C00F718A4 /* DetallesEventoCell.swift */,
 				9CA66DA421F7B23200D473D5 /* FechasCell.swift */,
-				5EC3636421F83F7300729047 /* ProductosExtraView.swift */,
 				5EC3636621F840C600729047 /* ProductoExtraCell.swift */,
+				5EC3636421F83F7300729047 /* ProductosExtraView.swift */,
 			);
 			path = evento;
 			sourceTree = "<group>";
