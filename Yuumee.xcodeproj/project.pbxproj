@@ -767,6 +767,7 @@
 				CODE_SIGN_ENTITLEMENTS = Yuumee/Yuumee.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = W4MERUEP35;
 				INFOPLIST_FILE = Yuumee/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -778,6 +779,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Conekta",
 				);
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.lsegoviano.dev.Yuumee;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -797,6 +799,7 @@
 				CODE_SIGN_ENTITLEMENTS = Yuumee/Yuumee.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = W4MERUEP35;
 				INFOPLIST_FILE = Yuumee/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -808,6 +811,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Conekta",
 				);
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.lsegoviano.dev.Yuumee;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
